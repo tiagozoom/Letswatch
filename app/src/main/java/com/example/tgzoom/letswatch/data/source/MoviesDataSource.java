@@ -6,23 +6,16 @@ import com.example.tgzoom.letswatch.data.Movie;
 
 import java.util.List;
 
+import rx.Observable;
+
 /**
  * Created by tgzoom on 12/27/16.
  */
 
 public interface MoviesDataSource {
-    interface LoadMoviesCallback{
-        void onMoviesLoaded(List<Movie> movies);
-        void onDataNotAvailable();
-    }
-
-    interface GetMovieCallback{
-        void onMovieLoaded(Movie movie);
-        void onDataNotAvailable();
-    }
-
-    void getMovies(@NonNull LoadMoviesCallback callback);
-    void getMovie(@NonNull String movieApiId,@NonNull GetMovieCallback callback);
+    Observable<List<Movie>> getMovies(String sort,int pageIndex);
+    Observable<Movie> getMovie(@NonNull String movieApiId);
+    Observable<List<Integer>> getFavouriteMoviesIds();
     void markAsFavourite(@NonNull Movie movie);
     void unmarkAsFavourite(@NonNull String movieApiId);
     void refreshMovies();

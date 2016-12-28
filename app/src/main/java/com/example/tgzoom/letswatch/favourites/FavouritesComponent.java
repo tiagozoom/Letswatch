@@ -1,8 +1,21 @@
 package com.example.tgzoom.letswatch.favourites;
 
-/**
- * Created by tgzoom on 12/27/16.
- */
+import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
+import com.example.tgzoom.letswatch.main.MainActivity;
+import com.example.tgzoom.letswatch.util.FragmentScoped;
 
-public class FavouritesComponent {
+import dagger.Component;
+
+/**
+ * Created by tgzoom on 12/28/16.
+ */
+@FragmentScoped
+@Component(
+        dependencies = {
+                FavouritesPresenterModule.class,
+                MoviesRepositoryComponent.class
+        }
+)
+public interface FavouritesComponent {
+    void inject(MainActivity activity);
 }
