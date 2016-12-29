@@ -61,13 +61,13 @@ public class MoviesRepository implements MoviesDataSource {
     }
 
     @Override
-    public Observable<Movie> getMovie(@NonNull String movieApiId) {
+    public Observable<Movie> getMovie(@NonNull int movieApiId) {
         return null;
     }
 
     @Override
-    public void markAsFavourite(@NonNull Movie movie) {
-
+    public long markAsFavourite(@NonNull Movie movie) {
+        return mMoviesLocalDataSource.markAsFavourite(movie);
     }
 
     @Override
@@ -81,8 +81,8 @@ public class MoviesRepository implements MoviesDataSource {
     }
 
     @Override
-    public void deleteAllMovies() {
-
+    public int deleteAllMovies() {
+        return 0;
     }
 
     @Override

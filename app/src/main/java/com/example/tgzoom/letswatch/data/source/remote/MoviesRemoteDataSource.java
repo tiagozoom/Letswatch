@@ -53,7 +53,7 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
     }
 
     @Override
-    public Observable<Movie> getMovie(@NonNull String movieApiId) {
+    public Observable<Movie> getMovie(@NonNull int movieApiId) {
         return null;
     }
 
@@ -61,9 +61,7 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
     public Observable<List<Integer>> getFavouriteMoviesIds() {return null;}
 
     @Override
-    public void markAsFavourite(@NonNull Movie movie) {
-
-    }
+    public long markAsFavourite(@NonNull Movie movie) { return 0;}
 
     @Override
     public void unmarkAsFavourite(@NonNull String movieApiId) {
@@ -76,7 +74,7 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
     }
 
     @Override
-    public void deleteAllMovies() {
-
+    public int deleteAllMovies() {
+        return 0;
     }
 }

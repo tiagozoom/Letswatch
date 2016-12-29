@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.source.MoviesDataSource;
@@ -48,6 +49,7 @@ public class MoviesLocalDataSource implements MoviesDataSource {
         @Override
         public Movie call(Cursor cursor) {
             Movie movie = new Movie();
+            long movieId = cursor.getLong(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry._ID));
             int movieApiId = cursor.getInt(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_API_MOVIE_ID));
             String backdropPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_BACKDROP_PATH));
             String originalTitle = cursor.getString(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_ORIGINAL_TITLE));
@@ -71,6 +73,7 @@ public class MoviesLocalDataSource implements MoviesDataSource {
             movie.setVote_count(voteCount);
             movie.setPoster_path(posterPath);
             movie.setTitle(title);
+            movie.setId(movieId);
 
             return movie;
         }
@@ -83,12 +86,46 @@ public class MoviesLocalDataSource implements MoviesDataSource {
 
     @Override
     public Observable<List<Movie>> getFavouriteMovies() {
-        return null;
+        String[] projection = new String[]{
+                MoviesPersistenceContract.MovieEntry._ID,
+                MoviesPersistenceContract.MovieEntry.COLUMN_API_MOVIE_ID,
+                MoviesPersistenceContract.MovieEntry.COLUMN_BACKDROP_PATH,
+                MoviesPersistenceContract.MovieEntry.COLUMN_FAVOURITE,
+                MoviesPersistenceContract.MovieEntry.COLUMN_ORIGINAL_TITLE,
+                MoviesPersistenceContract.MovieEntry.COLUMN_OVERVIEW,
+                MoviesPersistenceContract.MovieEntry.COLUMN_POPULARITY,
+                MoviesPersistenceContract.MovieEntry.COLUMN_POSTER_PATH,
+                MoviesPersistenceContract.MovieEntry.COLUMN_RELEASE_DATE,
+                MoviesPersistenceContract.MovieEntry.COLUMN_TITLE,
+                MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_AVERAGE,
+                MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_COUNT,
+        };
+
+        String sql = String.format("SELECT %s FROM %s", TextUtils.join(",", projection), MoviesPersistenceContract.MovieEntry.TABLE_NAME);
+
+        return mMoviesDbHelper.createQuery(MoviesPersistenceContract.MovieEntry.TABLE_NAME,sql).mapToList(mMovieMapperFunction);
     }
 
     @Override
-    public Observable<Movie> getMovie(@NonNull String movieApiId) {
-        return null;
+    public Observable<Movie> getMovie(@NonNull int movieApiId) {
+        String[] projection = new String[]{
+                MoviesPersistenceContract.MovieEntry._ID,
+                MoviesPersistenceContract.MovieEntry.COLUMN_API_MOVIE_ID,
+                MoviesPersistenceContract.MovieEntry.COLUMN_BACKDROP_PATH,
+                MoviesPersistenceContract.MovieEntry.COLUMN_FAVOURITE,
+                MoviesPersistenceContract.MovieEntry.COLUMN_ORIGINAL_TITLE,
+                MoviesPersistenceContract.MovieEntry.COLUMN_OVERVIEW,
+                MoviesPersistenceContract.MovieEntry.COLUMN_POPULARITY,
+                MoviesPersistenceContract.MovieEntry.COLUMN_POSTER_PATH,
+                MoviesPersistenceContract.MovieEntry.COLUMN_RELEASE_DATE,
+                MoviesPersistenceContract.MovieEntry.COLUMN_TITLE,
+                MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_AVERAGE,
+                MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_COUNT,
+        };
+
+        String sql = String.format("SELECT %s FROM %s WHERE %s LIKE ?", TextUtils.join(MoviesDbHelper.COMMA_SEPARATOR, projection), MoviesPersistenceContract.MovieEntry.TABLE_NAME, MoviesPersistenceContract.MovieEntry.COLUMN_API_MOVIE_ID);
+
+        return mMoviesDbHelper.createQuery(MoviesPersistenceContract.MovieEntry.TABLE_NAME,sql,String.valueOf(movieApiId)).mapToOneOrDefault(mMovieMapperFunction,null);
     }
 
     @Override
@@ -99,7 +136,7 @@ public class MoviesLocalDataSource implements MoviesDataSource {
     }
 
     @Override
-    public void markAsFavourite(@NonNull Movie movie) {
+    public long markAsFavourite(@NonNull Movie movie) {
         ContentValues values = new ContentValues();
         values.put(MoviesPersistenceContract.MovieEntry.COLUMN_API_MOVIE_ID, movie.getApi_movie_id());
         values.put(MoviesPersistenceContract.MovieEntry.COLUMN_BACKDROP_PATH, movie.getBackdrop_path());
@@ -111,9 +148,8 @@ public class MoviesLocalDataSource implements MoviesDataSource {
         values.put(MoviesPersistenceContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getRelease_date());
         values.put(MoviesPersistenceContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
         values.put(MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_COUNT, movie.getVote_count());
-        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_COUNT, movie.getVote_average());
-
-        mMoviesDbHelper.insert(MoviesPersistenceContract.MovieEntry.TABLE_NAME, values, SQLiteDatabase.CONFLICT_REPLACE);
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVote_average());
+        return mMoviesDbHelper.insert(MoviesPersistenceContract.MovieEntry.TABLE_NAME, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     @Override
@@ -127,7 +163,7 @@ public class MoviesLocalDataSource implements MoviesDataSource {
     }
 
     @Override
-    public void deleteAllMovies() {
-
+    public int deleteAllMovies() {
+        return mMoviesDbHelper.delete(MoviesPersistenceContract.MovieEntry.TABLE_NAME,null,null);
     }
 }

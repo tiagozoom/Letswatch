@@ -1,11 +1,18 @@
 package com.example.tgzoom.letswatch;
 
 import android.app.Application;
+import android.util.Log;
+
+import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.source.DaggerMoviesRepositoryComponent;
 import com.example.tgzoom.letswatch.data.source.MoviesRepository;
 import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
 import com.example.tgzoom.letswatch.data.source.MoviesRepositoryModule;
 import com.example.tgzoom.letswatch.network.ServiceModule;
+
+import java.util.List;
+
+import rx.functions.Action1;
 
 /**
  * Created by tgzoom on 12/27/16.
@@ -24,8 +31,7 @@ public class App extends Application {
                 .moviesRepositoryModule(new MoviesRepositoryModule())
                 .build();
 
-        MoviesRepository moviesRepository = mMoviesRepositoryComponent.getMoviesRepository();
-        moviesRepository.getMovies("popularity.desc",1);
+        final MoviesRepository moviesRepository = mMoviesRepositoryComponent.getMoviesRepository();
     }
 
     public MoviesRepositoryComponent getMoviesRepositoryComponent(){

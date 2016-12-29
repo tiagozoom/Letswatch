@@ -11,10 +11,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class MoviesDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME    = "movies.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String TEXT_TYPE = "TEXT";
     private static final String BOOLEAN_TYPE = "INTEGER";
-    private static final String COMMA_SEPARATOR = ",";
+    static final String COMMA_SEPARATOR = ",";
 
     private static final String SQL_CREATE_MOVIE_STATEMENT = "CREATE TABLE "+MoviesPersistenceContract.MovieEntry.TABLE_NAME+" ( "
             +MoviesPersistenceContract.MovieEntry._ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"

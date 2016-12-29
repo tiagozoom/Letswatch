@@ -37,7 +37,7 @@ public class Movie implements Parcelable {
     @SerializedName("id")
     private int api_movie_id;
     @SerializedName("movie_id")
-    private int id;
+    private long id;
     @SerializedName("popularity")
     private Double popularity;
 
@@ -55,7 +55,7 @@ public class Movie implements Parcelable {
         api_movie_id = in.readInt();
         popularity = in.readDouble();
         isFavourite = in.readByte() != 0;
-        id = in.readInt();
+        id = in.readLong();
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
@@ -88,7 +88,7 @@ public class Movie implements Parcelable {
         parcel.writeInt(api_movie_id);
         parcel.writeDouble(popularity);
         parcel.writeByte(isFavourite?(byte) 1 : (byte)0);
-        parcel.writeInt(id);
+        parcel.writeLong(id);
     }
 
     public class Results{
@@ -101,11 +101,11 @@ public class Movie implements Parcelable {
 
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

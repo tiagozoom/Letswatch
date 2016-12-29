@@ -16,11 +16,11 @@ import rx.Observable;
 public interface MoviesDataSource {
     Observable<List<Movie>> getMovies(String sort,int pageIndex);
     Observable<List<Movie>> getFavouriteMovies();
-    Observable<Movie> getMovie(@NonNull String movieApiId);
+    Observable<Movie> getMovie(@NonNull int movieApiId);
     Observable<List<Integer>> getFavouriteMoviesIds();
 
-    void markAsFavourite(@NonNull Movie movie);
+    long markAsFavourite(@NonNull Movie movie);
     void unmarkAsFavourite(@NonNull String movieApiId);
     void refreshMovies();
-    void deleteAllMovies();
+    int deleteAllMovies();
 }
