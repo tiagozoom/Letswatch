@@ -1,16 +1,24 @@
 package com.example.tgzoom.letswatch.data.source.local;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Parcel;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.source.MoviesDataSource;
+import com.squareup.sqlbrite.BriteDatabase;
+import com.squareup.sqlbrite.SqlBrite;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by tgzoom on 12/27/16.
@@ -18,17 +26,63 @@ import rx.Observable;
 
 public class MoviesLocalDataSource implements MoviesDataSource {
 
-    private MoviesDbHelper mMoviesDbHelper;
+    private BriteDatabase mMoviesDbHelper;
 
     public MoviesLocalDataSource(@NonNull Context context){
-        mMoviesDbHelper = new MoviesDbHelper(context);
+        MoviesDbHelper moviesDbHelper = new MoviesDbHelper(context);
+        SqlBrite sqlBrite = SqlBrite.create();
+        mMoviesDbHelper = sqlBrite.wrapDatabaseHelper(moviesDbHelper, Schedulers.io());
     }
+
+    @NonNull
+    private Func1<Cursor,Integer> mMovieIdMapperFunction = new Func1<Cursor, Integer>() {
+        @Override
+        public Integer call(Cursor cursor) {
+            int movieApiId = cursor.getInt(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_API_MOVIE_ID));
+            return movieApiId;
+        }
+    };
+
+    @NonNull
+    private Func1<Cursor,Movie> mMovieMapperFunction = new Func1<Cursor, Movie>() {
+        @Override
+        public Movie call(Cursor cursor) {
+            Movie movie = new Movie();
+            int movieApiId = cursor.getInt(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_API_MOVIE_ID));
+            String backdropPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_BACKDROP_PATH));
+            String originalTitle = cursor.getString(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_ORIGINAL_TITLE));
+            String overview = cursor.getString(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_OVERVIEW));
+            Double popularity = cursor.getDouble(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_POPULARITY));
+            String posterPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_POSTER_PATH));
+            String releaseDate = cursor.getString(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_RELEASE_DATE));
+            String title = cursor.getString(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_TITLE));
+            Double voteAverage = cursor.getDouble(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_AVERAGE));
+            int voteCount = cursor.getInt(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_COUNT));
+            boolean isFavourite = cursor.getInt(cursor.getColumnIndexOrThrow(MoviesPersistenceContract.MovieEntry.COLUMN_FAVOURITE)) == 1;
+
+            movie.setApi_movie_id(movieApiId);
+            movie.setBackdrop_path(backdropPath);
+            movie.setOriginal_title(originalTitle);
+            movie.setOverview(overview);
+            movie.setPopularity(popularity);
+            movie.setFavourite(isFavourite);
+            movie.setRelease_date(releaseDate);
+            movie.setVote_average(voteAverage);
+            movie.setVote_count(voteCount);
+            movie.setPoster_path(posterPath);
+            movie.setTitle(title);
+
+            return movie;
+        }
+    };
 
     @Override
     public Observable<List<Movie>> getMovies(String sort, int pageIndex) {
-        List<Movie> movies = new ArrayList<>();
-        SQLiteDatabase db = mMoviesDbHelper.getReadableDatabase();
+        return null;
+    }
 
+    @Override
+    public Observable<List<Movie>> getFavouriteMovies() {
         return null;
     }
 
@@ -39,12 +93,27 @@ public class MoviesLocalDataSource implements MoviesDataSource {
 
     @Override
     public Observable<List<Integer>> getFavouriteMoviesIds() {
-        return null;
+        String[] projection = new String[]{MoviesPersistenceContract.MovieEntry.COLUMN_API_MOVIE_ID};
+        String sql = String.format("SELECT %s FROM %s", TextUtils.join(",", projection), MoviesPersistenceContract.MovieEntry.TABLE_NAME);
+        return mMoviesDbHelper.createQuery(MoviesPersistenceContract.MovieEntry.TABLE_NAME,sql).mapToList(mMovieIdMapperFunction);
     }
 
     @Override
     public void markAsFavourite(@NonNull Movie movie) {
+        ContentValues values = new ContentValues();
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_API_MOVIE_ID, movie.getApi_movie_id());
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_BACKDROP_PATH, movie.getBackdrop_path());
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPoster_path());
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_FAVOURITE, movie.isFavourite());
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_ORIGINAL_TITLE, movie.getOriginal_title());
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_OVERVIEW, movie.getOverview());
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_POPULARITY, movie.getPopularity());
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getRelease_date());
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_COUNT, movie.getVote_count());
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_COUNT, movie.getVote_average());
 
+        mMoviesDbHelper.insert(MoviesPersistenceContract.MovieEntry.TABLE_NAME, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     @Override

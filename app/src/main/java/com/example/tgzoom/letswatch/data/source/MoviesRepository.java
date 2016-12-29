@@ -49,7 +49,7 @@ public class MoviesRepository implements MoviesDataSource {
                     int position = integers.indexOf(movie.getApi_movie_id());
 
                     if (position >= 0) {
-                        movie.setFavorite(true);
+                        movie.setFavourite(true);
                         integers.remove(position);
                     }
                 }
@@ -57,7 +57,7 @@ public class MoviesRepository implements MoviesDataSource {
                 return movies;
             }
         });
-        return null;
+        return movies;
     }
 
     @Override
@@ -88,5 +88,10 @@ public class MoviesRepository implements MoviesDataSource {
     @Override
     public Observable<List<Integer>> getFavouriteMoviesIds() {
         return mMoviesLocalDataSource.getFavouriteMoviesIds();
+    }
+
+    @Override
+    public Observable<List<Movie>> getFavouriteMovies() {
+        return mMoviesLocalDataSource.getFavouriteMovies();
     }
 }

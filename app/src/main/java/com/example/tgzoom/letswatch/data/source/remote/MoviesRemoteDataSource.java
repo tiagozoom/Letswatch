@@ -48,6 +48,11 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
     }
 
     @Override
+    public Observable<List<Movie>> getFavouriteMovies() {
+        return null;
+    }
+
+    @Override
     public Observable<Movie> getMovie(@NonNull String movieApiId) {
         return null;
     }

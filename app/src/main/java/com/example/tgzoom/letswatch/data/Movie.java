@@ -41,7 +41,7 @@ public class Movie implements Parcelable {
     @SerializedName("popularity")
     private Double popularity;
 
-    private boolean isFavorite = false;
+    private boolean isFavourite = false;
 
     protected Movie(Parcel in) {
         title = in.readString();
@@ -54,7 +54,7 @@ public class Movie implements Parcelable {
         vote_average = in.readDouble();
         api_movie_id = in.readInt();
         popularity = in.readDouble();
-        isFavorite = in.readByte() != 0;
+        isFavourite = in.readByte() != 0;
         id = in.readInt();
     }
 
@@ -87,7 +87,7 @@ public class Movie implements Parcelable {
         parcel.writeDouble(vote_average);
         parcel.writeInt(api_movie_id);
         parcel.writeDouble(popularity);
-        parcel.writeByte(isFavorite?(byte) 1 : (byte)0);
+        parcel.writeByte(isFavourite?(byte) 1 : (byte)0);
         parcel.writeInt(id);
     }
 
@@ -185,12 +185,12 @@ public class Movie implements Parcelable {
 
     public void setMovies(List<Movie> movies) { this.movies = movies; }
 
-    public boolean isFavorite() {
-        return isFavorite;
+    public boolean isFavourite() {
+        return isFavourite;
     }
 
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
+    public void setFavourite(boolean favorite) {
+        isFavourite = favorite;
     }
 
     public String getBackdrop_path() {

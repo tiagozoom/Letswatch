@@ -23,18 +23,16 @@ import com.example.tgzoom.letswatch.movies.MoviesFragment;
 import com.example.tgzoom.letswatch.movies.MoviesPresenterModule;
 import com.example.tgzoom.letswatch.network.NetworkModule;
 import com.example.tgzoom.letswatch.util.ActivityUtils;
+import com.facebook.stetho.Stetho;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
-    @BindView(R.id.navigation_view)
-    NavigationView mNavigationView;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
+    @BindView(R.id.navigation_view) NavigationView mNavigationView;
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -45,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+
+        Stetho.initializeWithDefaults(this);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override

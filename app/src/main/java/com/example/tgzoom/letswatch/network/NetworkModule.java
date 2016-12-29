@@ -1,6 +1,9 @@
 package com.example.tgzoom.letswatch.network;
 
 import com.example.tgzoom.letswatch.AppModule;
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+
 import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
@@ -20,7 +23,7 @@ public class NetworkModule {
     @Singleton
     @Provides
     OkHttpClient provideOkHttpClient(){
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().addNetworkInterceptor(new StethoInterceptor()).build();
         return okHttpClient;
     }
 }

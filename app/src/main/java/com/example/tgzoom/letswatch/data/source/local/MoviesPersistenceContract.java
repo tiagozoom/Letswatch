@@ -41,6 +41,6 @@ public class MoviesPersistenceContract {
         public static final String COLUMN_OVERVIEW = "overview";
         public static final String COLUMN_API_MOVIE_ID = "movie_api_id";
         public static final String COLUMN_POPULARITY = "popularity";
-        public static final String COLUMN_FAVORED = "favored";
+        public static final String COLUMN_FAVOURITE = "favourite";
     }
 }
