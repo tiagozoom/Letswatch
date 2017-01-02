@@ -7,6 +7,7 @@ import com.example.tgzoom.letswatch.AppModule;
 import com.example.tgzoom.letswatch.data.source.local.MoviesLocalDataSource;
 import com.example.tgzoom.letswatch.data.source.remote.MoviesRemoteDataSource;
 import com.example.tgzoom.letswatch.network.NetworkModule;
+import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
 
 import javax.inject.Singleton;
 
@@ -23,14 +24,14 @@ public class MoviesRepositoryModule {
     @Singleton
     @Provides
     @Local
-    MoviesDataSource provideMoviesLocalDataSource(Context context){
-        return new MoviesLocalDataSource(context);
+    MoviesDataSource provideMoviesLocalDataSource(Context context, BaseScheduler scheduler){
+        return new MoviesLocalDataSource(context,scheduler);
     }
 
     @Singleton
     @Provides
     @Remote
-    MoviesDataSource provideMoviesRemoteDataSource(Retrofit retrofit){
-        return new MoviesRemoteDataSource(retrofit);
+    MoviesDataSource provideMoviesRemoteDataSource(Retrofit retrofit, BaseScheduler scheduler){
+        return new MoviesRemoteDataSource(retrofit,scheduler);
     }
 }

@@ -6,4 +6,6 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="card_image_contentDescription">Card Image</string>
+    <string name="gridlayout_span_count">2</string>
 </resources>

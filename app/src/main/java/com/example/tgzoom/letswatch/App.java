@@ -30,8 +30,6 @@ public class App extends Application {
                 .serviceModule(new ServiceModule("http://api.themoviedb.org"))
                 .moviesRepositoryModule(new MoviesRepositoryModule())
                 .build();
-
-        final MoviesRepository moviesRepository = mMoviesRepositoryComponent.getMoviesRepository();
     }
 
     public MoviesRepositoryComponent getMoviesRepositoryComponent(){

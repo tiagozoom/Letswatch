@@ -1,5 +1,7 @@
 package com.example.tgzoom.letswatch.network;
 
+import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
+import com.example.tgzoom.letswatch.util.schedulers.Scheduler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -44,5 +46,11 @@ public class ServiceModule {
                 .baseUrl(mBaseUrl)
                 .client(okHttpClient)
                 .build();
+    }
+
+    @Singleton
+    @Provides
+    BaseScheduler provideScheduler(){
+        return new Scheduler();
     }
 }

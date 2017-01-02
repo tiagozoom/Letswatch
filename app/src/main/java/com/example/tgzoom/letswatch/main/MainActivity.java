@@ -13,17 +13,16 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.tgzoom.letswatch.App;
+
 import com.example.tgzoom.letswatch.R;
-import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
-import com.example.tgzoom.letswatch.favourites.FavouritesFragment;
-import com.example.tgzoom.letswatch.favourites.FavouritesPresenterModule;
 import com.example.tgzoom.letswatch.movies.DaggerMoviesComponent;
-import com.example.tgzoom.letswatch.movies.MoviesComponent;
 import com.example.tgzoom.letswatch.movies.MoviesFragment;
+import com.example.tgzoom.letswatch.movies.MoviesPresenter;
 import com.example.tgzoom.letswatch.movies.MoviesPresenterModule;
-import com.example.tgzoom.letswatch.network.NetworkModule;
 import com.example.tgzoom.letswatch.util.ActivityUtils;
 import com.facebook.stetho.Stetho;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.navigation_view) NavigationView mNavigationView;
 
+    @Inject MoviesPresenter mMoviesPresenter;
     private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
@@ -70,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             moviesFragment = new MoviesFragment();
             ActivityUtils.addFragment(fragmentManager,moviesFragment,MoviesFragment.TAG,R.id.fragment_container);
         }
+
+        DaggerMoviesComponent.builder().moviesRepositoryComponent(((App) getApplication()).getMoviesRepositoryComponent()).moviesPresenterModule(new MoviesPresenterModule(moviesFragment)).build().inject(this);
+
     }
 
     @Override
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
+        item.setChecked(true);
         mDrawerLayout.closeDrawers();
         return true;
     }

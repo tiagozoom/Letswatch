@@ -3,21 +3,15 @@ package com.example.tgzoom.letswatch;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
-
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.source.local.MoviesLocalDataSource;
-
+import com.example.tgzoom.letswatch.util.schedulers.ImmediateScheduler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.concurrent.TimeUnit;
-
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
+import java.util.List;
 import rx.observers.TestSubscriber;
-
 import static org.junit.Assert.*;
 
 /**
@@ -29,23 +23,7 @@ public class MoviesLocalDataSourceTest {
 
     private MoviesLocalDataSource moviesLocalDataSource;
 
-    @Before
-    public void setup(){
-        moviesLocalDataSource = new MoviesLocalDataSource(InstrumentationRegistry.getTargetContext());
-    }
-
-    @After
-    public void cleanUp() {
-        moviesLocalDataSource.deleteAllMovies();
-    }
-
-    @Test
-    public void testPreConditions() {
-        assertNotNull(moviesLocalDataSource);
-    }
-
-    @Test
-    public void saveMovies(){
+    private Movie createMovie(){
         final Movie movie = new Movie();
 
         int movieApiId = 278;
@@ -72,14 +50,43 @@ public class MoviesLocalDataSourceTest {
         movie.setPoster_path(posterPath);
         movie.setTitle(title);
 
-        long movieId = moviesLocalDataSource.markAsFavourite(movie);
-        movie.setId(movieId);
-        assertTrue("Error occurred while insering a new movie",movieId != 0);
+        return movie;
+    }
 
-        TestSubscriber<Movie> testSubscriber = new TestSubscriber<>();
-        moviesLocalDataSource.getMovie(movie.getApi_movie_id());
-        testSubscriber.assertCompleted();
+    @Before
+    public void setup(){
+        ImmediateScheduler immediateScheduler = new ImmediateScheduler();
+        moviesLocalDataSource = new MoviesLocalDataSource(InstrumentationRegistry.getTargetContext(), immediateScheduler);
+    }
+
+    @After
+    public void cleanUp() {
+        moviesLocalDataSource.deleteAllMovies();
+    }
+
+    @Test
+    public void testPreConditions() {
+        assertNotNull(moviesLocalDataSource);
+    }
+
+    @Test
+    public void getAllMovies(){
+        Movie movie = createMovie();
+        long movieId = moviesLocalDataSource.markAsFavourite(movie);
+        TestSubscriber<List<Movie>> testSubscriber = new TestSubscriber<>();
+        moviesLocalDataSource.getFavouriteMovies().subscribe(testSubscriber);
         testSubscriber.assertValueCount(1);
     }
 
+    @Test
+    public void saveMovie(){
+        Movie movie = createMovie();
+        long movieId = moviesLocalDataSource.markAsFavourite(movie);
+        assertTrue("Error occurred while insering a new movie",movieId != 0);
+        TestSubscriber<Movie> testSubscriber = new TestSubscriber<>();
+        moviesLocalDataSource.getMovie(movie.getApi_movie_id()).subscribe(testSubscriber);
+        testSubscriber.assertValueCount(1);
+        Movie inserted_movie = testSubscriber.getOnNextEvents().get(0);
+        assertTrue(inserted_movie.isFavourite());
+    }
 }

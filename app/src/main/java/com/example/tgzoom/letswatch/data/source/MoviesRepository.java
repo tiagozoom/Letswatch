@@ -38,25 +38,7 @@ public class MoviesRepository implements MoviesDataSource {
     @Override
     public Observable<List<Movie>> getMovies(String sort, int pageIndex) {
         Observable<List<Movie>> movies = mMoviesRemoteDataSource.getMovies(sort, pageIndex);
-        movies.withLatestFrom(mFavouriteMoviesIds, new Func2<List<Movie>, List<Integer>, List<Movie>>() {
-            @Override
-            public List<Movie> call(List<Movie> movies, List<Integer> integers) {
-                if (integers.size() == 0) {
-                    return movies;
-                }
 
-                for (Movie movie : movies) {
-                    int position = integers.indexOf(movie.getApi_movie_id());
-
-                    if (position >= 0) {
-                        movie.setFavourite(true);
-                        integers.remove(position);
-                    }
-                }
-
-                return movies;
-            }
-        });
         return movies;
     }
 

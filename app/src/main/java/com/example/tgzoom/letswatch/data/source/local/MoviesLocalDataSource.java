@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.source.MoviesDataSource;
+import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.squareup.sqlbrite.SqlBrite;
 
@@ -29,10 +30,10 @@ public class MoviesLocalDataSource implements MoviesDataSource {
 
     private BriteDatabase mMoviesDbHelper;
 
-    public MoviesLocalDataSource(@NonNull Context context){
+    public MoviesLocalDataSource(@NonNull Context context, BaseScheduler scheduler){
         MoviesDbHelper moviesDbHelper = new MoviesDbHelper(context);
         SqlBrite sqlBrite = SqlBrite.create();
-        mMoviesDbHelper = sqlBrite.wrapDatabaseHelper(moviesDbHelper, Schedulers.io());
+        mMoviesDbHelper = sqlBrite.wrapDatabaseHelper(moviesDbHelper, scheduler.io());
     }
 
     @NonNull

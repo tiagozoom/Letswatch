@@ -8,6 +8,7 @@ import com.example.tgzoom.letswatch.BuildConfig;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.source.MoviesDataSource;
 import com.example.tgzoom.letswatch.data.source.Remote;
+import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
 
 import java.util.List;
 
@@ -26,12 +27,12 @@ import rx.schedulers.Schedulers;
 public class MoviesRemoteDataSource implements MoviesDataSource{
 
     private Retrofit mRetrofit;
+    private BaseScheduler mScheduler;
 
-    public MoviesRemoteDataSource(Retrofit retrofit){
+    public MoviesRemoteDataSource(Retrofit retrofit, BaseScheduler scheduler){
         mRetrofit = retrofit;
+        mScheduler = scheduler;
     }
-
-    private static final int SERVICE_LATENCY_IN_MILLIS = 5000;
 
     @Override
     public Observable<List<Movie>> getMovies(String sort, int pageIndex) {
@@ -43,7 +44,8 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
                         return results.movies;
                     }
                 })
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(mScheduler.io())
+                .observeOn(mScheduler.ui());
         return movies;
     }
 

@@ -25,7 +25,7 @@ public interface MoviesContract {
 
     interface Presenter extends BasePresenter {
         void result(int requestCode,int resultCode);
-        void loadMovies(@NonNull  boolean forceUpdate);
+        void loadMovies(@NonNull  boolean forceUpdate, int currentPage);
         void markAsFavourite(@NonNull Movie movie);
         void unmarkAsFavourite(@NonNull int movieApiId);
     }
