@@ -3,9 +3,11 @@ package com.example.tgzoom.letswatch.movies;
 import android.support.annotation.NonNull;
 
 import com.example.tgzoom.letswatch.BasePresenter;
+import com.example.tgzoom.letswatch.BaseState;
 import com.example.tgzoom.letswatch.BaseView;
 import com.example.tgzoom.letswatch.data.Movie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +25,12 @@ public interface MoviesContract {
         void showUnmarkedAsFavouriteMessage();
     }
 
-    interface Presenter extends BasePresenter {
+    interface State extends BaseState{
+        ArrayList<Movie> getMovies();
+        int getCurrentPage();
+    }
+
+    interface Presenter extends BasePresenter<State> {
         void result(int requestCode,int resultCode);
         void loadMovies(@NonNull  boolean forceUpdate, int currentPage);
         void markAsFavourite(@NonNull Movie movie);

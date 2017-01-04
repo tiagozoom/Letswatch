@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.source.MoviesRepository;
+import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
 
 import java.util.List;
 
@@ -19,15 +20,21 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class MoviesPresenter implements MoviesContract.Presenter{
-    private MoviesRepository mMoviesRepository;
-    private MoviesContract.View mMoviesView;
+
+    private final MoviesRepository mMoviesRepository;
+
+    private final MoviesContract.View mMoviesView;
+
+    private final BaseScheduler mScheduler;
+
     private CompositeSubscription mSubscriptions;
 
     @Inject
-    MoviesPresenter(MoviesRepository moviesRepository, MoviesContract.View moviesView){
+    MoviesPresenter(MoviesRepository moviesRepository, MoviesContract.View moviesView, BaseScheduler scheduler){
         mMoviesRepository = moviesRepository;
         mMoviesView = moviesView;
         mSubscriptions = new CompositeSubscription();
+        mScheduler = scheduler;
     }
 
     @Inject
@@ -36,15 +43,22 @@ public class MoviesPresenter implements MoviesContract.Presenter{
     }
 
     @Override
+    public void start() {
+        loadMovies(false,1);
+    }
+
+    @Override
     public void result(int requestCode, int resultCode) {
 
     }
 
-    @Override
-    public void loadMovies(@NonNull boolean forceUpdate, int currentPage) {
+    public void loadMovies(@NonNull boolean forceUpdate, int currentPage){
         mSubscriptions.clear();
+        mMoviesView.setLoadingIndicator(true);
         Subscription subscription = mMoviesRepository
                 .getMovies("popularity.desc",currentPage)
+                .observeOn(mScheduler.computation())
+                .subscribeOn(mScheduler.ui())
                 .subscribe(
                         new Observer<List<Movie>>() {
                             @Override
@@ -80,10 +94,5 @@ public class MoviesPresenter implements MoviesContract.Presenter{
     @Override
     public void unmarkAsFavourite(@NonNull int movieApiId) {
 
-    }
-
-    @Override
-    public void start() {
-        loadMovies(false,1);
     }
 }

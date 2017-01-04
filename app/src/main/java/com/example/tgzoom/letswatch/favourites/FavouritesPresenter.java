@@ -2,6 +2,7 @@ package com.example.tgzoom.letswatch.favourites;
 
 import android.support.annotation.NonNull;
 
+import com.example.tgzoom.letswatch.BaseState;
 import com.example.tgzoom.letswatch.data.Movie;
 
 /**

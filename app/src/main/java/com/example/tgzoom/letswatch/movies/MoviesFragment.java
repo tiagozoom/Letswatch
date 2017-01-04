@@ -1,33 +1,18 @@
 package com.example.tgzoom.letswatch.movies;
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
-import com.example.tgzoom.letswatch.util.StringUtils;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
-import com.example.tgzoom.letswatch.util.URIUtils;
-
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,14 +22,22 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MoviesFragment extends Fragment implements MoviesContract.View{
+public class MoviesFragment extends Fragment implements MoviesContract.View,SwipeRefreshLayout.OnRefreshListener{
 
     public final static String TAG = "MoviesFragment";
+
+    private int mCurrentPage;
+
     private MovieAdapter mMovieAdapter;
-    private EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener;
+
     private MoviesContract.Presenter mPresenter;
 
+    private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
+
+    private static final String CURRENT_PAGE_INDEX = "current_page_index";
+
     @BindView(R.id.moviedb_recyclerview) RecyclerView mRecyclerView;
+
     @BindView(R.id.swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
@@ -54,29 +47,47 @@ public class MoviesFragment extends Fragment implements MoviesContract.View{
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_movies, container, false);
         ButterKnife.bind(this,rootView);
-
-        mMovieAdapter = new MovieAdapter(new ArrayList<Movie>());
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mMovieAdapter);
-        mRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager,1) {
+        mRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager,mCurrentPage) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 mPresenter.loadMovies(false,page);
+                mCurrentPage = page;
             }
         });
+
         return rootView;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.start();
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null){
+            mMovieAdapter = new MovieAdapter(savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST));
+            mCurrentPage  = savedInstanceState.getInt(CURRENT_PAGE_INDEX);
+        }else{
+            mMovieAdapter = new MovieAdapter(new ArrayList<Movie>());
+            mCurrentPage  = 1;
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState == null){
+            mPresenter.start();
+        }
     }
 
     @Override
     public void setLoadingIndicator(boolean active) {
-
+        if(active){
+            mSwipeRefreshLayout.setRefreshing(true);
+        }else{
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     @Override
@@ -99,6 +110,16 @@ public class MoviesFragment extends Fragment implements MoviesContract.View{
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(mMovieAdapter != null){
+            ArrayList<Movie> movieList = (ArrayList<Movie>) mMovieAdapter.getArrayList();
+            outState.putParcelableArrayList(PARCELABLE_MOVIE_LIST, movieList);
+            outState.putInt(CURRENT_PAGE_INDEX, mCurrentPage);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void showUnmarkedAsFavouriteMessage() {
 
     }
@@ -110,83 +131,9 @@ public class MoviesFragment extends Fragment implements MoviesContract.View{
         }
     }
 
-    public static class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieDBHolder> {
-        private List<Movie> mMovieDBArrayList = new ArrayList<Movie>();
-
-        public MovieAdapter(ArrayList<Movie> movieArrayList) {
-            mMovieDBArrayList = movieArrayList;
-        }
-
-        public static class MovieDBHolder extends RecyclerView.ViewHolder {
-
-            @BindView(R.id.card_image) ImageView cardImage;
-            @BindView(R.id.card_title) TextView cardTitle;
-            @BindView(R.id.movie_year) TextView movie_year;
-            @BindView(R.id.movie_rate) TextView movie_rate;
-            @BindView(R.id.card_menu) ImageView card_menu;
-            @BindView(R.id.movie_layout) RelativeLayout movie_layout;
-            Context mContext;
-
-            public MovieDBHolder(View view, final Context context) {
-                super(view);
-                ButterKnife.bind(this, view);
-                mContext = context;
-            }
-        }
-
-        @Override
-        public MovieDBHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_movies_list_item, parent, false);
-            return new MovieDBHolder(view, parent.getContext());
-        }
-
-        @Override
-        public void onBindViewHolder(final MovieDBHolder holder, final int position) {
-            final Movie movie = mMovieDBArrayList.get(position);
-
-            String title = StringUtils.formatMovieTitle(holder.mContext, movie.getTitle());
-            holder.cardTitle.setText(title);
-
-            String formated_year = StringUtils.formatMovieYear(movie.getRelease_date());
-            holder.movie_year.setText(formated_year);
-
-            if (movie.getPoster_path() != null) {
-
-                String poster_path = URIUtils.buildPosterPath(movie.getPoster_path()).toString();
-
-                Glide.with(holder.mContext)
-                        .load(poster_path)
-                        .centerCrop()
-                        .placeholder(R.color.colorPrimary)
-                        .into(holder.cardImage);
-            }
-
-            holder.movie_rate.setText(movie.getVote_average().toString());
-
-        }
-
-        @Override
-        public int getItemCount() {
-            if (mMovieDBArrayList != null) {
-                return mMovieDBArrayList.size();
-            }
-            return 0;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return mMovieDBArrayList.get(position).getApi_movie_id();
-        }
-
-        public void addArrayList(List<Movie> movieDBArrayList){
-            if(mMovieDBArrayList.size() <= 0){
-                mMovieDBArrayList = movieDBArrayList;
-            }else{
-                mMovieDBArrayList.addAll(movieDBArrayList);
-            }
-
-            notifyDataSetChanged();
-        }
-
+    @Override
+    public void onRefresh() {
+        mMovieAdapter.clear();
+        mPresenter.start();
     }
 }

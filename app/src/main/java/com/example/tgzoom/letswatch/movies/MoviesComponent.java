@@ -3,6 +3,8 @@ package com.example.tgzoom.letswatch.movies;
 import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
 import com.example.tgzoom.letswatch.main.MainActivity;
 import com.example.tgzoom.letswatch.util.FragmentScoped;
+import com.example.tgzoom.letswatch.util.schedulers.Scheduler;
+import com.example.tgzoom.letswatch.util.schedulers.SchedulerModule;
 
 import dagger.Component;
 
@@ -14,7 +16,8 @@ import dagger.Component;
 @Component(
         dependencies = {
                 MoviesPresenterModule.class,
-                MoviesRepositoryComponent.class
+                MoviesRepositoryComponent.class,
+                SchedulerModule.class
         }
 )
 public interface MoviesComponent {

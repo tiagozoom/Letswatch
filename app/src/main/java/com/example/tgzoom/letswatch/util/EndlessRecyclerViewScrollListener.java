@@ -34,6 +34,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager, int currentPage) {
         this.mLayoutManager = layoutManager;
         this.currentPage = currentPage;
+        this.startingPageIndex = currentPage;
     }
 
     public EndlessRecyclerViewScrollListener(GridLayoutManager layoutManager) {

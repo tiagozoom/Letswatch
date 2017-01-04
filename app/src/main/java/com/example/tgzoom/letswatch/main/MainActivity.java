@@ -20,10 +20,9 @@ import com.example.tgzoom.letswatch.movies.MoviesFragment;
 import com.example.tgzoom.letswatch.movies.MoviesPresenter;
 import com.example.tgzoom.letswatch.movies.MoviesPresenterModule;
 import com.example.tgzoom.letswatch.util.ActivityUtils;
+import com.example.tgzoom.letswatch.util.schedulers.SchedulerModule;
 import com.facebook.stetho.Stetho;
-
 import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -71,8 +70,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityUtils.addFragment(fragmentManager,moviesFragment,MoviesFragment.TAG,R.id.fragment_container);
         }
 
-        DaggerMoviesComponent.builder().moviesRepositoryComponent(((App) getApplication()).getMoviesRepositoryComponent()).moviesPresenterModule(new MoviesPresenterModule(moviesFragment)).build().inject(this);
-
+        DaggerMoviesComponent.builder()
+                .moviesRepositoryComponent(((App) getApplication()).getMoviesRepositoryComponent())
+                .moviesPresenterModule(new MoviesPresenterModule(moviesFragment))
+                .schedulerModule(new SchedulerModule())
+                .build()
+                .inject(this);
     }
 
     @Override
