@@ -136,6 +136,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieDBHolde
 
     public void clear(){
         mMovieDBArrayList = new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     public void addArrayList(List<Movie> movieDBArrayList){
