@@ -154,8 +154,9 @@ public class MoviesLocalDataSource implements MoviesDataSource {
     }
 
     @Override
-    public void unmarkAsFavourite(@NonNull String movieApiId) {
-
+    public void unmarkAsFavourite(@NonNull int movieApiId) {
+        String whereClaus = " movie_api_id = ?";
+        mMoviesDbHelper.delete(MoviesPersistenceContract.MovieEntry.TABLE_NAME,whereClaus,String.valueOf(movieApiId));
     }
 
     @Override

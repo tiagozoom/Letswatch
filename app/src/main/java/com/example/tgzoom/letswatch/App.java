@@ -1,11 +1,7 @@
 package com.example.tgzoom.letswatch;
 
 import android.app.Application;
-import android.util.Log;
-
-import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.source.DaggerMoviesRepositoryComponent;
-import com.example.tgzoom.letswatch.data.source.MoviesRepository;
 import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
 import com.example.tgzoom.letswatch.data.source.MoviesRepositoryModule;
 import com.example.tgzoom.letswatch.network.ServiceModule;

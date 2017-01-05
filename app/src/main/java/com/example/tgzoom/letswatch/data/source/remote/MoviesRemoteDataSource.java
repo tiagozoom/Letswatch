@@ -66,7 +66,7 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
     public long markAsFavourite(@NonNull Movie movie) { return 0;}
 
     @Override
-    public void unmarkAsFavourite(@NonNull String movieApiId) {
+    public void unmarkAsFavourite(@NonNull int movieApiId) {
 
     }
 

@@ -8,4 +8,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="card_image_contentDescription">Card Image</string>
     <string name="gridlayout_span_count">2</string>
+    <string name="action_add_favourite">Mark as favourite</string>
+    <string name="action_remove_favourite">Remove from favourites</string>
+    <string name="unmarked_as_favourite_message">Unmarked as favourite</string>
+    <string name="marked_as_favourite_message">Marked as favourite</string>
 </resources>

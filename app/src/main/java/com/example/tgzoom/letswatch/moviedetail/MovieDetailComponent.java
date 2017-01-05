@@ -1,22 +1,22 @@
-package com.example.tgzoom.letswatch.movies;
+package com.example.tgzoom.letswatch.moviedetail;
 
 import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
 import com.example.tgzoom.letswatch.main.MainActivity;
+import com.example.tgzoom.letswatch.movies.MoviesPresenterModule;
 import com.example.tgzoom.letswatch.util.FragmentScoped;
 
 import dagger.Component;
 
 /**
- * Created by tgzoom on 12/28/16.
+ * Created by tgzoom on 1/5/17.
  */
 
 @FragmentScoped
 @Component(
         dependencies = {
-                MoviesPresenterModule.class,
-                MoviesRepositoryComponent.class
+                MovieDetailPresenterModule.class,
         }
 )
-public interface MoviesComponent {
-    void inject(MainActivity activity);
+public interface MovieDetailComponent {
+        void inject(MovieDetailActivity activity);
 }

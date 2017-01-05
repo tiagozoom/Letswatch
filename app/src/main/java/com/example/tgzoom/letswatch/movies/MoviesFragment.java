@@ -1,8 +1,10 @@
 package com.example.tgzoom.letswatch.movies;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +40,23 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     private static final String CURRENT_PAGE_INDEX = "current_page_index";
 
+    private MoviesItemListener mMoviesItemListener = new MoviesItemListener() {
+        @Override
+        public void onClick(Movie movie) {
+            mPresenter.openDetails(movie);
+        }
+
+        @Override
+        public void onMarkAsFavorite(Movie movie) {
+            mPresenter.markAsFavourite(movie);
+        }
+
+        @Override
+        public void onUnmarAsFavorite(int movieApiId) {
+            mPresenter.unmarkAsFavourite(movieApiId);
+        }
+    };
+
     @BindView(R.id.moviedb_recyclerview) RecyclerView mRecyclerView;
 
     @BindView(R.id.swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
@@ -58,6 +79,8 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
             }
         });
 
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+
         return rootView;
     }
 
@@ -65,10 +88,10 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null){
-            mMovieAdapter = new MovieAdapter(savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST));
+            mMovieAdapter = new MovieAdapter(savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST),mMoviesItemListener);
             mCurrentPage  = savedInstanceState.getInt(CURRENT_PAGE_INDEX);
         }else{
-            mMovieAdapter = new MovieAdapter(new ArrayList<Movie>());
+            mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mMoviesItemListener);
             mCurrentPage  = 1;
         }
     }
@@ -96,7 +119,17 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     }
 
     @Override
-    public void showLoadingMoviesError() {
+    public void showLoadingMoviesError() {}
+
+    @Override
+    public void updateMovies(int movieApiId, boolean isFavourite) {
+        int count = mMovieAdapter.getItemCount();
+        for (int position = 0; position < count; position++) {
+            if (mMovieAdapter.getItemId(position) == movieApiId) {
+                mMovieAdapter.getArrayList().get(position).setFavourite(isFavourite);
+                mMovieAdapter.notifyItemChanged(position);
+            }
+        }
     }
 
     @Override
@@ -106,22 +139,24 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     @Override
     public void showMarkedAsFavouriteMessage() {
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if(mMovieAdapter != null){
-            ArrayList<Movie> movieList = (ArrayList<Movie>) mMovieAdapter.getArrayList();
-            outState.putParcelableArrayList(PARCELABLE_MOVIE_LIST, movieList);
-            outState.putInt(CURRENT_PAGE_INDEX, mCurrentPage);
-        }
-        super.onSaveInstanceState(outState);
+        showMessage(getString(R.string.marked_as_favourite_message));
     }
 
     @Override
     public void showUnmarkedAsFavouriteMessage() {
+        showMessage(getString(R.string.unmarked_as_favourite_message));
+    }
 
+    @Override
+    public void showMovieDetails(Movie movie) {
+        Intent intent = new Intent(getContext(), MovieDetailActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.putExtra(MovieDetailActivity.MOVIE_OBJECT, movie);
+        getContext().startActivity(intent);
+    }
+
+    private void showMessage(String message){
+        Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -135,5 +170,15 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     public void onRefresh() {
         mMovieAdapter.clear();
         mPresenter.start();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(mMovieAdapter != null){
+            ArrayList<Movie> movieList = (ArrayList<Movie>) mMovieAdapter.getArrayList();
+            outState.putParcelableArrayList(PARCELABLE_MOVIE_LIST, movieList);
+            outState.putInt(CURRENT_PAGE_INDEX, mCurrentPage);
+        }
+        super.onSaveInstanceState(outState);
     }
 }

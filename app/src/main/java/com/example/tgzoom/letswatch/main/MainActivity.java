@@ -1,6 +1,5 @@
 package com.example.tgzoom.letswatch.main;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -15,12 +14,13 @@ import android.view.View;
 import com.example.tgzoom.letswatch.App;
 
 import com.example.tgzoom.letswatch.R;
+import com.example.tgzoom.letswatch.data.source.MoviesRepositoryModule;
 import com.example.tgzoom.letswatch.movies.DaggerMoviesComponent;
 import com.example.tgzoom.letswatch.movies.MoviesFragment;
 import com.example.tgzoom.letswatch.movies.MoviesPresenter;
 import com.example.tgzoom.letswatch.movies.MoviesPresenterModule;
+import com.example.tgzoom.letswatch.network.ServiceModule;
 import com.example.tgzoom.letswatch.util.ActivityUtils;
-import com.example.tgzoom.letswatch.util.schedulers.SchedulerModule;
 import com.facebook.stetho.Stetho;
 import javax.inject.Inject;
 import butterknife.BindView;
@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.navigation_view) NavigationView mNavigationView;
 
     @Inject MoviesPresenter mMoviesPresenter;
+
     private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
@@ -73,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DaggerMoviesComponent.builder()
                 .moviesRepositoryComponent(((App) getApplication()).getMoviesRepositoryComponent())
                 .moviesPresenterModule(new MoviesPresenterModule(moviesFragment))
-                .schedulerModule(new SchedulerModule())
                 .build()
                 .inject(this);
     }

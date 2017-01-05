@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.List;
+
+import rx.Observable;
 import rx.observers.TestSubscriber;
 import static org.junit.Assert.*;
 
@@ -88,5 +90,14 @@ public class MoviesLocalDataSourceTest {
         testSubscriber.assertValueCount(1);
         Movie inserted_movie = testSubscriber.getOnNextEvents().get(0);
         assertTrue(inserted_movie.isFavourite());
+    }
+
+    @Test
+    public void getMoviesIds(){
+        Movie movie = createMovie();
+        moviesLocalDataSource.markAsFavourite(movie);
+        TestSubscriber testSubscriber = new TestSubscriber<>();
+        moviesLocalDataSource.getFavouriteMoviesIds().subscribe(testSubscriber);
+        testSubscriber.assertValueCount(1);
     }
 }

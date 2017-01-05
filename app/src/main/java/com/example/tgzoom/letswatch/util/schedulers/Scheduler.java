@@ -1,6 +1,7 @@
 package com.example.tgzoom.letswatch.util.schedulers;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -10,6 +11,21 @@ import rx.schedulers.Schedulers;
  */
 
 public class Scheduler implements BaseScheduler {
+
+    @Nullable
+    private static Scheduler INSTANCE;
+
+    // Prevent direct instantiation.
+    private Scheduler() {
+    }
+
+    public static synchronized Scheduler getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new Scheduler();
+        }
+        return INSTANCE;
+    }
+
     @NonNull
     @Override
     public rx.Scheduler computation() {

@@ -20,20 +20,18 @@ public interface MoviesContract {
         void setLoadingIndicator(boolean active);
         void showMovies(List<Movie> movies);
         void showLoadingMoviesError();
+        void updateMovies(int movieApiId,boolean isFavourite);
         boolean isActive();
         void showMarkedAsFavouriteMessage();
         void showUnmarkedAsFavouriteMessage();
+        void showMovieDetails(Movie movie);
     }
 
-    interface State extends BaseState{
-        ArrayList<Movie> getMovies();
-        int getCurrentPage();
-    }
-
-    interface Presenter extends BasePresenter<State> {
+    interface Presenter extends BasePresenter {
         void result(int requestCode,int resultCode);
         void loadMovies(@NonNull  boolean forceUpdate, int currentPage);
         void markAsFavourite(@NonNull Movie movie);
         void unmarkAsFavourite(@NonNull int movieApiId);
+        void openDetails(Movie movie);
     }
 }

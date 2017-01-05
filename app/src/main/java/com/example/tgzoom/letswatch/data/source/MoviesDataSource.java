@@ -20,7 +20,7 @@ public interface MoviesDataSource {
     Observable<List<Integer>> getFavouriteMoviesIds();
 
     long markAsFavourite(@NonNull Movie movie);
-    void unmarkAsFavourite(@NonNull String movieApiId);
+    void unmarkAsFavourite(@NonNull int movieApiId);
     void refreshMovies();
     int deleteAllMovies();
 }

@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.favourites.FavouriteObservable;
+import com.example.tgzoom.letswatch.favourites.FavouriteObservableImp;
 
 import java.util.List;
 import java.util.Map;
@@ -24,22 +26,25 @@ public class MoviesRepository implements MoviesDataSource {
 
     private final MoviesDataSource mMoviesRemoteDataSource;
     private final MoviesDataSource mMoviesLocalDataSource;
-    private Observable<List<Integer>> mFavouriteMoviesIds;
+    private final FavouriteObservable mFavouriteObservable;
 
     Map<String, Movie> mCachedMovies;
 
     @Inject
-    MoviesRepository(@Remote MoviesDataSource moviesRemoteDataSource, @Local MoviesDataSource moviesLocalDataSource) {
+    MoviesRepository(@Remote MoviesDataSource moviesRemoteDataSource, @Local MoviesDataSource moviesLocalDataSource, FavouriteObservable favouriteObservable) {
         mMoviesLocalDataSource = moviesLocalDataSource;
         mMoviesRemoteDataSource = moviesRemoteDataSource;
-        mFavouriteMoviesIds = getFavouriteMoviesIds();
+        mFavouriteObservable = favouriteObservable;
     }
 
     @Override
     public Observable<List<Movie>> getMovies(String sort, int pageIndex) {
         Observable<List<Movie>> movies = mMoviesRemoteDataSource.getMovies(sort, pageIndex);
-
         return movies;
+    }
+
+    public Observable<FavouriteObservableImp.FavouriteClickEvent> getFavouriteClickEvent(){
+        return mFavouriteObservable.getFavoriteClickEventObservable();
     }
 
     @Override
@@ -49,12 +54,14 @@ public class MoviesRepository implements MoviesDataSource {
 
     @Override
     public long markAsFavourite(@NonNull Movie movie) {
+        mFavouriteObservable.markAsFavourite(movie);
         return mMoviesLocalDataSource.markAsFavourite(movie);
     }
 
     @Override
-    public void unmarkAsFavourite(@NonNull String movieApiId) {
-
+    public void unmarkAsFavourite(@NonNull int movieApiId) {
+        mFavouriteObservable.unmarkAsFavourite(movieApiId);
+        mMoviesLocalDataSource.unmarkAsFavourite(movieApiId);
     }
 
     @Override
@@ -75,5 +82,26 @@ public class MoviesRepository implements MoviesDataSource {
     @Override
     public Observable<List<Movie>> getFavouriteMovies() {
         return mMoviesLocalDataSource.getFavouriteMovies();
+    }
+
+    public Func2<List<Movie>, List<Integer>, List<Movie>> getFavouriteMoviesIdsMapper() {
+        return new Func2<List<Movie>, List<Integer>, List<Movie>>() {
+            @Override
+            public List<Movie> call(List<Movie> movies, List<Integer> integers) {
+                if(integers.size() == 0){
+                    return movies;
+                }
+
+                for (Movie movie : movies) {
+                    int position = integers.indexOf(movie.getApi_movie_id());
+
+                    if (position >= 0) {
+                        movie.setFavourite(true);
+                        integers.remove(position);
+                    }
+                }
+                return movies;
+            }
+        };
     }
 }

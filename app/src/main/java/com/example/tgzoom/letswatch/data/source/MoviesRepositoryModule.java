@@ -6,6 +6,8 @@ import com.example.tgzoom.letswatch.App;
 import com.example.tgzoom.letswatch.AppModule;
 import com.example.tgzoom.letswatch.data.source.local.MoviesLocalDataSource;
 import com.example.tgzoom.letswatch.data.source.remote.MoviesRemoteDataSource;
+import com.example.tgzoom.letswatch.favourites.FavouriteObservable;
+import com.example.tgzoom.letswatch.favourites.FavouriteObservableImp;
 import com.example.tgzoom.letswatch.network.NetworkModule;
 import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
 
@@ -33,5 +35,11 @@ public class MoviesRepositoryModule {
     @Remote
     MoviesDataSource provideMoviesRemoteDataSource(Retrofit retrofit, BaseScheduler scheduler){
         return new MoviesRemoteDataSource(retrofit,scheduler);
+    }
+
+    @Singleton
+    @Provides
+    FavouriteObservable provideFavouriteMoviesObservable(BaseScheduler scheduler){
+        return new FavouriteObservableImp(scheduler);
     }
 }

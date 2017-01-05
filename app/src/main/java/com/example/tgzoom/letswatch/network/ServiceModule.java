@@ -51,6 +51,6 @@ public class ServiceModule {
     @Singleton
     @Provides
     BaseScheduler provideScheduler(){
-        return new Scheduler();
+        return Scheduler.getInstance();
     }
 }

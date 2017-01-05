@@ -1,8 +1,12 @@
 package com.example.tgzoom.letswatch.movies;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -27,17 +31,17 @@ import butterknife.ButterKnife;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieDBHolder> {
     private List<Movie> mMovieDBArrayList = new ArrayList<Movie>();
+    private MoviesItemListener mMoviesItemListener;
 
-    public MovieAdapter(ArrayList<Movie> movieArrayList) {
+    public MovieAdapter(ArrayList<Movie> movieArrayList,MoviesItemListener moviesItemListener) {
         mMovieDBArrayList = movieArrayList;
+        mMoviesItemListener = moviesItemListener;
     }
 
     public static class MovieDBHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.card_image)
-        ImageView cardImage;
-        @BindView(R.id.card_title)
-        TextView cardTitle;
+        @BindView(R.id.card_image) ImageView cardImage;
+        @BindView(R.id.card_title) TextView cardTitle;
         @BindView(R.id.movie_year) TextView movie_year;
         @BindView(R.id.movie_rate) TextView movie_rate;
         @BindView(R.id.card_menu) ImageView card_menu;
@@ -84,7 +88,36 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieDBHolde
                     .into(holder.cardImage);
         }
 
+        holder.card_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popup = new PopupMenu(holder.mContext, holder.card_menu);
+                MenuInflater inflater = popup.getMenuInflater();
+                int menuResourceId = (movie.isFavourite()) ? R.menu.menu_remove_movie : R.menu.menu_add_movie;
+                inflater.inflate(menuResourceId, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(movie.isFavourite()){
+                            mMoviesItemListener.onUnmarAsFavorite(movie.getApi_movie_id());
+                        }else{
+                            mMoviesItemListener.onMarkAsFavorite(movie);
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
+            }
+        });
+
         holder.movie_rate.setText(movie.getVote_average().toString());
+
+        holder.movie_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMoviesItemListener.onClick(movie);
+            }
+        });
 
     }
 
