@@ -15,8 +15,9 @@ import dagger.Component;
 @Component(
         dependencies = {
                 MovieDetailPresenterModule.class,
+                MoviesRepositoryComponent.class
         }
 )
 public interface MovieDetailComponent {
-        void inject(MovieDetailActivity activity);
+    void inject(MovieDetailActivity activity);
 }

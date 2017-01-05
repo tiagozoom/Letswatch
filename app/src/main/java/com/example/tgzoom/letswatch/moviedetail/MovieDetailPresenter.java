@@ -1,5 +1,8 @@
 package com.example.tgzoom.letswatch.moviedetail;
 
+import android.support.annotation.NonNull;
+
+import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.Trailer;
 
 import javax.inject.Inject;
@@ -19,6 +22,16 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
 
     @Override
     public void openTrailer(Trailer trailer) {
+
+    }
+
+    @Override
+    public void markAsFavourite(@NonNull Movie movie) {
+
+    }
+
+    @Override
+    public void unmarkAsFavourite(@NonNull int movieApiId) {
 
     }
 
