@@ -2,12 +2,11 @@ package com.example.tgzoom.letswatch;
 
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
-import com.example.tgzoom.letswatch.data.source.remote.MoviesRemoteDataSource;
+import com.example.tgzoom.letswatch.data.movie.source.remote.MoviesRemoteDataSource;
 import com.example.tgzoom.letswatch.util.schedulers.ImmediateScheduler;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +16,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.observers.TestSubscriber;
-import static org.junit.Assert.*;
 
 /**
  * Created by tgzoom on 1/2/17.

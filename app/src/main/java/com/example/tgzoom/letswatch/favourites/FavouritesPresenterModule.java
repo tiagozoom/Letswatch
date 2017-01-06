@@ -17,7 +17,7 @@ public class FavouritesPresenterModule {
     }
 
     @Provides
-    FavouritesContract.View provideMoviesContractView(){
+    public FavouritesContract.View provideFavouritesContractView(){
         return mView;
     }
 }

@@ -1,9 +1,9 @@
 package com.example.tgzoom.letswatch.data.source;
 
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.data.Trailer;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ public interface MoviesDataSource {
     Observable<List<Movie>> getFavouriteMovies();
     Observable<Movie> getMovie(@NonNull int movieApiId);
     Observable<List<Integer>> getFavouriteMoviesIds();
+    Observable<List<Trailer>> getTrailers(int movieApiId);
 
     long markAsFavourite(@NonNull Movie movie);
     void unmarkAsFavourite(@NonNull int movieApiId);

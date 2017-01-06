@@ -2,13 +2,10 @@ package com.example.tgzoom.letswatch.data.source;
 
 import android.content.Context;
 
-import com.example.tgzoom.letswatch.App;
-import com.example.tgzoom.letswatch.AppModule;
 import com.example.tgzoom.letswatch.data.source.local.MoviesLocalDataSource;
 import com.example.tgzoom.letswatch.data.source.remote.MoviesRemoteDataSource;
 import com.example.tgzoom.letswatch.favourites.FavouriteObservable;
 import com.example.tgzoom.letswatch.favourites.FavouriteObservableImp;
-import com.example.tgzoom.letswatch.network.NetworkModule;
 import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
 
 import javax.inject.Singleton;

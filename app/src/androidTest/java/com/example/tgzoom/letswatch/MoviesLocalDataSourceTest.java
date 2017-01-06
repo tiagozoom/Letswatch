@@ -4,7 +4,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 import com.example.tgzoom.letswatch.data.Movie;
-import com.example.tgzoom.letswatch.data.source.local.MoviesLocalDataSource;
+import com.example.tgzoom.letswatch.data.movie.source.local.MoviesLocalDataSource;
 import com.example.tgzoom.letswatch.util.schedulers.ImmediateScheduler;
 import org.junit.After;
 import org.junit.Before;
@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.List;
 
-import rx.Observable;
 import rx.observers.TestSubscriber;
 import static org.junit.Assert.*;
 

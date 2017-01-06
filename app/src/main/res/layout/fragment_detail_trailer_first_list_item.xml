@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/trailers_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:paddingTop="16dp"
+        android:textSize="20sp"
+        android:text="Trailers"
+        android:textAppearance="?android:textAppearanceLarge" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/item_container"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@drawable/ic_play_black_24dp" />
+
+        <TextView
+            android:id="@+id/trailer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Whiplash"
+            android:paddingLeft="@dimen/activity_vertical_margin"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</LinearLayout>

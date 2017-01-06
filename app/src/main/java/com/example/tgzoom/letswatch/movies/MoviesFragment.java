@@ -12,13 +12,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.tgzoom.letswatch.App;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.main.MainActivity;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +39,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     private MovieAdapter mMovieAdapter;
 
-    private MoviesContract.Presenter mPresenter;
+    @Inject MoviesContract.Presenter mPresenter;
 
     private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
 
@@ -87,21 +92,24 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        DaggerMoviesComponent.builder()
+                .moviesPresenterModule(new MoviesPresenterModule(this))
+                .moviesRepositoryComponent(
+                        ((App) ((MainActivity) getActivity()).getApplication()).getMoviesRepositoryComponent())
+                .build()
+                .inject((MainActivity) getActivity());
+
         if(savedInstanceState != null){
             mMovieAdapter = new MovieAdapter(savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST),mMoviesItemListener);
             mCurrentPage  = savedInstanceState.getInt(CURRENT_PAGE_INDEX);
         }else{
             mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mMoviesItemListener);
             mCurrentPage  = 1;
-        }
-    }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState == null){
             mPresenter.start();
         }
+
     }
 
     @Override

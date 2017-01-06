@@ -1,8 +1,10 @@
-package com.example.tgzoom.letswatch.data.source.remote;
+package com.example.tgzoom.letswatch.data.source.remote.services;
 
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.data.Trailer;
 
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -19,4 +21,7 @@ public interface MoviesServiceInterface {
 
     @GET("3/movie/popular")
     Observable<Movie.Results> getPopularMovies(@Query("api_key") String api_key, @Query("page") int page);
+
+    @GET("3/movie/{movie_id}/videos")
+    Observable<Trailer.Results> getTrailers(@Path("movie_id") int movie_id, @Query("api_key") String api_key);
 }

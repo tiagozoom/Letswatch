@@ -6,7 +6,6 @@ import android.util.Log;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.source.MoviesRepository;
 import com.example.tgzoom.letswatch.favourites.FavouriteObservableImp;
-import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
 
 import java.util.List;
 
@@ -16,7 +15,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.functions.Action1;
-import rx.functions.Func2;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -71,7 +69,6 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.i("error", "error" + e);
                                 mMoviesView.showLoadingMoviesError();
                             }
 

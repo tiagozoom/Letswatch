@@ -6,10 +6,6 @@ import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
 import com.example.tgzoom.letswatch.data.source.MoviesRepositoryModule;
 import com.example.tgzoom.letswatch.network.ServiceModule;
 
-import java.util.List;
-
-import rx.functions.Action1;
-
 /**
  * Created by tgzoom on 12/27/16.
  */

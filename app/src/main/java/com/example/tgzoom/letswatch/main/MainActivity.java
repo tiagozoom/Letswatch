@@ -2,6 +2,7 @@ package com.example.tgzoom.letswatch.main;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,12 +15,12 @@ import android.view.View;
 import com.example.tgzoom.letswatch.App;
 
 import com.example.tgzoom.letswatch.R;
-import com.example.tgzoom.letswatch.data.source.MoviesRepositoryModule;
-import com.example.tgzoom.letswatch.movies.DaggerMoviesComponent;
+import com.example.tgzoom.letswatch.favourites.FavouritesFragment;
+import com.example.tgzoom.letswatch.favourites.FavouritesPresenter;
+import com.example.tgzoom.letswatch.favourites.FavouritesPresenterModule;
 import com.example.tgzoom.letswatch.movies.MoviesFragment;
 import com.example.tgzoom.letswatch.movies.MoviesPresenter;
 import com.example.tgzoom.letswatch.movies.MoviesPresenterModule;
-import com.example.tgzoom.letswatch.network.ServiceModule;
 import com.example.tgzoom.letswatch.util.ActivityUtils;
 import com.facebook.stetho.Stetho;
 import javax.inject.Inject;
@@ -31,8 +32,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
     @BindView(R.id.navigation_view) NavigationView mNavigationView;
-
-    @Inject MoviesPresenter mMoviesPresenter;
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -62,34 +61,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerToggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
-        MoviesFragment moviesFragment = (MoviesFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+        MoviesFragment moviesFragment = (MoviesFragment) fm.findFragmentById(R.id.fragment_container);
+
+        FavouritesFragment favouritesFragment = new FavouritesFragment();
 
         if(moviesFragment == null){
             moviesFragment = new MoviesFragment();
-            ActivityUtils.addFragment(fragmentManager,moviesFragment,MoviesFragment.TAG,R.id.fragment_container);
+            ActivityUtils.addFragment(fm,moviesFragment,MoviesFragment.TAG,R.id.fragment_container);
         }
-
-        DaggerMoviesComponent.builder()
-                .moviesRepositoryComponent(((App) getApplication()).getMoviesRepositoryComponent())
-                .moviesPresenterModule(new MoviesPresenterModule(moviesFragment))
-                .build()
-                .inject(this);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Class fragment = null;
+        String fragmentTag = null;
+        FragmentManager fm = getSupportFragmentManager();
+
         switch (item.getItemId()) {
             case R.id.nav_movies:
+                fragment = MoviesFragment.class;
+                fragmentTag = MoviesFragment.TAG;
                 break;
             case R.id.nav_favorites:
-                break;
-            default:
+                fragment = FavouritesFragment.class;
+                fragmentTag = FavouritesFragment.TAG;
                 break;
         }
 
-        item.setChecked(true);
+        if (fm.findFragmentByTag(fragmentTag) == null) {
+            try {
+                ActivityUtils.replaceFragment(fm,(Fragment) fragment.newInstance(),fragmentTag,R.id.fragment_container);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         mDrawerLayout.closeDrawers();
         return true;
     }

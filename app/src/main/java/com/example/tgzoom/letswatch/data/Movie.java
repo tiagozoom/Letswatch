@@ -18,6 +18,10 @@ public class Movie implements Parcelable {
     @Expose
     private List<Movie> movies;
 
+    @SerializedName("trailers")
+    @Expose
+    private List<Trailer> trailers;
+
     @SerializedName("title")
     private String title;
     @SerializedName("original_title")

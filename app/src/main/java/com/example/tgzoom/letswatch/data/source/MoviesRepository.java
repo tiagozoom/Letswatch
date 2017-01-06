@@ -1,9 +1,9 @@
 package com.example.tgzoom.letswatch.data.source;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.data.Trailer;
 import com.example.tgzoom.letswatch.favourites.FavouriteObservable;
 import com.example.tgzoom.letswatch.favourites.FavouriteObservableImp;
 
@@ -13,9 +13,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import retrofit2.Retrofit;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func2;
 
 /**
@@ -77,6 +75,11 @@ public class MoviesRepository implements MoviesDataSource {
     @Override
     public Observable<List<Integer>> getFavouriteMoviesIds() {
         return mMoviesLocalDataSource.getFavouriteMoviesIds();
+    }
+
+    @Override
+    public Observable<List<Trailer>> getTrailers(int movieApiId) {
+        return mMoviesRemoteDataSource.getTrailers(movieApiId);
     }
 
     @Override

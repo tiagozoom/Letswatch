@@ -16,4 +16,11 @@ public class ActivityUtils {
                 .add(fragment_content,fragment,tag)
                 .commit();
     }
+
+    public static void replaceFragment(@NonNull FragmentManager fragmentManager, @NonNull Fragment fragment, @NonNull String tag,@NonNull int fragment_content){
+        fragmentManager
+                .beginTransaction()
+                .replace(fragment_content,fragment,tag)
+                .commit();
+    }
 }
