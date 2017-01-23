@@ -4,23 +4,20 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.data.Trailer;
 import com.example.tgzoom.letswatch.data.source.MoviesDataSource;
 import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.squareup.sqlbrite.SqlBrite;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by tgzoom on 12/27/16.
@@ -134,6 +131,11 @@ public class MoviesLocalDataSource implements MoviesDataSource {
         String[] projection = new String[]{MoviesPersistenceContract.MovieEntry.COLUMN_API_MOVIE_ID};
         String sql = String.format("SELECT %s FROM %s", TextUtils.join(",", projection), MoviesPersistenceContract.MovieEntry.TABLE_NAME);
         return mMoviesDbHelper.createQuery(MoviesPersistenceContract.MovieEntry.TABLE_NAME,sql).mapToList(mMovieIdMapperFunction);
+    }
+
+    @Override
+    public Observable<List<Trailer>> getTrailers(int movieApiId) {
+        return null;
     }
 
     @Override

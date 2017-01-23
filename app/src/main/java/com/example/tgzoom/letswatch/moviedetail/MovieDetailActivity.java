@@ -24,20 +24,15 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
 
     public static final String MOVIE_OBJECT = "movie_object";
 
-    @Inject
-    MovieDetailPresenter mMovieDetailPresenter;
+    @Inject MovieDetailPresenter mMovieDetailPresenter;
 
-    @BindView(R.id.backdrop_imageview)
-    ImageView mBackdropImageview;
+    @BindView(R.id.backdrop_imageview) ImageView mBackdropImageview;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.detail_toolbar) Toolbar mToolbar;
 
-    @BindView(R.id.main_collapsing)
-    CollapsingToolbarLayout mMainCollapsing;
+    @BindView(R.id.main_collapsing) CollapsingToolbarLayout mMainCollapsing;
 
-    @BindView(R.id.detail_coordinator_layout)
-    CoordinatorLayout mDetailcoordinatorLayout;
+    @BindView(R.id.detail_coordinator_layout) CoordinatorLayout mDetailcoordinatorLayout;
 
 
     @Override
@@ -53,24 +48,29 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (savedInstanceState == null) {
-            FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
+
+        MovieDetailFragment fragment = (MovieDetailFragment) fm.findFragmentByTag(MovieDetailFragment.TAG);
+
+        if (fragment == null) {
+
+            fragment = new MovieDetailFragment();
 
             Bundle arguments = new Bundle();
 
             arguments.putParcelable(MOVIE_OBJECT, getIntent().getParcelableExtra(MOVIE_OBJECT));
 
-            MovieDetailFragment fragment = new MovieDetailFragment();
-
             fragment.setArguments(arguments);
 
             ActivityUtils.addFragment(fm, fragment, MovieDetailFragment.TAG, R.id.detail_fragment_container);
 
-            DaggerMovieDetailComponent.builder()
-                    .movieDetailPresenterModule(new MovieDetailPresenterModule(fragment))
-                    .moviesRepositoryComponent(((App) getApplication()).getMoviesRepositoryComponent())
-                    .build();
         }
+
+        DaggerMovieDetailComponent.builder()
+                .moviesRepositoryComponent(((App) getApplication()).getMoviesRepositoryComponent())
+                .movieDetailPresenterModule(new MovieDetailPresenterModule(fragment))
+                .build()
+                .inject(this);
     }
 
     @Override

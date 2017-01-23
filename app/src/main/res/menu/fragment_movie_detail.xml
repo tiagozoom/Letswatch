@@ -6,4 +6,5 @@
         android:id="@+id/favorite_button"
         app:showAsAction="always"
         />
+
 </menu>

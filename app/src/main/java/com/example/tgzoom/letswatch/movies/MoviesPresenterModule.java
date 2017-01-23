@@ -17,7 +17,7 @@ public class MoviesPresenterModule {
     }
 
     @Provides
-    MoviesContract.View provideMoviesContractView(){
+    public MoviesContract.View provideMoviesContractView(){
         return mView;
     }
 }

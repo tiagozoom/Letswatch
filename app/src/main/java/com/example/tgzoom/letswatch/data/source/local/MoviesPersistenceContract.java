@@ -1,14 +1,8 @@
 package com.example.tgzoom.letswatch.data.source.local;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by tgzoom on 12/28/16.

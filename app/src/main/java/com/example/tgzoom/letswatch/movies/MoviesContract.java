@@ -3,11 +3,9 @@ package com.example.tgzoom.letswatch.movies;
 import android.support.annotation.NonNull;
 
 import com.example.tgzoom.letswatch.BasePresenter;
-import com.example.tgzoom.letswatch.BaseState;
 import com.example.tgzoom.letswatch.BaseView;
 import com.example.tgzoom.letswatch.data.Movie;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

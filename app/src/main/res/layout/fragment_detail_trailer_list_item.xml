@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/item_container"
+    android:layout_margin="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_vertical_margin"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:clickable="true">
+
+    <ImageView
+        android:id="@+id/play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:src="@drawable/ic_play_black_24dp"
+        />
+
+    <TextView
+        android:id="@+id/trailer_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textSize="16sp"
+        android:text="Whiplash"/>
+
+</LinearLayout>
