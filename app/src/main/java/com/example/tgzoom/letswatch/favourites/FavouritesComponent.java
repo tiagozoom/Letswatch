@@ -10,6 +10,13 @@ import dagger.Component;
  * Created by tgzoom on 12/28/16.
  */
 
+@FragmentScoped
+@Component(
+        dependencies= {
+                FavouritesPresenterModule.class,
+                MoviesRepositoryComponent.class,
+        }
+)
 public interface FavouritesComponent {
-    void inject(MainActivity activity);
+        void inject(FavouritesFragment fragment);
 }

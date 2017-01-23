@@ -12,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.tgzoom.letswatch.App;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
@@ -19,6 +21,8 @@ import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +38,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     private MovieAdapter mMovieAdapter;
 
-    private MoviesContract.Presenter mPresenter;
+    @Inject MoviesPresenter mPresenter;
 
     private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
 
@@ -57,7 +61,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         }
     };
 
-    @BindView(R.id.moviedb_recyclerview) RecyclerView mRecyclerView;
+    @BindView(R.id.movies_recyclerview) RecyclerView mRecyclerView;
 
     @BindView(R.id.swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -87,6 +91,13 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        DaggerMoviesComponent.builder()
+                .moviesRepositoryComponent(((App) getActivity().getApplication()).getMoviesRepositoryComponent())
+                .moviesPresenterModule(new MoviesPresenterModule(this))
+                .build()
+                .inject(this);
+
         if(savedInstanceState != null){
             mMovieAdapter = new MovieAdapter(savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST),mMoviesItemListener);
             mCurrentPage  = savedInstanceState.getInt(CURRENT_PAGE_INDEX);
@@ -162,7 +173,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @Override
     public void setPresenter(MoviesContract.Presenter presenter) {
         if(presenter != null){
-            mPresenter = presenter;
+            mPresenter = (MoviesPresenter) presenter;
         }
     }
 

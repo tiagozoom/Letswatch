@@ -18,5 +18,5 @@ import dagger.Component;
         }
 )
 public interface MoviesComponent {
-    void inject(MainActivity activity);
+    void inject(MoviesFragment fragment);
 }

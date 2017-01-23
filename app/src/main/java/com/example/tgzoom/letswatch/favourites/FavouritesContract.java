@@ -22,6 +22,8 @@ public interface FavouritesContract {
         boolean isActive();
         void showMarkedAsFavouriteMessage();
         void showUnmarkedAsFavouriteMessage();
+        void showMovieDetails(Movie movie);
+        void updateMovies(int movieApiId,boolean isFavourite);
     }
 
     interface Presenter extends BasePresenter {
@@ -29,5 +31,6 @@ public interface FavouritesContract {
         void loadMovies(@NonNull boolean forceUpdate);
         void markAsFavourite(@NonNull Movie movie);
         void unmarkAsFavourite(@NonNull int movieApiId);
+        void openDetails(Movie movie);
     }
 }
