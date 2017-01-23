@@ -50,7 +50,6 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
                         new Observer<List<Movie>>() {
                             @Override
                             public void onCompleted() {
-                                mFavouritesView.setLoadingIndicator(false);
                             }
 
                             @Override
@@ -60,6 +59,7 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
 
                             @Override
                             public void onNext(List<Movie> movies) {
+                                mFavouritesView.setLoadingIndicator(false);
                                 processMovies(movies);
                             }
                         }
@@ -82,12 +82,14 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
 
     @Override
     public void markAsFavourite(@NonNull Movie movie) {
-
+        mMoviesRepository.markAsFavourite(movie);
+        mFavouritesView.showMarkedAsFavouriteMessage();
     }
 
     @Override
     public void unmarkAsFavourite(@NonNull int movieApiId) {
-
+        mMoviesRepository.unmarkAsFavourite(movieApiId);
+        mFavouritesView.showUnmarkedAsFavouriteMessage();
     }
 
     @Override
@@ -97,7 +99,7 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
 
     @Override
     public void start() {
-
+        loadMovies(false);
     }
 
 }

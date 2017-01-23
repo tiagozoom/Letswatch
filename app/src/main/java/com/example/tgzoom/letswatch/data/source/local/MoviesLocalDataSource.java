@@ -144,7 +144,7 @@ public class MoviesLocalDataSource implements MoviesDataSource {
         values.put(MoviesPersistenceContract.MovieEntry.COLUMN_API_MOVIE_ID, movie.getApi_movie_id());
         values.put(MoviesPersistenceContract.MovieEntry.COLUMN_BACKDROP_PATH, movie.getBackdrop_path());
         values.put(MoviesPersistenceContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPoster_path());
-        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_FAVOURITE, movie.isFavourite());
+        values.put(MoviesPersistenceContract.MovieEntry.COLUMN_FAVOURITE, true);
         values.put(MoviesPersistenceContract.MovieEntry.COLUMN_ORIGINAL_TITLE, movie.getOriginal_title());
         values.put(MoviesPersistenceContract.MovieEntry.COLUMN_OVERVIEW, movie.getOverview());
         values.put(MoviesPersistenceContract.MovieEntry.COLUMN_POPULARITY, movie.getPopularity());

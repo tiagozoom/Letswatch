@@ -32,32 +32,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-
         Stetho.initializeWithDefaults(this);
-
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
             }
-
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
             }
         };
-
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
-
         FragmentManager fm = getSupportFragmentManager();
-
         MoviesFragment moviesFragment = (MoviesFragment) fm.findFragmentById(R.id.fragment_container);
-
         if(moviesFragment == null){
             moviesFragment = new MoviesFragment();
             ActivityUtils.addFragment(fm,moviesFragment,MoviesFragment.TAG,R.id.fragment_container);
@@ -69,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentManager fm = getSupportFragmentManager();
         Class fragment = null;
         String fragmentTag = null;
-
         switch (item.getItemId()) {
             case R.id.nav_movies:
                 fragment = MoviesFragment.class;
@@ -82,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 break;
         }
-
         if (getSupportFragmentManager().findFragmentByTag(fragmentTag) == null) {
             try {
                 ActivityUtils.replaceFragment(fm,(Fragment) fragment.newInstance(),fragmentTag,R.id.fragment_container);
@@ -90,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 e.printStackTrace();
             }
         }
-
         item.setChecked(true);
         mDrawerLayout.closeDrawers();
         return true;

@@ -1,4 +1,4 @@
-package com.example.tgzoom.letswatch.movies;
+package com.example.tgzoom.letswatch.listener;
 
 import com.example.tgzoom.letswatch.data.Movie;
 

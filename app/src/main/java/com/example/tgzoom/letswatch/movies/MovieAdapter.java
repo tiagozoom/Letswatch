@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.listener.MoviesItemListener;
 import com.example.tgzoom.letswatch.util.StringUtils;
 import com.example.tgzoom.letswatch.util.URIUtils;
 

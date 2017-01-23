@@ -12,18 +12,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.tgzoom.letswatch.App;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.listener.MoviesItemListener;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -167,7 +164,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     }
 
     private void showMessage(String message){
-        Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getActivity().findViewById(R.id.fragment_container),message,Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
