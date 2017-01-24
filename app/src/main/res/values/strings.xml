@@ -12,4 +12,11 @@
     <string name="action_remove_favourite">Remove from favourites</string>
     <string name="unmarked_as_favourite_message">Unmarked as favourite</string>
     <string name="marked_as_favourite_message">Marked as favourite</string>
+
+    <!--Sort Dialog-->
+    <string name="sort_dialog_title">Sort by</string>
+    <string name="pref_order_key">pref_order</string>
+    <string name="pref_order_popularity">popularity.desc</string>
+    <string name="pref_order_vote_average">vote_average.desc</string>
+    <string name="pref_order_default_value">popularity.desc</string>
 </resources>

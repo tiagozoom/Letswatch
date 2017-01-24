@@ -101,7 +101,7 @@ public class MoviesLocalDataSource implements MoviesDataSource {
                 MoviesPersistenceContract.MovieEntry.COLUMN_VOTE_COUNT,
         };
 
-        String sql = String.format("SELECT %s FROM %s", TextUtils.join(",", projection), MoviesPersistenceContract.MovieEntry.TABLE_NAME);
+        String sql = String.format("SELECT %s FROM %s ORDER BY _id DESC", TextUtils.join(",", projection), MoviesPersistenceContract.MovieEntry.TABLE_NAME);
 
         return mMoviesDbHelper.createQuery(MoviesPersistenceContract.MovieEntry.TABLE_NAME,sql).mapToList(mMovieMapperFunction).observeOn(mScheduler.ui());
     }

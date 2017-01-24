@@ -2,6 +2,7 @@ package com.example.tgzoom.letswatch.movies;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -10,11 +11,16 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.tgzoom.letswatch.App;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.dialog.SortDialogFragment;
+import com.example.tgzoom.letswatch.dialog.SortDialogListener;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
@@ -27,7 +33,7 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MoviesFragment extends Fragment implements MoviesContract.View,SwipeRefreshLayout.OnRefreshListener{
+public class MoviesFragment extends Fragment implements MoviesContract.View,SwipeRefreshLayout.OnRefreshListener,SortDialogListener{
 
     public final static String TAG = "MoviesFragment";
 
@@ -36,6 +42,10 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     private MovieAdapter mMovieAdapter;
 
     @Inject MoviesPresenter mPresenter;
+
+    @Inject SharedPreferences mSharedPreferences;
+
+    private SortDialogFragment mSortDialogFragment = new SortDialogFragment();
 
     private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
 
@@ -68,10 +78,17 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_movies, container, false);
+
         ButterKnife.bind(this,rootView);
+
+        setHasOptionsMenu(true);
+
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
+
         mRecyclerView.setLayoutManager(gridLayoutManager);
+
         mRecyclerView.setAdapter(mMovieAdapter);
+
         mRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager,mCurrentPage) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -198,5 +215,27 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     public void onDestroy() {
         super.onDestroy();
         setLoadingIndicator(false);
+    }
+
+    @Override
+    public void onSortChange() {
+        onRefresh();
+        mSortDialogFragment.dismiss();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_movies, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_sort:
+                mSortDialogFragment.show(getFragmentManager(), TAG);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

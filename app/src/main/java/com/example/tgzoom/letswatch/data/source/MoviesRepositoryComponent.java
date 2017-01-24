@@ -1,6 +1,8 @@
 package com.example.tgzoom.letswatch.data.source;
 
-import com.example.tgzoom.letswatch.network.ServiceModule;
+import android.content.SharedPreferences;
+
+import com.example.tgzoom.letswatch.service.ServiceModule;
 
 import javax.inject.Singleton;
 
@@ -19,4 +21,5 @@ import dagger.Component;
 )
 public interface MoviesRepositoryComponent {
     MoviesRepository getMoviesRepository();
+    SharedPreferences getSharedPreferences();
 }

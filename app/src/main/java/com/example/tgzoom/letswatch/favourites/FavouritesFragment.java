@@ -105,7 +105,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
 
     @Override
     public void showMovies(List<Movie> movies) {
-        mMovieAdapter.addArrayList(movies);
+        mMovieAdapter.swapArrayList(movies);
     }
 
     @Override
@@ -140,14 +140,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
 
     @Override
     public void updateMovies(int movieApiId, boolean isFavourite) {
-        int count = mMovieAdapter.getItemCount();
-        for (int position = 0; position < count; position++) {
-            if (mMovieAdapter.getItemId(position) == movieApiId) {
-                mMovieAdapter.getArrayList().remove(position);
-                mMovieAdapter.notifyDataSetChanged();
-                return;
-            }
-        }
+        //No need to worry about updating the movie list here because the sqlbrite observable list is already been watched by FavouritesPresenter
     }
 
     @Override

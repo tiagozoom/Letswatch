@@ -1,5 +1,11 @@
-package com.example.tgzoom.letswatch.network;
+package com.example.tgzoom.letswatch.service;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.example.tgzoom.letswatch.network.NetworkModule;
 import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
 import com.example.tgzoom.letswatch.util.schedulers.Scheduler;
 import com.google.gson.Gson;
@@ -35,6 +41,12 @@ public class ServiceModule {
     Gson provideGson(){
         GsonBuilder gsonBuilder = new GsonBuilder();
         return gsonBuilder.create();
+    }
+
+    @Singleton
+    @Provides
+    SharedPreferences provideSharedPreferences(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Singleton
