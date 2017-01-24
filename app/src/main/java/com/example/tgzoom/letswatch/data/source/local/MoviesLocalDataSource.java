@@ -26,11 +26,13 @@ import rx.functions.Func1;
 public class MoviesLocalDataSource implements MoviesDataSource {
 
     private BriteDatabase mMoviesDbHelper;
+    private BaseScheduler mScheduler;
 
     public MoviesLocalDataSource(@NonNull Context context, BaseScheduler scheduler){
         MoviesDbHelper moviesDbHelper = new MoviesDbHelper(context);
         SqlBrite sqlBrite = SqlBrite.create();
         mMoviesDbHelper = sqlBrite.wrapDatabaseHelper(moviesDbHelper, scheduler.io());
+        mScheduler = scheduler;
     }
 
     @NonNull
@@ -101,7 +103,7 @@ public class MoviesLocalDataSource implements MoviesDataSource {
 
         String sql = String.format("SELECT %s FROM %s", TextUtils.join(",", projection), MoviesPersistenceContract.MovieEntry.TABLE_NAME);
 
-        return mMoviesDbHelper.createQuery(MoviesPersistenceContract.MovieEntry.TABLE_NAME,sql).mapToList(mMovieMapperFunction);
+        return mMoviesDbHelper.createQuery(MoviesPersistenceContract.MovieEntry.TABLE_NAME,sql).mapToList(mMovieMapperFunction).observeOn(mScheduler.ui());
     }
 
     @Override
@@ -157,8 +159,8 @@ public class MoviesLocalDataSource implements MoviesDataSource {
 
     @Override
     public void unmarkAsFavourite(@NonNull int movieApiId) {
-        String whereClaus = " movie_api_id = ?";
-        mMoviesDbHelper.delete(MoviesPersistenceContract.MovieEntry.TABLE_NAME,whereClaus,String.valueOf(movieApiId));
+        String whereClause = " movie_api_id = ?";
+        mMoviesDbHelper.delete(MoviesPersistenceContract.MovieEntry.TABLE_NAME,whereClause,String.valueOf(movieApiId));
     }
 
     @Override

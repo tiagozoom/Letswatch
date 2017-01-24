@@ -1,4 +1,4 @@
-package com.example.tgzoom.letswatch.service;
+package com.example.tgzoom.letswatch.scope;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -11,6 +11,6 @@ import javax.inject.Scope;
  */
 @Documented
 @Scope
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface FragmentScoped {
 }

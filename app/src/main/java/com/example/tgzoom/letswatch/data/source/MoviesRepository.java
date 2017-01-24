@@ -26,8 +26,6 @@ public class MoviesRepository implements MoviesDataSource {
     private final MoviesDataSource mMoviesLocalDataSource;
     private final FavouriteObservable mFavouriteObservable;
 
-    Map<String, Movie> mCachedMovies;
-
     @Inject
     MoviesRepository(@Remote MoviesDataSource moviesRemoteDataSource, @Local MoviesDataSource moviesLocalDataSource, FavouriteObservable favouriteObservable) {
         mMoviesLocalDataSource = moviesLocalDataSource;

@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface FavouritesContract {
 
-    interface View extends BaseView<MoviesContract.Presenter> {
+    interface View extends BaseView<FavouritesContract.Presenter> {
         void setLoadingIndicator(boolean active);
         void showMovies(List<Movie> movies);
         void showLoadingMoviesError();

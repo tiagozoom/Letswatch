@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerToggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
         FragmentManager fm = getSupportFragmentManager();
-        MoviesFragment moviesFragment = (MoviesFragment) fm.findFragmentById(R.id.fragment_container);
-        if(moviesFragment == null){
-            moviesFragment = new MoviesFragment();
-            ActivityUtils.addFragment(fm,moviesFragment,MoviesFragment.TAG,R.id.fragment_container);
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        if(fragment == null){
+            fragment = new MoviesFragment();
+            ActivityUtils.addFragment(fm,fragment,MoviesFragment.TAG,R.id.fragment_container);
         }
     }
 
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 break;
         }
-        if (getSupportFragmentManager().findFragmentByTag(fragmentTag) == null) {
+        if (fm.findFragmentByTag(fragmentTag) == null) {
             try {
                 ActivityUtils.replaceFragment(fm,(Fragment) fragment.newInstance(),fragmentTag,R.id.fragment_container);
             } catch (Exception e) {

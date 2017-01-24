@@ -1,7 +1,7 @@
 package com.example.tgzoom.letswatch.movies;
 
 import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
-import com.example.tgzoom.letswatch.service.FragmentScoped;
+import com.example.tgzoom.letswatch.scope.FragmentScoped;
 
 import dagger.Component;
 

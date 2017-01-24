@@ -36,36 +36,39 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
 
     @Inject FavouritesPresenter mPresenter;
 
-    private MoviesItemListener mMoviesItemListener = new MoviesItemListener() {
+    @BindView(R.id.favourites_recyclerview) RecyclerView mRecyclerView;
+
+    @BindView(R.id.favourites_swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private MoviesItemListener mFavouritesItemListener = new MoviesItemListener() {
         @Override
         public void onClick(Movie movie) {
             mPresenter.openDetails(movie);
         }
-
         @Override
         public void onMarkAsFavorite(Movie movie) {
             mPresenter.markAsFavourite(movie);
         }
-
         @Override
         public void onUnmarAsFavorite(int movieApiId) {
             mPresenter.unmarkAsFavourite(movieApiId);
         }
     };
 
-    @BindView(R.id.favourites_recyclerview) RecyclerView mRecyclerView;
-
-    @BindView(R.id.swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView =  inflater.inflate(R.layout.fragment_favourites, container, false);
+
         ButterKnife.bind(this,rootView);
+
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
+
         mRecyclerView.setLayoutManager(gridLayoutManager);
+
         mRecyclerView.setAdapter(mMovieAdapter);
+
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         // Inflate the layout for this fragment
@@ -83,14 +86,12 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         DaggerFavouritesComponent.builder()
                 .moviesRepositoryComponent(((App) getActivity().getApplication()).getMoviesRepositoryComponent())
                 .favouritesPresenterModule(new FavouritesPresenterModule(this))
                 .build()
                 .inject(this);
-
-        mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mMoviesItemListener);
+        mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mFavouritesItemListener);
     }
 
     @Override
@@ -108,8 +109,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     }
 
     @Override
-    public void showLoadingMoviesError() {
-    }
+    public void showLoadingMoviesError() {}
 
     @Override
     public boolean isActive() {
@@ -117,7 +117,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     }
 
     private void showMessage(String message){
-        Snackbar.make(getActivity().findViewById(R.id.fragment_container),message,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -143,14 +143,15 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
         int count = mMovieAdapter.getItemCount();
         for (int position = 0; position < count; position++) {
             if (mMovieAdapter.getItemId(position) == movieApiId) {
-                mMovieAdapter.getArrayList().get(position).setFavourite(isFavourite);
-                mMovieAdapter.notifyItemChanged(position);
+                mMovieAdapter.getArrayList().remove(position);
+                mMovieAdapter.notifyDataSetChanged();
+                return;
             }
         }
     }
 
     @Override
-    public void setPresenter(MoviesContract.Presenter presenter) {
+    public void setPresenter(FavouritesContract.Presenter presenter) {
         if(presenter != null){
             mPresenter = (FavouritesPresenter) presenter;
         }
@@ -160,5 +161,11 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     public void onRefresh() {
         mMovieAdapter.clear();
         mPresenter.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        setLoadingIndicator(false);
     }
 }

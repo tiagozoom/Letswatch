@@ -27,7 +27,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
     private final MoviesContract.View mMoviesView;
 
-    private CompositeSubscription mSubscriptions;
+    private CompositeSubscription mSubscriptions  = new CompositeSubscription();
 
     private Observable<List<Integer>> mFavouriteMoviesIds;
 
@@ -35,7 +35,6 @@ public class MoviesPresenter implements MoviesContract.Presenter {
     MoviesPresenter(MoviesRepository moviesRepository, MoviesContract.View moviesView) {
         mMoviesRepository = moviesRepository;
         mMoviesView = moviesView;
-        mSubscriptions = new CompositeSubscription();
         mFavouriteMoviesIds = mMoviesRepository.getFavouriteMoviesIds();
     }
 

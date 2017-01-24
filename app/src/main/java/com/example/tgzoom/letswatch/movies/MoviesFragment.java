@@ -60,7 +60,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     @BindView(R.id.movies_recyclerview) RecyclerView mRecyclerView;
 
-    @BindView(R.id.swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.movies_swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -123,7 +123,11 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     @Override
     public void showMovies(List<Movie> movies) {
-        mMovieAdapter.addArrayList(movies);
+        if(mCurrentPage <= 1){
+            mMovieAdapter.swapArrayList(movies);
+        }else{
+            mMovieAdapter.addArrayList(movies);
+        }
     }
 
     @Override
@@ -164,7 +168,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     }
 
     private void showMessage(String message){
-        Snackbar.make(getActivity().findViewById(R.id.fragment_container),message,Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -188,5 +192,11 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
             outState.putInt(CURRENT_PAGE_INDEX, mCurrentPage);
         }
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        setLoadingIndicator(false);
     }
 }

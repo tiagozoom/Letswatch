@@ -38,6 +38,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieDBHolde
         mMoviesItemListener = moviesItemListener;
     }
 
+    public void swapArrayList(List<Movie> movies) {
+        mMovieDBArrayList = movies;
+        notifyDataSetChanged();
+    }
+
     public static class MovieDBHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.card_image) ImageView cardImage;
@@ -139,14 +144,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieDBHolde
         notifyDataSetChanged();
     }
 
-    public void addArrayList(List<Movie> movieDBArrayList){
-        if(mMovieDBArrayList.size() <= 0){
-            mMovieDBArrayList = movieDBArrayList;
-        }else{
-            mMovieDBArrayList.addAll(movieDBArrayList);
-        }
-
+    public void addArrayList(List<Movie> movies){
+        mMovieDBArrayList.addAll(movies);
         notifyDataSetChanged();
     }
-
 }

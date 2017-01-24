@@ -25,14 +25,12 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
 
     private final FavouritesContract.View mFavouritesView;
 
-    private CompositeSubscription mSubscriptions;
+    private CompositeSubscription mSubscriptions  = new CompositeSubscription();
 
     @Inject
     FavouritesPresenter(MoviesRepository moviesRepository, FavouritesContract.View favouritesView){
         mMoviesRepository = moviesRepository;
         mFavouritesView = favouritesView;
-        mSubscriptions = new CompositeSubscription();
-
     }
 
     @Override
@@ -59,7 +57,6 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
 
                             @Override
                             public void onNext(List<Movie> movies) {
-                                mFavouritesView.setLoadingIndicator(false);
                                 processMovies(movies);
                             }
                         }
@@ -77,6 +74,7 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
     }
 
     private void processMovies(@NonNull List<Movie> movies) {
+        mFavouritesView.setLoadingIndicator(false);
         mFavouritesView.showMovies(movies);
     }
 
