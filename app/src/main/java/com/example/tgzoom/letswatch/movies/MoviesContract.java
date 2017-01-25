@@ -22,7 +22,9 @@ public interface MoviesContract {
         boolean isActive();
         void showMarkedAsFavouriteMessage();
         void showUnmarkedAsFavouriteMessage();
+        void showNoConnectivityMessage();
         void showMovieDetails(Movie movie);
+        void hideMessage();
     }
 
     interface Presenter extends BasePresenter {
@@ -31,5 +33,6 @@ public interface MoviesContract {
         void markAsFavourite(@NonNull Movie movie);
         void unmarkAsFavourite(@NonNull int movieApiId);
         void openDetails(Movie movie);
+        void testConnectivity();
     }
 }

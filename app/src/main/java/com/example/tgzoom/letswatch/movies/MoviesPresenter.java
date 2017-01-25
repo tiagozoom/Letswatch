@@ -2,6 +2,8 @@ package com.example.tgzoom.letswatch.movies;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -27,21 +29,19 @@ import rx.subscriptions.CompositeSubscription;
 public class MoviesPresenter implements MoviesContract.Presenter {
 
     private final MoviesRepository mMoviesRepository;
-
     private final MoviesContract.View mMoviesView;
-
     private final Context mContext;
-
     private CompositeSubscription mSubscriptions  = new CompositeSubscription();
-
+    private ConnectivityManager mConnectivityManager;
     private Observable<List<Integer>> mFavouriteMoviesIds;
 
     @Inject
-    MoviesPresenter(MoviesRepository moviesRepository, MoviesContract.View moviesView, Context context) {
+    MoviesPresenter(MoviesRepository moviesRepository, MoviesContract.View moviesView, Context context, ConnectivityManager connectivityManager) {
         mMoviesRepository = moviesRepository;
         mMoviesView = moviesView;
         mFavouriteMoviesIds = mMoviesRepository.getFavouriteMoviesIds();
         mContext = context;
+        mConnectivityManager = connectivityManager;
     }
 
     @Inject
@@ -61,38 +61,40 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
     public void loadMovies(@NonNull boolean forceUpdate, int currentPage) {
         mSubscriptions.clear();
-        mMoviesView.setLoadingIndicator(true);
-        Subscription subscription = mMoviesRepository
-                .getMovies(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
-                .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
-                .subscribe(
-                        new Observer<List<Movie>>() {
-                            @Override
-                            public void onCompleted() {
-                                mMoviesView.setLoadingIndicator(false);
-                            }
+        if(hasConnectivity()) {
+            mMoviesView.setLoadingIndicator(true);
+            Subscription subscription = mMoviesRepository
+                    .getMovies(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
+                    .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
+                    .subscribe(
+                            new Observer<List<Movie>>() {
+                                @Override
+                                public void onCompleted() {
+                                    mMoviesView.setLoadingIndicator(false);
+                                }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                mMoviesView.showLoadingMoviesError();
-                            }
+                                @Override
+                                public void onError(Throwable e) {
+                                    mMoviesView.showLoadingMoviesError();
+                                }
 
-                            @Override
-                            public void onNext(List<Movie> movies) {
-                                processMovies(movies);
+                                @Override
+                                public void onNext(List<Movie> movies) {
+                                    processMovies(movies);
+                                }
                             }
+                    );
+
+            mSubscriptions.add(subscription);
+            mSubscriptions.add(mMoviesRepository.getFavouriteClickEvent().subscribe(
+                    new Action1<FavouriteObservableImp.FavouriteClickEvent>() {
+                        @Override
+                        public void call(FavouriteObservableImp.FavouriteClickEvent favouriteClickEvent) {
+                            mMoviesView.updateMovies(favouriteClickEvent.movieApiId, favouriteClickEvent.isFavorite);
                         }
-                );
-
-        mSubscriptions.add(subscription);
-        mSubscriptions.add(mMoviesRepository.getFavouriteClickEvent().subscribe(
-                new Action1<FavouriteObservableImp.FavouriteClickEvent>() {
-                    @Override
-                    public void call(FavouriteObservableImp.FavouriteClickEvent favouriteClickEvent) {
-                        mMoviesView.updateMovies(favouriteClickEvent.movieApiId, favouriteClickEvent.isFavorite);
-                    }
-                })
-        );
+                    })
+            );
+        }
     }
 
     private void processMovies(@NonNull List<Movie> movies) {
@@ -114,5 +116,19 @@ public class MoviesPresenter implements MoviesContract.Presenter {
     @Override
     public void openDetails(Movie movie) {
         mMoviesView.showMovieDetails(movie);
+    }
+
+    @Override
+    public void testConnectivity() {
+        if(hasConnectivity()){
+            mMoviesView.hideMessage();
+        }else{
+            mMoviesView.showNoConnectivityMessage();
+        }
+    }
+
+    private boolean hasConnectivity(){
+        NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnectedOrConnecting());
     }
 }

@@ -26,13 +26,11 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
     private final MoviesRepository mMoviesRepository;
     private final FavouritesContract.View mFavouritesView;
     private CompositeSubscription mSubscriptions  = new CompositeSubscription();
-    private ConnectivityManager mConnectivityManager;
 
     @Inject
-    FavouritesPresenter(MoviesRepository moviesRepository, FavouritesContract.View favouritesView, ConnectivityManager connectivityManager){
+    FavouritesPresenter(MoviesRepository moviesRepository, FavouritesContract.View favouritesView){
         mMoviesRepository = moviesRepository;
         mFavouritesView = favouritesView;
-        mConnectivityManager = connectivityManager;
     }
 
     @Override

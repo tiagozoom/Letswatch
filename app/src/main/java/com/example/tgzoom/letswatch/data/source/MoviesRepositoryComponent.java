@@ -1,6 +1,8 @@
 package com.example.tgzoom.letswatch.data.source;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 
 import com.example.tgzoom.letswatch.service.ServiceModule;
 
@@ -21,4 +23,6 @@ import dagger.Component;
 )
 public interface MoviesRepositoryComponent {
     MoviesRepository getMoviesRepository();
+    Context getContext();
+    ConnectivityManager getConnectivityManager();
 }

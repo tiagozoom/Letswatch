@@ -1,14 +1,14 @@
 package com.example.tgzoom.letswatch.movies;
 
-
-import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,13 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.tgzoom.letswatch.App;
-import com.example.tgzoom.letswatch.AppModule;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.dialog.SortDialogFragment;
 import com.example.tgzoom.letswatch.dialog.SortDialogListener;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
-import com.example.tgzoom.letswatch.main.MainActivity;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
 import java.util.ArrayList;
@@ -39,12 +37,13 @@ import butterknife.ButterKnife;
 public class MoviesFragment extends Fragment implements MoviesContract.View,SwipeRefreshLayout.OnRefreshListener,SortDialogListener{
 
     public final static String TAG = "MoviesFragment";
-    private int mCurrentPage;
+    private int mCurrentPage = 1;
     private MovieAdapter mMovieAdapter;
     private SortDialogFragment mSortDialogFragment;
     private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
     private static final String CURRENT_PAGE_INDEX = "current_page_index";
     public static final int MOVIES_FRAGMENT_ID = 105;
+    private Snackbar mSnackbar;
 
     @BindView(R.id.movies_recyclerview) RecyclerView mRecyclerView;
     @BindView(R.id.movies_swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
@@ -88,9 +87,21 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
                 mCurrentPage = page;
             }
         });
-        mSwipeRefreshLayout.setOnRefreshListener(this);
 
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         return rootView;
+    }
+
+    public void registerBroadastReceiver(){
+        IntentFilter internetConnectionIntent = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        BroadcastReceiver mInternetConnectionReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mPresenter.testConnectivity();
+            }
+        };
+
+        getContext().registerReceiver(mInternetConnectionReceiver,internetConnectionIntent);
     }
 
     @Override
@@ -100,18 +111,22 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         DaggerMoviesComponent.builder()
                 .moviesRepositoryComponent(((App) getActivity().getApplication()).getMoviesRepositoryComponent())
                 .moviesPresenterModule(new MoviesPresenterModule(this))
-                .appModule(new AppModule(getContext()))
                 .build()
                 .inject(this);
 
         mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mMoviesItemListener);
-        mCurrentPage  = 1;
 
         if(savedInstanceState != null){
             List<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST);
             mMovieAdapter.swapArrayList(movies);
             mCurrentPage  = savedInstanceState.getInt(CURRENT_PAGE_INDEX);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        registerBroadastReceiver();
     }
 
     @Override
@@ -123,12 +138,8 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     }
 
     @Override
-    public void setLoadingIndicator(boolean active) {
-        if(active){
-            mSwipeRefreshLayout.setRefreshing(true);
-        }else{
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
+    public void setLoadingIndicator(boolean isActive) {
+        mSwipeRefreshLayout.setRefreshing(isActive);
     }
 
     @Override
@@ -161,12 +172,17 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     @Override
     public void showMarkedAsFavouriteMessage() {
-        showMessage(getString(R.string.marked_as_favourite_message));
+        showMessage(getString(R.string.marked_as_favourite_message),Snackbar.LENGTH_SHORT);
     }
 
     @Override
     public void showUnmarkedAsFavouriteMessage() {
-        showMessage(getString(R.string.unmarked_as_favourite_message));
+        showMessage(getString(R.string.unmarked_as_favourite_message),Snackbar.LENGTH_SHORT);
+    }
+
+    @Override
+    public void showNoConnectivityMessage() {
+        showMessage(getString(R.string.no_connection_message),Snackbar.LENGTH_INDEFINITE);
     }
 
     @Override
@@ -177,8 +193,16 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         getContext().startActivity(intent);
     }
 
-    private void showMessage(String message){
-        Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
+    @Override
+    public void hideMessage() {
+        if(mSnackbar != null){
+            mSnackbar.dismiss();
+        }
+    }
+
+    private void showMessage(String message,int duration){
+        mSnackbar = Snackbar.make(getView(),message,duration);
+        mSnackbar.show();
     }
 
     @Override

@@ -3,8 +3,10 @@ package com.example.tgzoom.letswatch.service;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 
+import com.example.tgzoom.letswatch.AppModule;
 import com.example.tgzoom.letswatch.network.NetworkModule;
 import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
 import com.example.tgzoom.letswatch.util.schedulers.Scheduler;
@@ -25,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 @Module(
         includes = {
-                NetworkModule.class
+                NetworkModule.class,
         }
 )
 public class ServiceModule {
@@ -45,12 +47,6 @@ public class ServiceModule {
 
     @Singleton
     @Provides
-    SharedPreferences provideSharedPreferences(Context context){
-        return PreferenceManager.getDefaultSharedPreferences(context);
-    }
-
-    @Singleton
-    @Provides
     Retrofit provideRetrofit(Gson gson, OkHttpClient okHttpClient){
         return new Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -64,5 +60,11 @@ public class ServiceModule {
     @Provides
     BaseScheduler provideScheduler(){
         return Scheduler.getInstance();
+    }
+
+    @Singleton
+    @Provides
+    ConnectivityManager provideConnectivityManager(Context context){
+        return (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
     }
 }
