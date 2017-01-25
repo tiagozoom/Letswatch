@@ -21,5 +21,4 @@ import dagger.Component;
 )
 public interface MoviesRepositoryComponent {
     MoviesRepository getMoviesRepository();
-    SharedPreferences getSharedPreferences();
 }

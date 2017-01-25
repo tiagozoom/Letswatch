@@ -1,11 +1,14 @@
 package com.example.tgzoom.letswatch.movies;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.source.MoviesRepository;
 import com.example.tgzoom.letswatch.favourites.FavouriteObservableImp;
+import com.example.tgzoom.letswatch.util.PreferencesUtils;
 
 import java.util.List;
 
@@ -27,15 +30,18 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
     private final MoviesContract.View mMoviesView;
 
+    private final Context mContext;
+
     private CompositeSubscription mSubscriptions  = new CompositeSubscription();
 
     private Observable<List<Integer>> mFavouriteMoviesIds;
 
     @Inject
-    MoviesPresenter(MoviesRepository moviesRepository, MoviesContract.View moviesView) {
+    MoviesPresenter(MoviesRepository moviesRepository, MoviesContract.View moviesView, Context context) {
         mMoviesRepository = moviesRepository;
         mMoviesView = moviesView;
         mFavouriteMoviesIds = mMoviesRepository.getFavouriteMoviesIds();
+        mContext = context;
     }
 
     @Inject
@@ -57,7 +63,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
         mSubscriptions.clear();
         mMoviesView.setLoadingIndicator(true);
         Subscription subscription = mMoviesRepository
-                .getMovies("popularity.desc", currentPage)
+                .getMovies(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
                 .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
                 .subscribe(
                         new Observer<List<Movie>>() {

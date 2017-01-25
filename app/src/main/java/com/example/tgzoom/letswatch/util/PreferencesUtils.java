@@ -14,11 +14,13 @@ import java.util.List;
  */
 
 public class PreferencesUtils {
-    public static String getPreferredSortOrder(SharedPreferences sharedPreferences, Context context){
+    public static String getPreferredSortOrder(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.pref_order_key),Context.MODE_APPEND);
         return sharedPreferences.getString(context.getString(R.string.pref_order_key),context.getString(R.string.pref_order_default_value));
     }
 
-    public static int getSortPosition(SharedPreferences sharedPreferences, Context context){
+    public static int getSortPosition(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.pref_order_key),Context.MODE_APPEND);
         String actual_sort = sharedPreferences.getString(context.getString(R.string.pref_order_key),context.getString(R.string.pref_order_default_value));
         List<String> values = new ArrayList<String>(Arrays.asList(context.getResources().getStringArray(R.array.pref_order_entry_values)));
         return values.indexOf(actual_sort);

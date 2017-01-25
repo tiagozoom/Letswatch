@@ -2,7 +2,6 @@ package com.example.tgzoom.letswatch.movies;
 
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -17,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.tgzoom.letswatch.App;
+import com.example.tgzoom.letswatch.AppModule;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.dialog.SortDialogFragment;
@@ -43,13 +43,13 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     @Inject MoviesPresenter mPresenter;
 
-    @Inject SharedPreferences mSharedPreferences;
-
-    private SortDialogFragment mSortDialogFragment = new SortDialogFragment();
+    private SortDialogFragment mSortDialogFragment;
 
     private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
 
     private static final String CURRENT_PAGE_INDEX = "current_page_index";
+
+    public static final int MOVIES_FRAGMENT_ID = 105;
 
     private MoviesItemListener mMoviesItemListener = new MoviesItemListener() {
         @Override
@@ -85,6 +85,10 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
 
+        mSortDialogFragment = new SortDialogFragment();
+
+        mSortDialogFragment.setTargetFragment(MoviesFragment.this, MOVIES_FRAGMENT_ID);
+
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
         mRecyclerView.setAdapter(mMovieAdapter);
@@ -109,6 +113,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         DaggerMoviesComponent.builder()
                 .moviesRepositoryComponent(((App) getActivity().getApplication()).getMoviesRepositoryComponent())
                 .moviesPresenterModule(new MoviesPresenterModule(this))
+                .appModule(new AppModule(getContext()))
                 .build()
                 .inject(this);
 
