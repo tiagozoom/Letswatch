@@ -1,5 +1,6 @@
 package com.example.tgzoom.letswatch.favourites;
 
+import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -23,15 +24,15 @@ import rx.subscriptions.CompositeSubscription;
 public class FavouritesPresenter implements FavouritesContract.Presenter {
 
     private final MoviesRepository mMoviesRepository;
-
     private final FavouritesContract.View mFavouritesView;
-
     private CompositeSubscription mSubscriptions  = new CompositeSubscription();
+    private ConnectivityManager mConnectivityManager;
 
     @Inject
-    FavouritesPresenter(MoviesRepository moviesRepository, FavouritesContract.View favouritesView){
+    FavouritesPresenter(MoviesRepository moviesRepository, FavouritesContract.View favouritesView, ConnectivityManager connectivityManager){
         mMoviesRepository = moviesRepository;
         mFavouritesView = favouritesView;
+        mConnectivityManager = connectivityManager;
     }
 
     @Override
@@ -94,6 +95,10 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
     @Override
     public void openDetails(Movie movie) {
         mFavouritesView.showMovieDetails(movie);
+    }
+
+    @Override
+    public void hasConnection() {
     }
 
     @Override

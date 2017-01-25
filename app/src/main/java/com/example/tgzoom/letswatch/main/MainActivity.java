@@ -28,33 +28,23 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
-
     @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
-
     @BindView(R.id.navigation_view) NavigationView mNavigationView;
-
     private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-
         ButterKnife.bind(this);
-
         setSupportActionBar(mToolbar);
-
-        Stetho.initializeWithDefaults(this);
-
+//        Stetho.initializeWithDefaults(this);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
             }
-
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -62,21 +52,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         };
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
         mDrawerToggle.syncState();
-
         mNavigationView.setNavigationItemSelectedListener(this);
-
         FragmentManager fm = getSupportFragmentManager();
-
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
         if(fragment == null){
-
             fragment = new MoviesFragment();
-
             ActivityUtils.addFragment(fm,fragment,MoviesFragment.TAG,R.id.fragment_container);
-
         }
     }
 
@@ -84,9 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         FragmentManager fm = getSupportFragmentManager();
-
         Class fragment = null;
-
         String fragmentTag = null;
 
         switch (item.getItemId()) {
@@ -111,9 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         item.setChecked(true);
-
         mDrawerLayout.closeDrawers();
-
         return true;
     }
 }

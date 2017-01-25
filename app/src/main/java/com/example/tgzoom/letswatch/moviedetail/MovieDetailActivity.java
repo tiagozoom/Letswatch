@@ -23,15 +23,10 @@ import butterknife.ButterKnife;
 public class MovieDetailActivity extends AppCompatActivity implements MovieDetailCallback {
 
     public static final String MOVIE_OBJECT = "movie_object";
-
     @Inject MovieDetailPresenter mMovieDetailPresenter;
-
     @BindView(R.id.backdrop_imageview) ImageView mBackdropImageview;
-
     @BindView(R.id.detail_toolbar) Toolbar mToolbar;
-
     @BindView(R.id.main_collapsing) CollapsingToolbarLayout mMainCollapsing;
-
     @BindView(R.id.detail_coordinator_layout) CoordinatorLayout mDetailcoordinatorLayout;
 
 
@@ -39,29 +34,19 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_movie_detail);
-
         ButterKnife.bind(this);
-
         setSupportActionBar(mToolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         FragmentManager fm = getSupportFragmentManager();
-
         MovieDetailFragment fragment = (MovieDetailFragment) fm.findFragmentByTag(MovieDetailFragment.TAG);
 
+
         if (fragment == null) {
-
             fragment = new MovieDetailFragment();
-
             Bundle arguments = new Bundle();
-
             arguments.putParcelable(MOVIE_OBJECT, getIntent().getParcelableExtra(MOVIE_OBJECT));
-
             fragment.setArguments(arguments);
-
             ActivityUtils.addFragment(fm, fragment, MovieDetailFragment.TAG, R.id.detail_fragment_container);
 
         }
@@ -83,6 +68,6 @@ public class MovieDetailActivity extends AppCompatActivity implements MovieDetai
 
     @Override
     public void setToolbarTitle(String title) {
-
+        getSupportActionBar().setTitle(title);
     }
 }

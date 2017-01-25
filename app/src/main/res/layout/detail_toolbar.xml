@@ -6,4 +6,5 @@
     android:layout_height="?attr/actionBarSize"
     android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     android:theme="@style/ActionBar.AppBarOverlay"
+    android:background="@drawable/transparent_gradient_style"
     app:layout_collapseMode="pin"/>

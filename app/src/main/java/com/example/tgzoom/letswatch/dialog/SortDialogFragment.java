@@ -24,7 +24,6 @@ import javax.inject.Inject;
 public class SortDialogFragment extends DialogFragment {
 
     private Context mContext;
-
     private SortDialogListener mSortDialogListener;
 
     @Override
@@ -37,19 +36,20 @@ public class SortDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         final String[] values = getResources().getStringArray(R.array.pref_order_entry_values);
-        int currentPosition = PreferencesUtils.getSortPosition(mContext);
+        final int currentPosition = PreferencesUtils.getSortPosition(mContext);
         builder.setTitle(getActivity().getString(R.string.sort_dialog_title));
         builder.setSingleChoiceItems(R.array.pref_order_entries,currentPosition, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                PreferencesUtils.setPreferredOrder(mContext,values[i]);
-                mSortDialogListener.onSortChange();
+                if(i != currentPosition) {
+                    PreferencesUtils.setPreferredOrder(mContext,values[i]);
+                    mSortDialogListener.onSortChange();
+                }
+                dialogInterface.dismiss();
             }
         });
-
         return builder.create();
     }
 }

@@ -1,12 +1,14 @@
 package com.example.tgzoom.letswatch.movies;
 
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,6 +24,7 @@ import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.dialog.SortDialogFragment;
 import com.example.tgzoom.letswatch.dialog.SortDialogListener;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
+import com.example.tgzoom.letswatch.main.MainActivity;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
 import java.util.ArrayList;
@@ -36,41 +39,31 @@ import butterknife.ButterKnife;
 public class MoviesFragment extends Fragment implements MoviesContract.View,SwipeRefreshLayout.OnRefreshListener,SortDialogListener{
 
     public final static String TAG = "MoviesFragment";
-
     private int mCurrentPage;
-
     private MovieAdapter mMovieAdapter;
-
-    @Inject MoviesPresenter mPresenter;
-
     private SortDialogFragment mSortDialogFragment;
-
     private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
-
     private static final String CURRENT_PAGE_INDEX = "current_page_index";
-
     public static final int MOVIES_FRAGMENT_ID = 105;
+
+    @BindView(R.id.movies_recyclerview) RecyclerView mRecyclerView;
+    @BindView(R.id.movies_swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
+    @Inject MoviesPresenter mPresenter;
 
     private MoviesItemListener mMoviesItemListener = new MoviesItemListener() {
         @Override
         public void onClick(Movie movie) {
             mPresenter.openDetails(movie);
         }
-
         @Override
         public void onMarkAsFavorite(Movie movie) {
             mPresenter.markAsFavourite(movie);
         }
-
         @Override
         public void onUnmarAsFavorite(int movieApiId) {
             mPresenter.unmarkAsFavourite(movieApiId);
         }
     };
-
-    @BindView(R.id.movies_recyclerview) RecyclerView mRecyclerView;
-
-    @BindView(R.id.movies_swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,19 +71,14 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_movies, container, false);
-
         ButterKnife.bind(this,rootView);
-
         setHasOptionsMenu(true);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
-
         mSortDialogFragment = new SortDialogFragment();
 
         mSortDialogFragment.setTargetFragment(MoviesFragment.this, MOVIES_FRAGMENT_ID);
-
         mRecyclerView.setLayoutManager(gridLayoutManager);
-
         mRecyclerView.setAdapter(mMovieAdapter);
 
         mRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager,mCurrentPage) {
@@ -100,7 +88,6 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
                 mCurrentPage = page;
             }
         });
-
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         return rootView;
@@ -117,12 +104,13 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
                 .build()
                 .inject(this);
 
+        mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mMoviesItemListener);
+        mCurrentPage  = 1;
+
         if(savedInstanceState != null){
-            mMovieAdapter = new MovieAdapter(savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST),mMoviesItemListener);
+            List<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST);
+            mMovieAdapter.swapArrayList(movies);
             mCurrentPage  = savedInstanceState.getInt(CURRENT_PAGE_INDEX);
-        }else{
-            mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mMoviesItemListener);
-            mCurrentPage  = 1;
         }
     }
 
@@ -225,7 +213,6 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @Override
     public void onSortChange() {
         onRefresh();
-        mSortDialogFragment.dismiss();
     }
 
     @Override

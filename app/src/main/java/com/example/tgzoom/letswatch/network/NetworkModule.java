@@ -1,5 +1,8 @@
 package com.example.tgzoom.letswatch.network;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+
 import com.example.tgzoom.letswatch.AppModule;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;

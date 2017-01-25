@@ -19,6 +19,7 @@ public interface FavouritesContract {
         void setLoadingIndicator(boolean active);
         void showMovies(List<Movie> movies);
         void showLoadingMoviesError();
+        void showNoConnectionMessage();
         boolean isActive();
         void showMarkedAsFavouriteMessage();
         void showUnmarkedAsFavouriteMessage();
@@ -32,5 +33,6 @@ public interface FavouritesContract {
         void markAsFavourite(@NonNull Movie movie);
         void unmarkAsFavourite(@NonNull int movieApiId);
         void openDetails(Movie movie);
+        void hasConnection();
     }
 }

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,13 +32,11 @@ import butterknife.ButterKnife;
 public class FavouritesFragment extends Fragment implements FavouritesContract.View,SwipeRefreshLayout.OnRefreshListener {
 
     public final static String TAG = "FavouritesFragment";
-
+    private static final String PARCELABLE_FAVOURITES_LIST = "parcelable_favourites_list";
     private MovieAdapter mMovieAdapter;
 
     @Inject FavouritesPresenter mPresenter;
-
     @BindView(R.id.favourites_recyclerview) RecyclerView mRecyclerView;
-
     @BindView(R.id.favourites_swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
 
     private MoviesItemListener mFavouritesItemListener = new MoviesItemListener() {
@@ -60,18 +59,11 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
                              Bundle savedInstanceState) {
 
         View rootView =  inflater.inflate(R.layout.fragment_favourites, container, false);
-
         ButterKnife.bind(this,rootView);
-
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
-
         mRecyclerView.setLayoutManager(gridLayoutManager);
-
         mRecyclerView.setAdapter(mMovieAdapter);
-
         mSwipeRefreshLayout.setOnRefreshListener(this);
-
-        // Inflate the layout for this fragment
         return rootView;
     }
 
@@ -84,6 +76,15 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(mMovieAdapter != null){
+            ArrayList<Movie> movieList = (ArrayList<Movie>) mMovieAdapter.getArrayList();
+            outState.putParcelableArrayList(PARCELABLE_FAVOURITES_LIST, movieList);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DaggerFavouritesComponent.builder()
@@ -91,7 +92,13 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
                 .favouritesPresenterModule(new FavouritesPresenterModule(this))
                 .build()
                 .inject(this);
+
         mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mFavouritesItemListener);
+
+        if(savedInstanceState != null){
+            List<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_FAVOURITES_LIST);
+            mMovieAdapter.swapArrayList(movies);
+        }
     }
 
     @Override
@@ -110,6 +117,11 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
 
     @Override
     public void showLoadingMoviesError() {}
+
+    @Override
+    public void showNoConnectionMessage() {
+        showMessage(getString(R.string.no_connection_message));
+    }
 
     @Override
     public boolean isActive() {
