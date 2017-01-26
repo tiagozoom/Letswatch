@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
@@ -57,12 +58,10 @@ public class MoviesPresenter implements MoviesContract.Presenter {
     public void loadMovies(int currentPage, final boolean showLoadingBar) {
         mSubscriptions.clear();
         if (hasConnectivity()) {
-
+            mMoviesView.setLoadingIndicator(true);
             if(showLoadingBar){
                 mMoviesView.showLoadingBar();
             }
-
-            mMoviesView.setLoadingIndicator(true);
             Subscription subscription = mMoviesRepository
                     .getMovies(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
                     .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
@@ -81,9 +80,6 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
                                 @Override
                                 public void onNext(List<Movie> movies) {
-                                    if(showLoadingBar){
-                                        mMoviesView.hideLoadingBar();
-                                    }
                                     processMovies(movies);
                                 }
                             }
@@ -102,6 +98,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
     }
 
     private void processMovies(@NonNull List<Movie> movies) {
+        mMoviesView.hideLoadingBar();
         mMoviesView.showMovies(movies);
     }
 

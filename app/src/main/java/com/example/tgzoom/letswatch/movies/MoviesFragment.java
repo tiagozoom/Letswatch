@@ -163,7 +163,13 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     @Override
     public void hideLoadingBar() {
-        mMovieAdapter.getArrayList().remove(mMovieAdapter.getArrayList().size() - 1);
+        List<Movie> movies = mMovieAdapter.getArrayList();
+        if(movies.size() > 0){
+            Movie movie = movies.get(movies.size() - 1);
+            if(movie == null){
+                movies.remove(movie);
+            }
+        }
     }
 
     @Override
@@ -261,7 +267,8 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     @Override
     public void onSortChange() {
-        onRefresh();
+        mMovieAdapter.clear();
+        mPresenter.start(true);
     }
 
     @Override
