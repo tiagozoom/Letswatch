@@ -63,7 +63,6 @@ public class MoviesPresenter implements MoviesContract.Presenter {
             }
 
             mMoviesView.setLoadingIndicator(true);
-
             Subscription subscription = mMoviesRepository
                     .getMovies(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
                     .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())

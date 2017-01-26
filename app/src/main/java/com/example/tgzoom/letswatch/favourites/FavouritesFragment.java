@@ -34,6 +34,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     public final static String TAG = "FavouritesFragment";
     private static final String PARCELABLE_FAVOURITES_LIST = "parcelable_favourites_list";
     private MovieAdapter mMovieAdapter;
+    private Snackbar mSnackbar;
 
     @Inject FavouritesPresenter mPresenter;
     @BindView(R.id.favourites_recyclerview) RecyclerView mRecyclerView;
@@ -55,9 +56,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_favourites, container, false);
         ButterKnife.bind(this,rootView);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
@@ -71,7 +70,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if(savedInstanceState == null){
-            mPresenter.start(false);
+            mPresenter.start(true);
         }
     }
 
@@ -103,11 +102,6 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
 
     @Override
     public void setLoadingIndicator(boolean active) {
-        if(active){
-            mSwipeRefreshLayout.setRefreshing(true);
-        }else{
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
     }
 
     @Override
@@ -118,28 +112,19 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     @Override
     public void showLoadingMoviesError() {}
 
-    @Override
-    public void showNoConnectionMessage() {
-        showMessage(getString(R.string.no_connection_message));
-    }
-
-    @Override
-    public boolean isActive() {
-        return false;
-    }
-
-    private void showMessage(String message){
-        Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
+    private void showMessage(String message, int duration){
+        mSnackbar = Snackbar.make(getView(),message,duration);
+        mSnackbar.show();
     }
 
     @Override
     public void showMarkedAsFavouriteMessage() {
-        showMessage(getString(R.string.marked_as_favourite_message));
+        showMessage(getString(R.string.marked_as_favourite_message),Snackbar.LENGTH_SHORT);
     }
 
     @Override
     public void showUnmarkedAsFavouriteMessage() {
-        showMessage(getString(R.string.unmarked_as_favourite_message));
+        showMessage(getString(R.string.unmarked_as_favourite_message),Snackbar.LENGTH_SHORT);
     }
 
     @Override
@@ -156,6 +141,33 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     }
 
     @Override
+    public void showNoConnectivityMessage() {
+        showMessage(getString(R.string.no_connection_message),Snackbar.LENGTH_INDEFINITE);
+    }
+
+    @Override
+    public void showLoadingBar() {
+        mMovieAdapter.addItem(null);
+    }
+
+    @Override
+    public void hideLoadingBar() {
+        mMovieAdapter.getArrayList().remove(1);
+    }
+
+    @Override
+    public void hideMessage() {
+        if(mSnackbar != null){
+            mSnackbar.dismiss();
+        }
+    }
+
+    @Override
+    public void hideRefresh() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
     public void setPresenter(FavouritesContract.Presenter presenter) {
         if(presenter != null){
             mPresenter = (FavouritesPresenter) presenter;
@@ -166,11 +178,5 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     public void onRefresh() {
         mMovieAdapter.clear();
         mPresenter.start(false);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        setLoadingIndicator(false);
     }
 }

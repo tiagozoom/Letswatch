@@ -1,6 +1,7 @@
 package com.example.tgzoom.letswatch.favourites;
 
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -26,16 +27,12 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
     private final MoviesRepository mMoviesRepository;
     private final FavouritesContract.View mFavouritesView;
     private CompositeSubscription mSubscriptions  = new CompositeSubscription();
+    private ConnectivityManager mConnectivityManager;
 
     @Inject
-    FavouritesPresenter(MoviesRepository moviesRepository, FavouritesContract.View favouritesView){
+    FavouritesPresenter(MoviesRepository moviesRepository, FavouritesContract.View favouritesView, ConnectivityManager connectivityManager){
         mMoviesRepository = moviesRepository;
         mFavouritesView = favouritesView;
-    }
-
-    @Override
-    public void result(int requestCode, int resultCode) {
-
     }
 
     @Override
@@ -48,6 +45,7 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
                         new Observer<List<Movie>>() {
                             @Override
                             public void onCompleted() {
+                                mFavouritesView.setLoadingIndicator(false);
                             }
 
                             @Override
@@ -57,6 +55,7 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
 
                             @Override
                             public void onNext(List<Movie> movies) {
+                                mFavouritesView.hideRefresh();
                                 processMovies(movies);
                             }
                         }
@@ -74,7 +73,6 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
     }
 
     private void processMovies(@NonNull List<Movie> movies) {
-        mFavouritesView.setLoadingIndicator(false);
         mFavouritesView.showMovies(movies);
     }
 
@@ -96,7 +94,17 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
     }
 
     @Override
-    public void hasConnection() {
+    public void testConnectivity() {
+        if (hasConnectivity()) {
+            mFavouritesView.hideMessage();
+        } else {
+            mFavouritesView.showNoConnectivityMessage();
+        }
+    }
+
+    private boolean hasConnectivity() {
+        NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnectedOrConnecting());
     }
 
     @Override
