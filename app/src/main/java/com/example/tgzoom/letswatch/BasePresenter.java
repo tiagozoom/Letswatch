@@ -5,5 +5,5 @@ package com.example.tgzoom.letswatch;
  */
 
 public interface BasePresenter<State extends BaseState> {
-    void start();
+    void start(boolean showLoadingBar);
 }

@@ -39,7 +39,7 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
     }
 
     @Override
-    public void loadMovies(@NonNull boolean forceUpdate) {
+    public void loadMovies(@NonNull boolean showLoadingBar) {
         mSubscriptions.clear();
         mFavouritesView.setLoadingIndicator(true);
         Subscription subscription = mMoviesRepository
@@ -100,8 +100,7 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
     }
 
     @Override
-    public void start() {
-        loadMovies(false);
+    public void start(boolean showLoadingBar) {
+        loadMovies(showLoadingBar);
     }
-
 }

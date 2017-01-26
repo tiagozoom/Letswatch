@@ -87,7 +87,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
     @Override
     public void onStart() {
         super.onStart();
-        mMovieDetailPresenter.start();
+        mMovieDetailPresenter.start(false);
         showMovieDetailInformation(movie);
     }
 

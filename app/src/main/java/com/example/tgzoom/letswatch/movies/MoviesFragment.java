@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,7 +44,9 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
     private static final String CURRENT_PAGE_INDEX = "current_page_index";
     public static final int MOVIES_FRAGMENT_ID = 105;
+    private EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener;
     private Snackbar mSnackbar;
+    private BroadcastReceiver mInternetConnectionReceiver;
 
     @BindView(R.id.movies_recyclerview) RecyclerView mRecyclerView;
     @BindView(R.id.movies_swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
@@ -73,34 +76,50 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         ButterKnife.bind(this,rootView);
         setHasOptionsMenu(true);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
-        mSortDialogFragment = new SortDialogFragment();
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (mMovieAdapter.getItemViewType(position)){
+                    case MovieAdapter.VIEW_ITEM:
+                        return 1;
+                    case MovieAdapter.PROGRESS_BAR:
+                        return Integer.valueOf(getString(R.string.gridlayout_span_count));
+                    default:
+                        return gridLayoutManager.getSpanCount();
+                }
+            }
+        });
 
+        mSortDialogFragment = new SortDialogFragment();
         mSortDialogFragment.setTargetFragment(MoviesFragment.this, MOVIES_FRAGMENT_ID);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        mRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager,mCurrentPage) {
+        mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener() {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                mPresenter.loadMovies(false,page);
+                mPresenter.loadMovies(page,true);
                 mCurrentPage = page;
             }
-        });
+        };
 
+        mEndlessRecyclerViewScrollListener.setCurrentPage(mCurrentPage);
+        mEndlessRecyclerViewScrollListener.setLayoutManager(gridLayoutManager);
+        mEndlessRecyclerViewScrollListener.setLoading(false);
+        mRecyclerView.addOnScrollListener(mEndlessRecyclerViewScrollListener);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         return rootView;
     }
 
     public void registerBroadastReceiver(){
         IntentFilter internetConnectionIntent = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-        BroadcastReceiver mInternetConnectionReceiver = new BroadcastReceiver() {
+        mInternetConnectionReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 mPresenter.testConnectivity();
             }
         };
-
         getContext().registerReceiver(mInternetConnectionReceiver,internetConnectionIntent);
     }
 
@@ -124,35 +143,39 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        registerBroadastReceiver();
-    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        registerBroadastReceiver();
         if(savedInstanceState == null){
-            mPresenter.start();
+            mPresenter.start(true);
         }
     }
 
     @Override
-    public void setLoadingIndicator(boolean isActive) {
-        mSwipeRefreshLayout.setRefreshing(isActive);
+    public void setLoadingIndicator(boolean isLoading) {
+        mEndlessRecyclerViewScrollListener.setLoading(isLoading);
+    }
+
+    @Override
+    public void showLoadingBar() {
+        mMovieAdapter.addItem(null);
+    }
+
+    @Override
+    public void hideLoadingBar() {
+        mMovieAdapter.getArrayList().remove(mMovieAdapter.getArrayList().size() - 1);
     }
 
     @Override
     public void showMovies(List<Movie> movies) {
-        if(mCurrentPage <= 1){
-            mMovieAdapter.swapArrayList(movies);
-        }else{
-            mMovieAdapter.addArrayList(movies);
+        for (Movie movie: movies) {
+            mMovieAdapter.addItem(movie);
         }
     }
 
     @Override
-    public void showLoadingMoviesError() {}
+    public void showLoadingMoviesError() {
+    }
 
     @Override
     public void updateMovies(int movieApiId, boolean isFavourite) {
@@ -163,11 +186,6 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
                 mMovieAdapter.notifyItemChanged(position);
             }
         }
-    }
-
-    @Override
-    public boolean isActive() {
-        return false;
     }
 
     @Override
@@ -194,10 +212,23 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mInternetConnectionReceiver != null) {
+            getContext().unregisterReceiver(mInternetConnectionReceiver);
+        }
+    }
+
+    @Override
     public void hideMessage() {
         if(mSnackbar != null){
             mSnackbar.dismiss();
         }
+    }
+
+    @Override
+    public void hideRefresh() {
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private void showMessage(String message,int duration){
@@ -215,7 +246,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @Override
     public void onRefresh() {
         mMovieAdapter.clear();
-        mPresenter.start();
+        mPresenter.start(false);
     }
 
     @Override
@@ -226,12 +257,6 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
             outState.putInt(CURRENT_PAGE_INDEX, mCurrentPage);
         }
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        setLoadingIndicator(false);
     }
 
     @Override

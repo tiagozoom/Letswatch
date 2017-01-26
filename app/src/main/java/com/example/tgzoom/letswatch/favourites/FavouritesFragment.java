@@ -71,7 +71,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if(savedInstanceState == null){
-            mPresenter.start();
+            mPresenter.start(false);
         }
     }
 
@@ -165,7 +165,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     @Override
     public void onRefresh() {
         mMovieAdapter.clear();
-        mPresenter.start();
+        mPresenter.start(false);
     }
 
     @Override

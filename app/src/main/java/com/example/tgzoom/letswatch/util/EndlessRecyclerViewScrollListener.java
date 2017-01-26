@@ -84,14 +84,14 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             this.currentPage = this.startingPageIndex;
             this.previousTotalItemCount = totalItemCount;
             if (totalItemCount == 0) {
-                this.loading = true;
+//                this.loading = true;
             }
         }
         // If it’s still loading, we check to see if the dataset count has
         // changed, if so we conclude it has finished loading and update the current page
         // number and total item count.
         if (loading && (totalItemCount > previousTotalItemCount)) {
-            loading = false;
+//            loading = false;
             previousTotalItemCount = totalItemCount;
         }
 
@@ -102,7 +102,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         if (!loading && (lastVisibleItemPosition + visibleThreshold) >= totalItemCount) {
             currentPage++;
             onLoadMore(currentPage, totalItemCount);
-            loading = true;
+//            loading = true;
         }
     }
 

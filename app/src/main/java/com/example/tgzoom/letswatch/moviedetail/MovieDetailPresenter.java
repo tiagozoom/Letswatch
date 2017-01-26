@@ -94,5 +94,5 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
     }
 
     @Override
-    public void start() {}
+    public void start(boolean showLoadingBar) {}
 }

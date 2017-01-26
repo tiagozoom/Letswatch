@@ -31,7 +31,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
     private final MoviesRepository mMoviesRepository;
     private final MoviesContract.View mMoviesView;
     private final Context mContext;
-    private CompositeSubscription mSubscriptions  = new CompositeSubscription();
+    private CompositeSubscription mSubscriptions = new CompositeSubscription();
     private ConnectivityManager mConnectivityManager;
     private Observable<List<Integer>> mFavouriteMoviesIds;
 
@@ -50,19 +50,20 @@ public class MoviesPresenter implements MoviesContract.Presenter {
     }
 
     @Override
-    public void start() {
-        loadMovies(false, 1);
+    public void start(boolean showLoadingBar) {
+        loadMovies(1,showLoadingBar);
     }
 
-    @Override
-    public void result(int requestCode, int resultCode) {
-
-    }
-
-    public void loadMovies(@NonNull boolean forceUpdate, int currentPage) {
+    public void loadMovies(int currentPage, final boolean showLoadingBar) {
         mSubscriptions.clear();
-        if(hasConnectivity()) {
+        if (hasConnectivity()) {
+
+            if(showLoadingBar){
+                mMoviesView.showLoadingBar();
+            }
+
             mMoviesView.setLoadingIndicator(true);
+
             Subscription subscription = mMoviesRepository
                     .getMovies(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
                     .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
@@ -71,6 +72,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
                                 @Override
                                 public void onCompleted() {
                                     mMoviesView.setLoadingIndicator(false);
+                                    mMoviesView.hideRefresh();
                                 }
 
                                 @Override
@@ -80,6 +82,9 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
                                 @Override
                                 public void onNext(List<Movie> movies) {
+                                    if(showLoadingBar){
+                                        mMoviesView.hideLoadingBar();
+                                    }
                                     processMovies(movies);
                                 }
                             }
@@ -120,14 +125,14 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
     @Override
     public void testConnectivity() {
-        if(hasConnectivity()){
+        if (hasConnectivity()) {
             mMoviesView.hideMessage();
-        }else{
+        } else {
             mMoviesView.showNoConnectivityMessage();
         }
     }
 
-    private boolean hasConnectivity(){
+    private boolean hasConnectivity() {
         NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnectedOrConnecting());
     }

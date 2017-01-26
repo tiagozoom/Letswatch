@@ -15,21 +15,22 @@ import java.util.List;
 public interface MoviesContract {
 
     interface View extends BaseView<Presenter>{
-        void setLoadingIndicator(boolean active);
+        void setLoadingIndicator(boolean isLoading);
         void showMovies(List<Movie> movies);
         void showLoadingMoviesError();
         void updateMovies(int movieApiId,boolean isFavourite);
-        boolean isActive();
         void showMarkedAsFavouriteMessage();
         void showUnmarkedAsFavouriteMessage();
         void showNoConnectivityMessage();
         void showMovieDetails(Movie movie);
         void hideMessage();
+        void hideRefresh();
+        void showLoadingBar();
+        void hideLoadingBar();
     }
 
     interface Presenter extends BasePresenter {
-        void result(int requestCode,int resultCode);
-        void loadMovies(@NonNull  boolean forceUpdate, int currentPage);
+        void loadMovies(int currentPage,boolean showLoadingBar);
         void markAsFavourite(@NonNull Movie movie);
         void unmarkAsFavourite(@NonNull int movieApiId);
         void openDetails(Movie movie);
