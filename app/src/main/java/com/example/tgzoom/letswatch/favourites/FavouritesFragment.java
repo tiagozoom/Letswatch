@@ -17,8 +17,6 @@ import com.example.tgzoom.letswatch.App;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
-import com.example.tgzoom.letswatch.movies.MovieAdapter;
-import com.example.tgzoom.letswatch.movies.MoviesContract;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +31,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
 
     public final static String TAG = "FavouritesFragment";
     private static final String PARCELABLE_FAVOURITES_LIST = "parcelable_favourites_list";
-    private MovieAdapter mMovieAdapter;
+    private FavouriteAdapter mFavouriteAdapter;
     private Snackbar mSnackbar;
 
     @Inject FavouritesPresenter mPresenter;
@@ -61,7 +59,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
         ButterKnife.bind(this,rootView);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
         mRecyclerView.setLayoutManager(gridLayoutManager);
-        mRecyclerView.setAdapter(mMovieAdapter);
+        mRecyclerView.setAdapter(mFavouriteAdapter);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         return rootView;
     }
@@ -76,8 +74,8 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if(mMovieAdapter != null){
-            ArrayList<Movie> movieList = (ArrayList<Movie>) mMovieAdapter.getArrayList();
+        if(mFavouriteAdapter != null){
+            ArrayList<Movie> movieList = (ArrayList<Movie>) mFavouriteAdapter.getArrayList();
             outState.putParcelableArrayList(PARCELABLE_FAVOURITES_LIST, movieList);
         }
         super.onSaveInstanceState(outState);
@@ -92,11 +90,11 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
                 .build()
                 .inject(this);
 
-        mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mFavouritesItemListener);
+        mFavouriteAdapter = new FavouriteAdapter(new ArrayList<Movie>(),mFavouritesItemListener);
 
         if(savedInstanceState != null){
             List<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_FAVOURITES_LIST);
-            mMovieAdapter.swapArrayList(movies);
+            mFavouriteAdapter.swapArrayList(movies);
         }
     }
 
@@ -106,7 +104,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
 
     @Override
     public void showMovies(List<Movie> movies) {
-        mMovieAdapter.swapArrayList(movies);
+        mFavouriteAdapter.swapArrayList(movies);
     }
 
     @Override
@@ -147,12 +145,12 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
 
     @Override
     public void showLoadingBar() {
-        mMovieAdapter.addItem(null);
+        mFavouriteAdapter.addItem(null);
     }
 
     @Override
     public void hideLoadingBar() {
-        mMovieAdapter.getArrayList().remove(1);
+        mFavouriteAdapter.getArrayList().remove(1);
     }
 
     @Override
@@ -176,7 +174,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
 
     @Override
     public void onRefresh() {
-        mMovieAdapter.clear();
+        mFavouriteAdapter.clear();
         mPresenter.start(false);
     }
 }
