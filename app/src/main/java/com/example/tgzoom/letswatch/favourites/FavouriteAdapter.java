@@ -1,28 +1,17 @@
 package com.example.tgzoom.letswatch.favourites;
 
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.tgzoom.letswatch.BR;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
-import com.example.tgzoom.letswatch.util.StringUtils;
-import com.example.tgzoom.letswatch.util.URIUtils;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by tgzoom on 1/27/17.
@@ -31,8 +20,8 @@ import butterknife.ButterKnife;
 public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Movie> mMovieDBArrayList = new ArrayList<Movie>();
     private MoviesItemListener mMoviesItemListener;
-    public static final int VIEW_ITEM = 0;
-    public static final int PROGRESS_BAR = 1;
+    public static final int ITEM_VIEW = 0;
+    public static final int NO_ITEMS = 1;
 
     public FavouriteAdapter(ArrayList<Movie> movieArrayList, MoviesItemListener moviesItemListener) {
         mMovieDBArrayList = movieArrayList;
@@ -46,27 +35,23 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public static class MovieHolder extends RecyclerView.ViewHolder {
         private ViewDataBinding mViewDataBinding;
+
         public MovieHolder(ViewDataBinding view) {
             super(view.getRoot());
             mViewDataBinding = view;
         }
-        public ViewDataBinding getViewDataBinding(){
+
+        public ViewDataBinding getViewDataBinding() {
             return mViewDataBinding;
         }
     }
 
-    public static class ProgressBarHolder extends RecyclerView.ViewHolder {
-        private ViewDataBinding mViewDataBinding;
-        public ProgressBarHolder(ViewDataBinding view) {
-            super(view.getRoot());
-            mViewDataBinding = view;
-        }
+    public static class EmptyViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewDataBinding getViewDataBinding(){
-            return mViewDataBinding;
+        public EmptyViewHolder(View view) {
+            super(view);
         }
     }
-
 
     public List<Movie> getArrayList() {
         return mMovieDBArrayList;
@@ -74,15 +59,14 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewDataBinding view;
         RecyclerView.ViewHolder viewHolder;
 
-        if (viewType == VIEW_ITEM) {
-            view = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.fragment_movies_list_item,parent,false);
+        if(viewType == NO_ITEMS){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_not_found, parent, false);
+            viewHolder = new EmptyViewHolder(view);
+        }else{
+            ViewDataBinding view = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.fragment_movies_list_item, parent, false);
             viewHolder = new MovieHolder(view);
-        } else {
-            view = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),R.layout.loading_list_item, parent, false);
-            viewHolder = new ProgressBarHolder(view);
         }
 
         return viewHolder;
@@ -90,13 +74,42 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
-
-        if (viewHolder instanceof MovieHolder) {
+        if(viewHolder instanceof MovieHolder){
             final MovieHolder holder = (MovieHolder) viewHolder;
             final Movie movie = mMovieDBArrayList.get(position);
             ViewDataBinding viewDataBinding = ((MovieHolder) viewHolder).getViewDataBinding();
-            viewDataBinding.setVariable(BR.movie,movie);
-            /*String title = StringUtils.formatMovieTitle(holder.mContext, movie.getTitle());
+            viewDataBinding.setVariable(BR.movie, movie);
+            viewDataBinding.executePendingBindings();
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (mMovieDBArrayList.size() == 0 ? NO_ITEMS: ITEM_VIEW);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mMovieDBArrayList.size() > 0 ? mMovieDBArrayList.size() : 1;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return mMovieDBArrayList.get(position).getApi_movie_id();
+    }
+
+    public void clear() {
+        mMovieDBArrayList = new ArrayList<>();
+        notifyDataSetChanged();
+    }
+
+    public void addItem(Movie movie) {
+        mMovieDBArrayList.add(movie);
+        notifyDataSetChanged();
+    }
+}
+
+/*String title = StringUtils.formatMovieTitle(holder.mContext, movie.getTitle());
             holder.cardTitle.setText(title);
             String formated_year = StringUtils.formatMovieYear(movie.getRelease_date());
             holder.movie_year.setText(formated_year);
@@ -142,37 +155,3 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     mMoviesItemListener.onClick(movie);
                 }
             });*/
-        }else{
-            ProgressBarHolder holder = (ProgressBarHolder) viewHolder;
-//            holder.progressBar.setIndeterminate(true);
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return (mMovieDBArrayList.get(position) != null) ? VIEW_ITEM : PROGRESS_BAR;
-    }
-
-    @Override
-    public int getItemCount() {
-        if (mMovieDBArrayList != null) {
-            return mMovieDBArrayList.size();
-        }
-        return 0;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return mMovieDBArrayList.get(position).getApi_movie_id();
-    }
-
-    public void clear() {
-        mMovieDBArrayList = new ArrayList<>();
-        notifyDataSetChanged();
-    }
-
-    public void addItem(Movie movie){
-        mMovieDBArrayList.add(movie);
-        notifyDataSetChanged();
-    }
-}

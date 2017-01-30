@@ -76,26 +76,9 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         ButterKnife.bind(this,rootView);
         setHasOptionsMenu(true);
 
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                switch (mMovieAdapter.getItemViewType(position)){
-                    case MovieAdapter.VIEW_ITEM:
-                        return 1;
-                    case MovieAdapter.PROGRESS_BAR:
-                        return Integer.valueOf(getString(R.string.gridlayout_span_count));
-                    default:
-                        return gridLayoutManager.getSpanCount();
-                }
-            }
-        });
-
         mSortDialogFragment = new SortDialogFragment();
         mSortDialogFragment.setTargetFragment(MoviesFragment.this, MOVIES_FRAGMENT_ID);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mMovieAdapter);
-
         mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener() {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -103,9 +86,22 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
                 mCurrentPage = page;
             }
         };
-
         mEndlessRecyclerViewScrollListener.setCurrentPage(mCurrentPage);
+        final GridLayoutManager gridLayoutManager = (GridLayoutManager) mRecyclerView.getLayoutManager();
         mEndlessRecyclerViewScrollListener.setLayoutManager(gridLayoutManager);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (mMovieAdapter.getItemViewType(position)){
+                    case MovieAdapter.VIEW_ITEM:
+                        return 1;
+                    case MovieAdapter.PROGRESS_BAR:
+                        return getResources().getInteger(R.integer.gridlayout_span_count);
+                    default:
+                        return gridLayoutManager.getSpanCount();
+                }
+            }
+        });
         mEndlessRecyclerViewScrollListener.setLoading(false);
         mRecyclerView.addOnScrollListener(mEndlessRecyclerViewScrollListener);
         mSwipeRefreshLayout.setOnRefreshListener(this);

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.example.tgzoom.letswatch.App;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.databinding.FragmentFavouritesBinding;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
 import java.util.ArrayList;
@@ -55,12 +56,24 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView =  inflater.inflate(R.layout.fragment_favourites, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_favourites,container,false);
         ButterKnife.bind(this,rootView);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), Integer.valueOf(getString(R.string.gridlayout_span_count)));
-        mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mFavouriteAdapter);
         mSwipeRefreshLayout.setOnRefreshListener(this);
+        final GridLayoutManager gridLayoutManager = (GridLayoutManager) mRecyclerView.getLayoutManager();
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (mFavouriteAdapter.getItemViewType(position)){
+                    case FavouriteAdapter.ITEM_VIEW:
+                        return 1;
+                    case FavouriteAdapter.NO_ITEMS:
+                        return getResources().getInteger(R.integer.gridlayout_span_count);
+                    default:
+                        return gridLayoutManager.getSpanCount();
+                }
+            }
+        });
         return rootView;
     }
 
