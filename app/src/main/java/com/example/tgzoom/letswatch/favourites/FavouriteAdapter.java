@@ -1,6 +1,8 @@
 package com.example.tgzoom.letswatch.favourites;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,12 +10,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.example.tgzoom.letswatch.BR;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
@@ -47,31 +45,25 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public static class MovieHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.card_image) ImageView cardImage;
-        @BindView(R.id.card_title) TextView cardTitle;
-        @BindView(R.id.movie_year) TextView movie_year;
-        @BindView(R.id.movie_rate) TextView movie_rate;
-        @BindView(R.id.card_menu) ImageView card_menu;
-        @BindView(R.id.movie_layout) RelativeLayout movie_layout;
-        Context mContext;
-
-        public MovieHolder(View view, final Context context) {
-            super(view);
-            ButterKnife.bind(this, view);
-            mContext = context;
+        private ViewDataBinding mViewDataBinding;
+        public MovieHolder(ViewDataBinding view) {
+            super(view.getRoot());
+            mViewDataBinding = view;
+        }
+        public ViewDataBinding getViewDataBinding(){
+            return mViewDataBinding;
         }
     }
 
     public static class ProgressBarHolder extends RecyclerView.ViewHolder {
+        private ViewDataBinding mViewDataBinding;
+        public ProgressBarHolder(ViewDataBinding view) {
+            super(view.getRoot());
+            mViewDataBinding = view;
+        }
 
-        @BindView(R.id.movie_list_progress_bar) ProgressBar progressBar;
-        Context mContext;
-
-        public ProgressBarHolder(View view, final Context context) {
-            super(view);
-            ButterKnife.bind(this, view);
-            mContext = context;
+        public ViewDataBinding getViewDataBinding(){
+            return mViewDataBinding;
         }
     }
 
@@ -82,15 +74,15 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view;
+        ViewDataBinding view;
         RecyclerView.ViewHolder viewHolder;
 
         if (viewType == VIEW_ITEM) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_movies_list_item, parent, false);
-            viewHolder = new MovieHolder(view, parent.getContext());
+            view = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.fragment_movies_list_item,parent,false);
+            viewHolder = new MovieHolder(view);
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.loading_list_item, parent, false);
-            viewHolder = new ProgressBarHolder(view, parent.getContext());
+            view = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),R.layout.loading_list_item, parent, false);
+            viewHolder = new ProgressBarHolder(view);
         }
 
         return viewHolder;
@@ -102,7 +94,9 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (viewHolder instanceof MovieHolder) {
             final MovieHolder holder = (MovieHolder) viewHolder;
             final Movie movie = mMovieDBArrayList.get(position);
-            String title = StringUtils.formatMovieTitle(holder.mContext, movie.getTitle());
+            ViewDataBinding viewDataBinding = ((MovieHolder) viewHolder).getViewDataBinding();
+            viewDataBinding.setVariable(BR.movie,movie);
+            /*String title = StringUtils.formatMovieTitle(holder.mContext, movie.getTitle());
             holder.cardTitle.setText(title);
             String formated_year = StringUtils.formatMovieYear(movie.getRelease_date());
             holder.movie_year.setText(formated_year);
@@ -147,10 +141,10 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 public void onClick(View view) {
                     mMoviesItemListener.onClick(movie);
                 }
-            });
+            });*/
         }else{
             ProgressBarHolder holder = (ProgressBarHolder) viewHolder;
-            holder.progressBar.setIndeterminate(true);
+//            holder.progressBar.setIndeterminate(true);
         }
     }
 

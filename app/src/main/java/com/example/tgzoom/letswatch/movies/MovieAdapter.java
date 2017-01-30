@@ -52,7 +52,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ImageView cardImage;
         @BindView(R.id.card_title)
         TextView cardTitle;
-        @BindView(R.id.movie_year)
+        @BindView(R.id.movie_release_date)
         TextView movie_year;
         @BindView(R.id.movie_rate)
         TextView movie_rate;
