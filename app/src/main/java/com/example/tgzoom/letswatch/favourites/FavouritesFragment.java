@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import com.example.tgzoom.letswatch.App;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
-import com.example.tgzoom.letswatch.databinding.FragmentFavouritesBinding;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
 import java.util.ArrayList;

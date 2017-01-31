@@ -1,6 +1,9 @@
 package com.example.tgzoom.letswatch.moviedetail;
 
 import android.content.Intent;
+import android.databinding.BindingAdapter;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.tgzoom.letswatch.BR;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.Trailer;
@@ -37,49 +41,29 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
     public static final String TAG = "movie_detail_fragment";
     private static final String PARCELABLE_TRAILER_LIST = "trailers";
 
-    @BindView(R.id.movie_title) TextView title_textview;
-    @BindView(R.id.trailer_linearlist) LinearAdapterLayout mLinearAdapterLayout;
-    @BindView(R.id.movie_cover_imageview) ImageView cover_imageview;
-    @BindView(R.id.movie_release_date) TextView release_date_textview;
-    @BindView(R.id.movie_duration_textview) TextView movie_title_textview;
-    @BindView(R.id.movie_rating_textview) TextView rating_textview;
-    @BindView(R.id.movie_overview_textview) TextView overview_textview;
-
     private Movie movie;
-
     private MovieDetailContract.Presenter mMovieDetailPresenter;
-
     private TrailerAdapter mTrailerAdapter;
-
     private MovieDetailListener mMoviesDetailListener = new MovieDetailListener() {
-
         @Override
         public void onMarkAsFavorite(Movie movie) {
             mMovieDetailPresenter.markAsFavourite(movie);
         }
-
         @Override
         public void onUnmarAsFavorite(int movieApiId) {
             mMovieDetailPresenter.unmarkAsFavourite(movieApiId);
         }
-
         @Override
         public void onTrailerClick(String trailerkey) {
             mMovieDetailPresenter.openTrailer(trailerkey);
         }
-
     };
 
     public static MovieDetailFragment newInstance(Movie movie) {
-
         MovieDetailFragment detailFragment = new MovieDetailFragment();
-
         Bundle arguments = new Bundle();
-
         arguments.putParcelable(MovieDetailActivity.MOVIE_OBJECT, movie);
-
         detailFragment.setArguments(arguments);
-
         return detailFragment;
 
     }
@@ -103,46 +87,34 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
-
-        ButterKnife.bind(this, rootView);
-
-        mTrailerAdapter = new TrailerAdapter(getContext(), mMoviesDetailListener);
-
-        mLinearAdapterLayout.setAdapter(mTrailerAdapter);
-
-        if(savedInstanceState != null){
-
-            List<Trailer> trailers = savedInstanceState.getParcelableArrayList(PARCELABLE_TRAILER_LIST);
-
-            mTrailerAdapter.swapArrayList(trailers);
-
-        }
-
+        ViewDataBinding viewDataBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_movie_detail, container, false);
         setHasOptionsMenu(true);
-
+/*
+        mTrailerAdapter = new TrailerAdapter(getContext(), mMoviesDetailListener);
+        if(savedInstanceState != null){
+            List<Trailer> trailers = savedInstanceState.getParcelableArrayList(PARCELABLE_TRAILER_LIST);
+            mTrailerAdapter.swapArrayList(trailers);
+        }
+*/
         Bundle arguments = getArguments();
-
         if (arguments != null) {
-
             movie = (Movie) arguments.get(MovieDetailActivity.MOVIE_OBJECT);
+            viewDataBinding.setVariable(BR.movie,movie);
 
         }
-
-        return rootView;
+        return viewDataBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(mTrailerAdapter.getCount() <= 0){
+/*        if(mTrailerAdapter.getCount() <= 0){
 
             mMovieDetailPresenter.loadTrailers(movie.getApi_movie_id());
 
-        }
+        }*/
     }
 
     @Override
@@ -171,7 +143,9 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
     @Override
     public void showMovieDetailInformation(Movie movie) {
 
-        title_textview.setText(movie.getTitle());
+/*
+
+       title_textview.setText(movie.getTitle());
 
         String release_year = StringUtils.formatMovieYear(movie.getRelease_date());
 
@@ -200,6 +174,18 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
         }
 
         ((MovieDetailCallback) getActivity()).setToolbarTitle(movie.getTitle());
+*/
+
+    }
+
+    @BindingAdapter("bind:coverImage")
+    public static void loadCoverImage(ImageView coverImage,String url){
+        String posterPath = URIUtils.buildPosterPath(url).toString();
+        Glide.with(coverImage.getContext())
+                .load(posterPath)
+                .centerCrop()
+                .placeholder(R.color.colorPrimary)
+                .into(coverImage);
     }
 
     @Override

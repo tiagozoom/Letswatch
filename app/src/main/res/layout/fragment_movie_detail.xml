@@ -1,127 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <android.support.v7.widget.CardView
-        android:layout_marginTop="1dp"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View" />
+        <variable name="movie" type="com.example.tgzoom.letswatch.data.Movie"/>
+    </data>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="1dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <ImageView
-                android:id="@+id/movie_cover_imageview"
-                android:layout_width="100dp"
-                android:layout_height="150dp"
-                android:src="@color/colorPrimaryDark" />
+            android:layout_marginTop="1dp"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="1dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/activity_horizontal_margin">
+
+                <ImageView
+                    android:id="@+id/movie_cover_imageview"
+                    android:layout_width="100dp"
+                    android:layout_height="150dp"
+                    app:coverImage="@{movie.poster_path}"
+                    android:src="@color/colorPrimaryDark" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/activity_horizontal_margin">
+
+                    <TextView
+                        android:id="@+id/movie_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="@{@string/movie_title_format(movie.title)}"
+                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/movie_release_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="@{movie.release_date}"
+                        android:textAppearance="?android:textAppearanceLarge"
+                        android:textSize="16sp"
+                        android:textStyle="italic" />
+
+                    <TextView
+                        android:id="@+id/movie_duration_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="15 min"
+                        android:textSize="16sp"
+                        android:textStyle="italic" />
+
+                    <TextView
+                        android:id="@+id/movie_rating_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text=""
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="1dp">
+
+            <LinearLayout
+                android:id="@+id/trailers_container"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:paddingBottom="24dp"
                 android:paddingLeft="@dimen/activity_horizontal_margin">
 
                 <TextView
-                    android:id="@+id/movie_title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="Suicide Squad"
+                    android:paddingTop="16dp"
+                    android:text="Overview"
                     android:textAppearance="?android:textAppearanceLarge"
                     android:textSize="20sp" />
 
                 <TextView
-                    android:id="@+id/movie_release_date"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/movie_overview_textview"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="2016"
-                    android:textStyle="italic"
-                    android:textAppearance="?android:textAppearanceLarge"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/movie_duration_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:text="15 min"
-                    android:textSize="16sp"
-                    android:textStyle="italic" />
-
-                <TextView
-                    android:id="@+id/movie_rating_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:text="8/10"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="@{movie.overview}"
+                    android:textAppearance="?android:textAppearanceMedium"
                     android:textSize="14sp" />
+
             </LinearLayout>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.CardView
-        android:layout_marginTop="1dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="1dp">
-
-        <LinearLayout
-            android:id="@+id/trailers_container"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="24dp"
-            android:paddingLeft="@dimen/activity_horizontal_margin">
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="1dp"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="1dp">
 
-            <TextView
+            <com.example.tgzoom.letswatch.widget.LinearAdapterLayout
+                android:id="@+id/trailer_linearlist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:paddingTop="16dp"
-                android:text="Overview"
-                android:textSize="20sp"
-                android:textAppearance="?android:textAppearanceLarge" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/movie_overview_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-                android:textAppearance="?android:textAppearanceMedium"
-                android:textSize="14sp" />
+            </com.example.tgzoom.letswatch.widget.LinearAdapterLayout>
+        </android.support.v7.widget.CardView>
 
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="1dp">
-
-        <com.example.tgzoom.letswatch.widget.LinearAdapterLayout
-            android:id="@+id/trailer_linearlist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        </com.example.tgzoom.letswatch.widget.LinearAdapterLayout>
-    </android.support.v7.widget.CardView>
-
-</LinearLayout>
+    </LinearLayout>
+</layout>
