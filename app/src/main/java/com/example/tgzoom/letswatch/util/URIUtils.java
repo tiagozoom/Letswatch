@@ -35,16 +35,16 @@ public class URIUtils {
         return poster_uri;
     }
 
-    public static Uri buildBackDropPath(String poster_path){
+    public static Uri buildBackDropPath(String backdrop_path){
         Uri.Builder builder = new Uri.Builder();
-        poster_path = poster_path.substring(1);
+        backdrop_path = backdrop_path.substring(1);
         Uri poster_uri = builder
                 .scheme("https")
                 .authority("image.tmdb.org")
                 .appendPath("t")
                 .appendPath("p")
                 .appendPath("w1000")
-                .appendPath(poster_path).build();
+                .appendPath(backdrop_path).build();
         return poster_uri;
     }
 

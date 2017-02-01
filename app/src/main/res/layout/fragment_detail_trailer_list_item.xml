@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
-    android:id="@+id/item_container"
-    android:layout_margin="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_vertical_margin"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:clickable="true">
+    android:layout_width="match_parent"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="1dp">
 
-    <ImageView
-        android:id="@+id/play_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/item_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@null"
-        android:src="@drawable/ic_play_black_24dp"
-        />
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/activity_vertical_margin">
 
-    <TextView
-        android:id="@+id/trailer_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_vertical_margin"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:textSize="16sp"
-        android:text="Whiplash"/>
+        <ImageView
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@drawable/ic_play_black_24dp" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/trailer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_vertical_margin"
+            android:text="Whiplash"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

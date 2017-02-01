@@ -23,6 +23,8 @@ import com.example.tgzoom.letswatch.BR;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.Trailer;
+import com.example.tgzoom.letswatch.databinding.FragmentMovieDetailBinding;
+import com.example.tgzoom.letswatch.databinding.FragmentMoviesListItemBinding;
 import com.example.tgzoom.letswatch.util.StringUtils;
 import com.example.tgzoom.letswatch.util.URIUtils;
 import com.example.tgzoom.letswatch.widget.LinearAdapterLayout;
@@ -72,7 +74,6 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
     public void onStart() {
         super.onStart();
         mMovieDetailPresenter.start(false);
-        showMovieDetailInformation(movie);
     }
 
     @Override
@@ -88,33 +89,28 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ViewDataBinding viewDataBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_movie_detail, container, false);
+        FragmentMovieDetailBinding fragmentMoviesListItemBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_movie_detail, container, false);
         setHasOptionsMenu(true);
-/*
         mTrailerAdapter = new TrailerAdapter(getContext(), mMoviesDetailListener);
         if(savedInstanceState != null){
             List<Trailer> trailers = savedInstanceState.getParcelableArrayList(PARCELABLE_TRAILER_LIST);
             mTrailerAdapter.swapArrayList(trailers);
         }
-*/
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            movie = (Movie) arguments.get(MovieDetailActivity.MOVIE_OBJECT);
-            viewDataBinding.setVariable(BR.movie,movie);
-
+        if (getArguments() != null) {
+            movie = (Movie) getArguments().get(MovieDetailActivity.MOVIE_OBJECT);
+            fragmentMoviesListItemBinding.setVariable(BR.movie,movie);
         }
-        return viewDataBinding.getRoot();
+        fragmentMoviesListItemBinding.trailerLinearlist.setAdapter(mTrailerAdapter);
+        return fragmentMoviesListItemBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-/*        if(mTrailerAdapter.getCount() <= 0){
-
+        if(mTrailerAdapter.getCount() <= 0){
             mMovieDetailPresenter.loadTrailers(movie.getApi_movie_id());
-
-        }*/
+        }
     }
 
     @Override
@@ -138,44 +134,6 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
         inflater.inflate(R.menu.fragment_movie_detail, menu);
         MenuItem favorite_button = menu.findItem(R.id.favorite_button);
         favorite_button.setIcon((movie.isFavourite()) ? R.drawable.ic_heart_white_24dp : R.drawable.ic_heart_outline_white_24dp);
-    }
-
-    @Override
-    public void showMovieDetailInformation(Movie movie) {
-
-/*
-
-       title_textview.setText(movie.getTitle());
-
-        String release_year = StringUtils.formatMovieYear(movie.getRelease_date());
-
-        release_date_textview.setText(release_year);
-
-        rating_textview.setText(movie.getVote_average().toString());
-
-        overview_textview.setText(movie.getOverview());
-
-        if (movie.getPoster_path() != null) {
-
-            String poster = URIUtils.buildPosterPath(movie.getPoster_path()).toString();
-
-            Glide.with(getActivity())
-                    .load(poster)
-                    .placeholder(R.color.colorPrimary)
-                    .into(cover_imageview);
-        }
-
-        if (movie.getBackdrop_path() != null) {
-
-            String backdrop_path = URIUtils.buildBackDropPath(movie.getBackdrop_path()).toString();
-
-            ((MovieDetailCallback) getActivity()).setBackdropImage(backdrop_path);
-
-        }
-
-        ((MovieDetailCallback) getActivity()).setToolbarTitle(movie.getTitle());
-*/
-
     }
 
     @BindingAdapter("bind:coverImage")

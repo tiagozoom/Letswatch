@@ -19,7 +19,6 @@ public interface MovieDetailContract {
         void setLoadingIndicator(boolean active);
         void showMarkedAsFavouriteMessage();
         void showUnmarkedAsFavouriteMessage();
-        void showMovieDetailInformation(Movie movie);
         void showTrailers(List<Trailer> trailers);
         void openTrailer(Uri trailerUri);
     }

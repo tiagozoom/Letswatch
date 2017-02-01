@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <import type="android.view.View" />
-        <variable name="movie" type="com.example.tgzoom.letswatch.data.Movie"/>
+
+        <variable
+            name="movie"
+            type="com.example.tgzoom.letswatch.data.Movie" />
     </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,8 +33,8 @@
                     android:id="@+id/movie_cover_imageview"
                     android:layout_width="100dp"
                     android:layout_height="150dp"
-                    app:coverImage="@{movie.poster_path}"
-                    android:src="@color/colorPrimaryDark" />
+                    android:src="@color/colorPrimaryDark"
+                    app:coverImage="@{movie.poster_path}" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -113,22 +119,14 @@
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
+
+        <com.example.tgzoom.letswatch.widget.LinearAdapterLayout
+            android:id="@+id/trailer_linearlist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="1dp"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="1dp">
+            android:orientation="vertical">
 
-            <com.example.tgzoom.letswatch.widget.LinearAdapterLayout
-                android:id="@+id/trailer_linearlist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            </com.example.tgzoom.letswatch.widget.LinearAdapterLayout>
-        </android.support.v7.widget.CardView>
+        </com.example.tgzoom.letswatch.widget.LinearAdapterLayout>
 
     </LinearLayout>
 </layout>
