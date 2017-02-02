@@ -13,21 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.example.tgzoom.letswatch.BR;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.databinding.FragmentMoviesListItemBinding;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
-import com.example.tgzoom.letswatch.util.StringUtils;
 import com.example.tgzoom.letswatch.util.URIUtils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -160,12 +154,14 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @BindingAdapter("bind:cardImage")
-    public static void loadCardImage(ImageView cardImage,String url){
-        String posterPath = URIUtils.buildPosterPath(url).toString();
-        Glide.with(cardImage.getContext())
-                .load(posterPath)
-                .centerCrop()
-                .placeholder(R.color.colorPrimary)
-                .into(cardImage);
+    public static void loadCardImage(ImageView cardImage,String posterPath){
+        if(posterPath != null){
+            String url = URIUtils.buildPosterPath(posterPath).toString();
+            Glide.with(cardImage.getContext())
+                    .load(url)
+                    .centerCrop()
+                    .placeholder(R.color.colorPrimary)
+                    .into(cardImage);
+        }
     }
 }

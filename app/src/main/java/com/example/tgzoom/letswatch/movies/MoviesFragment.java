@@ -24,6 +24,7 @@ import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.dialog.SortDialogFragment;
 import com.example.tgzoom.letswatch.dialog.SortDialogListener;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
+import com.example.tgzoom.letswatch.main.MainActivity;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
 import java.util.ArrayList;
@@ -81,6 +82,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         View rootView =  inflater.inflate(R.layout.fragment_movies, container, false);
         ButterKnife.bind(this,rootView);
         setHasOptionsMenu(true);
+        ((MainActivity) getActivity()).setTitle(getString(R.string.fragment_movies_title));
 
         mSortDialogFragment = new SortDialogFragment();
         mSortDialogFragment.setTargetFragment(MoviesFragment.this, MOVIES_FRAGMENT_ID);
@@ -92,7 +94,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
                 mCurrentPage = page;
             }
         };
-        mEndlessRecyclerViewScrollListener.setCurrentPage(mCurrentPage);
+
         final GridLayoutManager gridLayoutManager = (GridLayoutManager) mRecyclerView.getLayoutManager();
         mEndlessRecyclerViewScrollListener.setLayoutManager(gridLayoutManager);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -108,7 +110,9 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
                 }
             }
         });
+
         mEndlessRecyclerViewScrollListener.setLoading(false);
+        mEndlessRecyclerViewScrollListener.setCurrentPage(mCurrentPage);
         mRecyclerView.addOnScrollListener(mEndlessRecyclerViewScrollListener);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         return rootView;
@@ -209,6 +213,12 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @Override
     public void showNoConnectivityMessage() {
         showMessage(getString(R.string.no_connection_message),Snackbar.LENGTH_INDEFINITE);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoadingBar();
     }
 
     @Override

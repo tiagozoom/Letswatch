@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
@@ -11,17 +10,7 @@
         android:layout_height="wrap_content"
         app:elevation="0dp">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:fitsSystemWindows="true">
-
-            <include layout="@layout/toolbar" />
-
-        </android.support.design.widget.CollapsingToolbarLayout>
+        <include layout="@layout/toolbar" />
 
     </android.support.design.widget.AppBarLayout>
 

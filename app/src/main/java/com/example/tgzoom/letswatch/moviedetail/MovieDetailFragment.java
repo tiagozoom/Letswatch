@@ -128,7 +128,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
 
     @BindingAdapter("bind:coverImage")
     public static void loadCoverImage(ImageView coverImage,String url){
-        String posterPath = URIUtils.buildPosterPath(url).toString();
+        String posterPath = URIUtils.buildPosterPath(url);
         Glide.with(coverImage.getContext())
                 .load(posterPath)
                 .centerCrop()
