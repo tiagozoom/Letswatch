@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <import type="android.view.View" />
-        <variable
-            name="movie"
-            type="com.example.tgzoom.letswatch.data.Movie"></variable>
+        <variable name="movie" type="com.example.tgzoom.letswatch.data.Movie"></variable>
+        <variable name="movieListener" type="com.example.tgzoom.letswatch.listener.MoviesItemListener"></variable>
     </data>
-
     <android.support.v7.widget.CardView
         android:id="@+id/movie_cardview"
         android:layout_width="145dp"
@@ -21,7 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground"
-            android:clickable="true">
+            android:clickable="true"
+            android:onClick="@{() -> movieListener.onClick(movie)}">
 
             <ImageView
                 android:id="@+id/card_image"
@@ -29,6 +30,7 @@
                 android:layout_height="220dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/card_image_contentDescription"
+                app:cardImage="@{movie.poster_path}"
                 android:src="@color/colorPrimary" />
 
             <TextView
@@ -39,8 +41,11 @@
                 android:fontFamily="sans-serif"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_horizontal_margin"
-                android:text="teste"
+                android:text="@{movie.title}"
+                android:maxWidth="120dp"
                 android:textColor="@color/colorBlack"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textSize="16sp" />
 
             <TextView
@@ -49,8 +54,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/card_title"
                 android:fontFamily="sans-serif"
+                android:maxLength="@integer/movie_release_date_max_length"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:text="teste"
+                android:text="@{movie.release_date}"
                 android:textSize="13sp" />
 
             <ImageView
@@ -62,7 +68,8 @@
                 android:paddingBottom="@dimen/activity_horizontal_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_horizontal_margin"
-                android:src="@drawable/ic_more_vert_black_24dp" />
+                android:src="@drawable/ic_more_vert_black_24dp"
+                android:onClick="@{(view) -> movieListener.onCardMenuClick(view,movie)}"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -77,8 +84,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="testefdsafdfd"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:text="@{@string/movie_rate_format(movie.vote_average)}"/>
 
                 <ImageView
                     android:id="@+id/rate_star"
@@ -86,10 +93,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_star_black_18dp" />
 
-
             </LinearLayout>
-
         </RelativeLayout>
-
     </android.support.v7.widget.CardView>
 </layout>

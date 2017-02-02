@@ -34,15 +34,21 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     private FavouriteAdapter mFavouriteAdapter;
     private Snackbar mSnackbar;
 
-    @Inject FavouritesPresenter mPresenter;
     @BindView(R.id.favourites_recyclerview) RecyclerView mRecyclerView;
     @BindView(R.id.favourites_swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
+    @Inject FavouritesPresenter mPresenter;
 
     private MoviesItemListener mFavouritesItemListener = new MoviesItemListener() {
         @Override
         public void onClick(Movie movie) {
             mPresenter.openDetails(movie);
         }
+
+        @Override
+        public void onCardMenuClick(View view, Movie movie) {
+            mFavouriteAdapter.onCardMenuClick(view,movie);
+        }
+
         @Override
         public void onMarkAsFavorite(Movie movie) {
             mPresenter.markAsFavourite(movie);
@@ -77,14 +83,6 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState == null){
-            mPresenter.start(true);
-        }
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         if(mFavouriteAdapter != null){
             ArrayList<Movie> movieList = (ArrayList<Movie>) mFavouriteAdapter.getArrayList();
@@ -102,17 +100,18 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
                 .build()
                 .inject(this);
 
-        mFavouriteAdapter = new FavouriteAdapter(new ArrayList<Movie>(),mFavouritesItemListener);
+        mFavouriteAdapter = new FavouriteAdapter(mFavouritesItemListener);
 
         if(savedInstanceState != null){
             List<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_FAVOURITES_LIST);
             mFavouriteAdapter.swapArrayList(movies);
         }
+
+        mPresenter.start(true);
     }
 
     @Override
-    public void setLoadingIndicator(boolean active) {
-    }
+    public void setLoadingIndicator(boolean active) {}
 
     @Override
     public void showMovies(List<Movie> movies) {
@@ -188,5 +187,11 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     public void onRefresh() {
         mFavouriteAdapter.clear();
         mPresenter.start(false);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter = null;
     }
 }

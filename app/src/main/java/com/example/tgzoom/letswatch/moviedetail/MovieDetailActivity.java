@@ -61,10 +61,12 @@ public class MovieDetailActivity extends AppCompatActivity{
 
     @BindingAdapter("bind:backdropImage")
     public static void setBackdropImage(ImageView backdropImageView, String backdrop_path) {
-        String imageUrl = URIUtils.buildBackDropPath(backdrop_path).toString();
-        Glide.with(backdropImageView.getContext())
-                .load(imageUrl)
-                .override(backdropImageView.getResources().getInteger(R.integer.movie_detail_backdrop_width), backdropImageView.getResources().getInteger(R.integer.movie_detail_backdrop_height))
-                .into(backdropImageView);
+        if(backdrop_path != null){
+            String imageUrl = URIUtils.buildBackDropPath(backdrop_path).toString();
+            Glide.with(backdropImageView.getContext())
+                    .load(imageUrl)
+                    .override(backdropImageView.getResources().getInteger(R.integer.movie_detail_backdrop_width), backdropImageView.getResources().getInteger(R.integer.movie_detail_backdrop_height))
+                    .into(backdropImageView);
+        }
     }
 }

@@ -33,14 +33,8 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public static final int ITEM_VIEW = 0;
     public static final int NO_ITEMS = 1;
 
-    public FavouriteAdapter(ArrayList<Movie> movieArrayList, MoviesItemListener moviesItemListener) {
-        mMovieDBArrayList = movieArrayList;
+    public FavouriteAdapter(MoviesItemListener moviesItemListener) {
         mMoviesItemListener = moviesItemListener;
-    }
-
-    public void swapArrayList(List<Movie> movies) {
-        mMovieDBArrayList = movies;
-        notifyDataSetChanged();
     }
 
     public static class MovieHolder extends RecyclerView.ViewHolder {
@@ -75,7 +69,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_not_found, parent, false);
             viewHolder = new EmptyViewHolder(view);
         } else {
-            ViewDataBinding view = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.fragment_favourites_list_item, parent, false);
+            ViewDataBinding view = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.fragment_movies_list_item, parent, false);
             viewHolder = new MovieHolder(view);
         }
 
@@ -88,9 +82,14 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             final Movie movie = mMovieDBArrayList.get(position);
             ViewDataBinding viewDataBinding = ((MovieHolder) viewHolder).getViewDataBinding();
             viewDataBinding.setVariable(BR.movie, movie);
-            viewDataBinding.setVariable(BR.favouritesAdapter, this);
+            viewDataBinding.setVariable(BR.movieListener, mMoviesItemListener);
             viewDataBinding.executePendingBindings();
         }
+    }
+
+    public void swapArrayList(List<Movie> movies) {
+        mMovieDBArrayList = movies;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -137,17 +136,15 @@ public class FavouriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         popup.show();
     }
 
-    public void onCardClick(final Movie movie){
-        mMoviesItemListener.onClick(movie);
-    }
-
     @BindingAdapter("bind:cardImage")
-    public static void loadCardImage(ImageView cardImage,String url){
-        String posterPath = URIUtils.buildPosterPath(url).toString();
-        Glide.with(cardImage.getContext())
-                .load(posterPath)
-                .centerCrop()
-                .placeholder(R.color.colorPrimary)
-                .into(cardImage);
+    public static void loadCardImage(ImageView cardImage,String posterPath){
+        if(posterPath != null){
+            String url = URIUtils.buildPosterPath(posterPath).toString();
+            Glide.with(cardImage.getContext())
+                    .load(url)
+                    .centerCrop()
+                    .placeholder(R.color.colorPrimary)
+                    .into(cardImage);
+        }
     }
 }

@@ -27,10 +27,9 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
     private final MoviesRepository mMoviesRepository;
     private final FavouritesContract.View mFavouritesView;
     private CompositeSubscription mSubscriptions  = new CompositeSubscription();
-    private ConnectivityManager mConnectivityManager;
 
     @Inject
-    FavouritesPresenter(MoviesRepository moviesRepository, FavouritesContract.View favouritesView, ConnectivityManager connectivityManager){
+    FavouritesPresenter(MoviesRepository moviesRepository, FavouritesContract.View favouritesView){
         mMoviesRepository = moviesRepository;
         mFavouritesView = favouritesView;
     }
@@ -62,14 +61,6 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
                 );
 
         mSubscriptions.add(subscription);
-        mSubscriptions.add(mMoviesRepository.getFavouriteClickEvent().subscribe(
-                new Action1<FavouriteObservableImp.FavouriteClickEvent>() {
-                    @Override
-                    public void call(FavouriteObservableImp.FavouriteClickEvent favouriteClickEvent) {
-                        mFavouritesView.updateMovies(favouriteClickEvent.movieApiId, favouriteClickEvent.isFavorite);
-                    }
-                })
-        );
     }
 
     private void processMovies(@NonNull List<Movie> movies) {
@@ -95,16 +86,11 @@ public class FavouritesPresenter implements FavouritesContract.Presenter {
 
     @Override
     public void testConnectivity() {
-        if (hasConnectivity()) {
-            mFavouritesView.hideMessage();
-        } else {
-            mFavouritesView.showNoConnectivityMessage();
-        }
+
     }
 
     private boolean hasConnectivity() {
-        NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnectedOrConnecting());
+        return false;
     }
 
     @Override

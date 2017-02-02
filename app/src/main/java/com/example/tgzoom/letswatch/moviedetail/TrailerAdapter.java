@@ -23,7 +23,8 @@ import butterknife.BindView;
  */
 public class TrailerAdapter extends BaseAdapter {
 
-    @BindView(R.id.trailers_container) ViewGroup mTrailerViewGroup;
+    @BindView(R.id.trailers_container)
+    ViewGroup mTrailerViewGroup;
 
     private List<Trailer> mTrailerList = new ArrayList<>();
 
@@ -37,7 +38,7 @@ public class TrailerAdapter extends BaseAdapter {
 
     private MovieDetailListener mMovieDetailListener;
 
-    public TrailerAdapter(Context context,MovieDetailListener movieDetailListener){
+    public TrailerAdapter(Context context, MovieDetailListener movieDetailListener) {
         mContext = context;
         mIinflater = LayoutInflater.from(context);
         mMovieDetailListener = movieDetailListener;
@@ -62,11 +63,12 @@ public class TrailerAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         final Trailer trailer = mTrailerList.get(position);
 
-        if(HEADER_ITEM == getItemViewType(position)){
-            convertView = mIinflater.inflate(R.layout.fragment_detail_trailer_first_list_item,parent,false);
-        }else{
-            convertView = mIinflater.inflate(R.layout.fragment_detail_trailer_list_item,parent,false);
+        if (HEADER_ITEM == getItemViewType(position)) {
+            setHeaderItem(convertView,parent);
         }
+
+        convertView = mIinflater.inflate(R.layout.fragment_detail_trailer_list_item, parent, false);
+
 
         TextView trailerName = (TextView) convertView.findViewById(R.id.trailer_name);
         ViewGroup item_container = (ViewGroup) convertView.findViewById(R.id.item_container);
@@ -82,19 +84,23 @@ public class TrailerAdapter extends BaseAdapter {
         return convertView;
     }
 
+    private void setHeaderItem(View convertView, ViewGroup parent) {
+        convertView = mIinflater.inflate(R.layout.fragment_detail_trailer_first_list_item, parent, true);
+    }
+
     @Override
     public int getItemViewType(int position) {
         return (position == HEADER_ITEM) ? HEADER_ITEM : NORMAL_ITEM;
     }
 
-    public void swapArrayList(List<Trailer> trailerList){
-        if(trailerList != null) {
+    public void swapArrayList(List<Trailer> trailerList) {
+        if (trailerList != null) {
             mTrailerList = trailerList;
             notifyDataSetChanged();
         }
     }
 
-    public List<Trailer> getList(){
+    public List<Trailer> getList() {
         return mTrailerList;
     }
 }

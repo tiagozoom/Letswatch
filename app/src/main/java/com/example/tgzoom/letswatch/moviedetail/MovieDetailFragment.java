@@ -3,7 +3,6 @@ package com.example.tgzoom.letswatch.moviedetail;
 import android.content.Intent;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,24 +15,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.example.tgzoom.letswatch.BR;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.data.Trailer;
 import com.example.tgzoom.letswatch.databinding.FragmentMovieDetailBinding;
-import com.example.tgzoom.letswatch.databinding.FragmentMoviesListItemBinding;
-import com.example.tgzoom.letswatch.util.StringUtils;
 import com.example.tgzoom.letswatch.util.URIUtils;
-import com.example.tgzoom.letswatch.widget.LinearAdapterLayout;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -100,7 +90,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
             movie = (Movie) getArguments().get(MovieDetailActivity.MOVIE_OBJECT);
             fragmentMoviesListItemBinding.setVariable(BR.movie,movie);
         }
-        fragmentMoviesListItemBinding.trailerLinearlist.setAdapter(mTrailerAdapter);
+        fragmentMoviesListItemBinding.trailersList.setAdapter(mTrailerAdapter);
         return fragmentMoviesListItemBinding.getRoot();
     }
 

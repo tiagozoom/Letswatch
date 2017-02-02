@@ -57,6 +57,12 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         public void onClick(Movie movie) {
             mPresenter.openDetails(movie);
         }
+
+        @Override
+        public void onCardMenuClick(View view, Movie movie) {
+            mMovieAdapter.onCardMenuClick(view,movie);
+        }
+
         @Override
         public void onMarkAsFavorite(Movie movie) {
             mPresenter.markAsFavourite(movie);

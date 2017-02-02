@@ -3,12 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <import type="android.view.View" />
-
-        <variable
-            name="movie"
-            type="com.example.tgzoom.letswatch.data.Movie" />
+        <variable name="movie" type="com.example.tgzoom.letswatch.data.Movie" />
     </data>
 
     <LinearLayout
@@ -30,7 +26,7 @@
                 android:padding="@dimen/activity_horizontal_margin">
 
                 <ImageView
-                    android:id="@+id/movie_cover_imageview"
+                    android:id="@+id/movie_cover"
                     android:layout_width="100dp"
                     android:layout_height="150dp"
                     android:src="@color/colorPrimaryDark"
@@ -47,7 +43,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:text="@{@string/movie_title_format(movie.title)}"
+                        android:text="@{movie.title}"
                         android:textAppearance="?android:textAppearanceLarge"
                         android:textSize="20sp" />
 
@@ -57,25 +53,17 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:text="@{movie.release_date}"
+                        android:maxLength="@integer/movie_release_date_max_length"
                         android:textAppearance="?android:textAppearanceLarge"
                         android:textSize="16sp"
                         android:textStyle="italic" />
 
                     <TextView
-                        android:id="@+id/movie_duration_textview"
+                        android:id="@+id/movie_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:text="15 min"
-                        android:textSize="16sp"
-                        android:textStyle="italic" />
-
-                    <TextView
-                        android:id="@+id/movie_rating_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif"
-                        android:text=""
+                        android:text="@{@string/movie_rate_format(movie.vote_average)}"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -106,7 +94,7 @@
                     android:textSize="20sp" />
 
                 <TextView
-                    android:id="@+id/movie_overview_textview"
+                    android:id="@+id/movie_overview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
@@ -121,7 +109,7 @@
 
 
         <com.example.tgzoom.letswatch.widget.LinearAdapterLayout
-            android:id="@+id/trailer_linearlist"
+            android:id="@+id/trailers_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
