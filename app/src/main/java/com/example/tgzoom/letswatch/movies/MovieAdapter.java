@@ -160,12 +160,14 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @BindingAdapter("bind:cardImage")
-    public static void loadCardImage(ImageView cardImage,String url){
-        String posterPath = URIUtils.buildPosterPath(url).toString();
-        Glide.with(cardImage.getContext())
-                .load(posterPath)
-                .centerCrop()
-                .placeholder(R.color.colorPrimary)
-                .into(cardImage);
+    public static void loadCardImage(ImageView cardImage,String posterPath){
+        if(posterPath != null){
+            String url = URIUtils.buildPosterPath(posterPath).toString();
+            Glide.with(cardImage.getContext())
+                    .load(url)
+                    .centerCrop()
+                    .placeholder(R.color.colorPrimary)
+                    .into(cardImage);
+        }
     }
 }

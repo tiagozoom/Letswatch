@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.example.tgzoom.letswatch.App;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.main.MainActivity;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
 import java.util.ArrayList;
@@ -63,6 +64,8 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_favourites,container,false);
         ButterKnife.bind(this,rootView);
+        ((MainActivity) getActivity()).setTitle(getString(R.string.fragment_favourites_title));
+        
         mRecyclerView.setAdapter(mFavouriteAdapter);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         final GridLayoutManager gridLayoutManager = (GridLayoutManager) mRecyclerView.getLayoutManager();
