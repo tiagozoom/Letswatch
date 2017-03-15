@@ -98,7 +98,7 @@ public class FavouritesFragment extends Fragment implements FavouritesContract.V
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DaggerFavouritesComponent.builder()
-                .moviesRepositoryComponent(((App) getActivity().getApplication()).getMoviesRepositoryComponent())
+                .appComponent(((App) getActivity().getApplication()).getmAppComponent())
                 .favouritesPresenterModule(new FavouritesPresenterModule(this))
                 .build()
                 .inject(this);

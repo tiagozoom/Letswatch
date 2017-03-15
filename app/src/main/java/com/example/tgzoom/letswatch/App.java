@@ -1,8 +1,6 @@
 package com.example.tgzoom.letswatch;
 
 import android.app.Application;
-import com.example.tgzoom.letswatch.data.source.DaggerMoviesRepositoryComponent;
-import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
 import com.example.tgzoom.letswatch.data.source.MoviesRepositoryModule;
 import com.example.tgzoom.letswatch.service.ServiceModule;
 
@@ -12,19 +10,19 @@ import com.example.tgzoom.letswatch.service.ServiceModule;
 
 public class App extends Application {
 
-    private MoviesRepositoryComponent mMoviesRepositoryComponent;
+    private AppComponent mAppComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mMoviesRepositoryComponent = DaggerMoviesRepositoryComponent.builder()
+        mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(getApplicationContext()))
                 .serviceModule(new ServiceModule("http://api.themoviedb.org"))
                 .moviesRepositoryModule(new MoviesRepositoryModule())
                 .build();
     }
 
-    public MoviesRepositoryComponent getMoviesRepositoryComponent(){
-        return mMoviesRepositoryComponent;
+    public AppComponent getmAppComponent(){
+        return mAppComponent;
     }
 }
