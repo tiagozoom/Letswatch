@@ -216,6 +216,12 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        hideLoadingBar();
+    }
+
+    @Override
     public void showMovieDetails(Movie movie) {
         Intent intent = new Intent(getContext(), MovieDetailActivity.class);
         intent.setAction(Intent.ACTION_VIEW);

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.util.Log;
 
 import com.example.tgzoom.letswatch.R;
 
@@ -22,44 +23,55 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class URIUtils {
     private static final String YOUTUBE_VIDEO_PARAMETER = "v";
 
-    public static Uri buildPosterPath(String poster_path){
+    public static String buildPosterPath(String poster_path) {
         Uri.Builder builder = new Uri.Builder();
-        poster_path = poster_path.substring(1);
-        Uri poster_uri = builder
-                .scheme("https")
-                .authority("image.tmdb.org")
-                .appendPath("t")
-                .appendPath("p")
-                .appendPath("w300")
-                .appendPath(poster_path).build();
-        return poster_uri;
+        try {
+            poster_path = poster_path.substring(1);
+            Uri poster_uri = builder
+                    .scheme("https")
+                    .authority("image.tmdb.org")
+                    .appendPath("t")
+                    .appendPath("p")
+                    .appendPath("w300")
+                    .appendPath(poster_path).build();
+            return poster_uri.toString();
+        } catch (Exception e) {
+            Log.i("Letswatch", "An error occurred " + e);
+        }
+
+        return null;
     }
 
-    public static Uri buildBackDropPath(String backdrop_path){
+    public static String buildBackDropPath(String backdrop_path) {
         Uri.Builder builder = new Uri.Builder();
-        backdrop_path = backdrop_path.substring(1);
-        Uri poster_uri = builder
-                .scheme("https")
-                .authority("image.tmdb.org")
-                .appendPath("t")
-                .appendPath("p")
-                .appendPath("w1000")
-                .appendPath(backdrop_path).build();
-        return poster_uri;
+        try {
+            backdrop_path = backdrop_path.substring(1);
+            Uri poster_uri = builder
+                    .scheme("https")
+                    .authority("image.tmdb.org")
+                    .appendPath("t")
+                    .appendPath("p")
+                    .appendPath("w1000")
+                    .appendPath(backdrop_path).build();
+            return poster_uri.toString();
+        } catch (Exception e) {
+            Log.i("Letswatch", "An error occurred " + e);
+        }
+        return null;
     }
 
-    public static Uri builBaseUrl(){
+    public static Uri builBaseUrl() {
         return new Uri.Builder()
                 .scheme("http")
                 .authority("api.themoviedb.org")
                 .build();
     }
 
-    public static Uri buildYoutubeBaseUrl(String videoPath){
-        return new Uri.Builder().scheme("http").authority("youtube.com").appendPath("watch").appendQueryParameter(YOUTUBE_VIDEO_PARAMETER,videoPath).build();
+    public static Uri buildYoutubeBaseUrl(String videoPath) {
+        return new Uri.Builder().scheme("http").authority("youtube.com").appendPath("watch").appendQueryParameter(YOUTUBE_VIDEO_PARAMETER, videoPath).build();
     }
 
-    public static Retrofit buildRetrofitObject(){
+    public static Retrofit buildRetrofitObject() {
         return new Retrofit.Builder()
                 .baseUrl(builBaseUrl().toString())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

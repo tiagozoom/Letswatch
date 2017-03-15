@@ -13,21 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.example.tgzoom.letswatch.BR;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
 import com.example.tgzoom.letswatch.databinding.FragmentMoviesListItemBinding;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
-import com.example.tgzoom.letswatch.util.StringUtils;
 import com.example.tgzoom.letswatch.util.URIUtils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
