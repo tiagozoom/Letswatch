@@ -1,5 +1,6 @@
 package com.example.tgzoom.letswatch.moviedetail;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
@@ -21,6 +22,7 @@ public interface MovieDetailContract {
         void showUnmarkedAsFavouriteMessage();
         void showTrailers(List<Trailer> trailers);
         void openTrailer(Uri trailerUri);
+        void shareMovie(Intent shareMovieIntent);
     }
 
     interface Presenter extends BasePresenter {
@@ -29,5 +31,6 @@ public interface MovieDetailContract {
         void openTrailer(String trailerUri);
         void loadTrailers(int movieApiId);
         void processTrailers(List<Trailer> trailers);
+        void shareMovie(int movie_Api_Id);
     }
 }

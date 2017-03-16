@@ -78,4 +78,9 @@ public class URIUtils {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
+
+    public static String buildMovieDbURI(int movieId){
+        String movieIdString = String.valueOf(movieId);
+        return new Uri.Builder().scheme("https").authority("www.themoviedb.org").appendPath("movie").appendPath(movieIdString).build().toString();
+    }
 }

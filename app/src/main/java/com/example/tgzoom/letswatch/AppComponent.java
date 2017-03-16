@@ -1,17 +1,19 @@
-package com.example.tgzoom.letswatch.data.source;
+package com.example.tgzoom.letswatch;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 
+import com.example.tgzoom.letswatch.data.source.MoviesRepository;
+import com.example.tgzoom.letswatch.data.source.MoviesRepositoryModule;
 import com.example.tgzoom.letswatch.service.ServiceModule;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
+import dagger.Module;
 
 /**
- * Created by tgzoom on 12/27/16.
+ * Created by tgzoom on 3/14/17.
  */
 
 @Singleton
@@ -21,8 +23,8 @@ import dagger.Component;
                 MoviesRepositoryModule.class
         }
 )
-public interface MoviesRepositoryComponent {
-    MoviesRepository getMoviesRepository();
+public interface AppComponent {
     Context getContext();
+    MoviesRepository getMoviesRepository();
     ConnectivityManager getConnectivityManager();
 }

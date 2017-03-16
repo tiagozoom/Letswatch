@@ -2,8 +2,7 @@ package com.example.tgzoom.letswatch.movies;
 
 import android.content.Context;
 
-import com.example.tgzoom.letswatch.AppModule;
-import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
+import com.example.tgzoom.letswatch.AppComponent;
 import com.example.tgzoom.letswatch.scope.FragmentScoped;
 import com.example.tgzoom.letswatch.service.ServiceModule;
 
@@ -16,7 +15,7 @@ import dagger.Component;
 @FragmentScoped
 @Component(
         dependencies = {
-                MoviesRepositoryComponent.class,
+                AppComponent.class,
                 MoviesPresenterModule.class,
         }
 )

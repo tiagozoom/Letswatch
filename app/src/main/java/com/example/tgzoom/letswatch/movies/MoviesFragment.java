@@ -134,7 +134,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         super.onCreate(savedInstanceState);
 
         DaggerMoviesComponent.builder()
-                .moviesRepositoryComponent(((App) getActivity().getApplication()).getMoviesRepositoryComponent())
+                .appComponent(((App) getActivity().getApplication()).getmAppComponent())
                 .moviesPresenterModule(new MoviesPresenterModule(this))
                 .build()
                 .inject(this);
@@ -235,6 +235,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         if (mInternetConnectionReceiver != null) {
             getContext().unregisterReceiver(mInternetConnectionReceiver);
         }
+        mMovieAdapter.clear();
     }
 
     @Override

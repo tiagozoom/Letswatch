@@ -53,7 +53,7 @@ public class MovieDetailActivity extends AppCompatActivity{
         }
 
         DaggerMovieDetailComponent.builder()
-                .moviesRepositoryComponent(((App) getApplication()).getMoviesRepositoryComponent())
+                .appComponent(((App) getApplication()).getmAppComponent())
                 .movieDetailPresenterModule(new MovieDetailPresenterModule(fragment))
                 .build()
                 .inject(this);

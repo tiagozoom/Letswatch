@@ -1,5 +1,6 @@
 package com.example.tgzoom.letswatch.moviedetail;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -79,6 +80,15 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
     @Override
     public void processTrailers(List<Trailer> trailers) {
         mMovieDetailView.showTrailers(trailers);
+    }
+
+    @Override
+    public void shareMovie(int movie_Api_Id) {
+        String url = URIUtils.buildMovieDbURI(movie_Api_Id);
+        Intent shareMovieIntent = new Intent(Intent.ACTION_SEND);
+        shareMovieIntent.setType("text/plain");
+        shareMovieIntent.putExtra(Intent.EXTRA_TEXT,url);
+        mMovieDetailView.shareMovie(shareMovieIntent);
     }
 
     @Override

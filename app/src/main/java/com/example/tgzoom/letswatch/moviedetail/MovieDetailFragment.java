@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,6 +38,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
     private Movie movie;
     private MovieDetailContract.Presenter mMovieDetailPresenter;
     private TrailerAdapter mTrailerAdapter;
+    private ShareActionProvider mShareActionProvider;
     private MovieDetailListener mMoviesDetailListener = new MovieDetailListener() {
         @Override
         public void onMarkAsFavorite(Movie movie) {
@@ -147,6 +150,11 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
         getContext().startActivity(intent);
     }
 
+    @Override
+    public void shareMovie(Intent shareMovieIntent) {
+        startActivity(Intent.createChooser(shareMovieIntent,"Share"));
+    }
+
     private void showMessage(String message) {
         Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
     }
@@ -167,6 +175,9 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
                     movie.setFavourite(!movie.isFavourite());
                     item.setIcon((movie.isFavourite()) ? R.drawable.ic_heart_white_24dp : R.drawable.ic_heart_outline_white_24dp);
                 }
+                break;
+            case R.id.share_movie:
+                mMovieDetailPresenter.shareMovie(movie.getApi_movie_id());
                 break;
         }
         return super.onOptionsItemSelected(item);

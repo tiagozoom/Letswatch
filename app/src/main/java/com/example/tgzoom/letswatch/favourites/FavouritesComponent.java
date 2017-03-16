@@ -1,6 +1,6 @@
 package com.example.tgzoom.letswatch.favourites;
 
-import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
+import com.example.tgzoom.letswatch.AppComponent;
 import com.example.tgzoom.letswatch.scope.FragmentScoped;
 
 import dagger.Component;
@@ -13,7 +13,7 @@ import dagger.Component;
 @Component(
         dependencies= {
                 FavouritesPresenterModule.class,
-                MoviesRepositoryComponent.class,
+                AppComponent.class,
         }
 )
 public interface FavouritesComponent {

@@ -1,6 +1,6 @@
 package com.example.tgzoom.letswatch.moviedetail;
 
-import com.example.tgzoom.letswatch.data.source.MoviesRepositoryComponent;
+import com.example.tgzoom.letswatch.AppComponent;
 import com.example.tgzoom.letswatch.scope.FragmentScoped;
 
 import dagger.Component;
@@ -12,7 +12,7 @@ import dagger.Component;
 @FragmentScoped
 @Component(
         dependencies = {
-                MoviesRepositoryComponent.class,
+                AppComponent.class,
                 MovieDetailPresenterModule.class
         }
 )
