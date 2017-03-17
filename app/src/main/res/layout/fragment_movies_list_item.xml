@@ -44,7 +44,7 @@
                 android:paddingTop="@dimen/activity_horizontal_margin"
                 android:text="@{movie.title}"
                 android:maxWidth="150dp"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/colorPrimaryText"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textSize="16sp" />

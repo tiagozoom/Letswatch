@@ -11,7 +11,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         def STRING = "String"
-        buildConfigField STRING, "MOVIE_DB_API_KEY", "\"YOUR API KEY\""
+        buildConfigField STRING, "MOVIE_DB_API_KEY", "\"c0dc85e33208e4b08052c3ee216b98f0\""
 
     }
     buildTypes {

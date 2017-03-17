@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/trailers_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin">
+    app:cardCornerRadius="0dp"
+    android:layout_marginBottom="1dp"
+    app:cardElevation="1dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
+        android:padding="@dimen/activity_horizontal_margin"
         android:text="Trailers"
         android:textAppearance="?android:textAppearanceLarge"
         android:textSize="20sp" />
 
-</LinearLayout>
+</android.support.v7.widget.CardView>
