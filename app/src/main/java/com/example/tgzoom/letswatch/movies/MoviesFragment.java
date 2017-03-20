@@ -1,5 +1,6 @@
 package com.example.tgzoom.letswatch.movies;
 
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -70,6 +72,14 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         @Override
         public void onUnmarAsFavorite(int movieApiId) {
             mPresenter.unmarkAsFavourite(movieApiId);
+        }
+    };
+
+    private class MoviesHasConnectionListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            mMovieAdapter.clear();
+            mPresenter.start(true);
         }
     };
 
@@ -150,10 +160,10 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        registerBroadastReceiver();
         if(savedInstanceState == null){
             mPresenter.start(true);
         }
+        registerBroadastReceiver();
     }
 
     @Override
@@ -186,6 +196,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     @Override
     public void showLoadingMoviesError() {
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container,new MoviesErrorFragment()).commit();
     }
 
     @Override
@@ -201,17 +212,17 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
 
     @Override
     public void showMarkedAsFavouriteMessage() {
-        showMessage(getString(R.string.marked_as_favourite_message),Snackbar.LENGTH_SHORT);
+        showMessage(getString(R.string.marked_as_favourite_message),Snackbar.LENGTH_SHORT,null);
     }
 
     @Override
     public void showUnmarkedAsFavouriteMessage() {
-        showMessage(getString(R.string.unmarked_as_favourite_message),Snackbar.LENGTH_SHORT);
+        showMessage(getString(R.string.unmarked_as_favourite_message),Snackbar.LENGTH_SHORT,null);
     }
 
     @Override
     public void showNoConnectivityMessage() {
-        showMessage(getString(R.string.no_connection_message),Snackbar.LENGTH_INDEFINITE);
+        showMessage(getString(R.string.no_connection_message),Snackbar.LENGTH_INDEFINITE,null);
     }
 
     @Override
@@ -249,8 +260,11 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    private void showMessage(String message,int duration){
+    private void showMessage(String message, int duration, View.OnClickListener clickListener){
         mSnackbar = Snackbar.make(getView(),message,duration);
+        if(clickListener != null){
+            mSnackbar.setAction(R.string.retry,clickListener);
+        }
         mSnackbar.show();
     }
 
@@ -287,6 +301,10 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_movies, menu);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        MenuItem item = menu.findItem(R.id.menu_fragment_movies_search);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
     }
 
     @Override

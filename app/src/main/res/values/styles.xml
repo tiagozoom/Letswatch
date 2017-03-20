@@ -9,4 +9,9 @@
 
     <style name="ActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"></style>
     <style name="ActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"></style>
+
+    <style name="SearchViewTheme" >
+        <item name="colorControlActivated">@color/searchViewBackground</item>
+        <item name="colorControlNormal">@color/searchViewBackground</item>
+    </style>
 </resources>

@@ -52,49 +52,49 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
     @Override
     public void start(boolean showLoadingBar) {
-        loadMovies(1,showLoadingBar);
+        loadMovies(1, showLoadingBar);
     }
 
     public void loadMovies(int currentPage, final boolean showLoadingBar) {
         mSubscriptions.clear();
-        if (hasConnectivity()) {
-            mMoviesView.setLoadingIndicator(true);
-            if(showLoadingBar){
-                mMoviesView.showLoadingBar();
-            }
-            Subscription subscription = mMoviesRepository
-                    .getMovies(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
-                    .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
-                    .subscribe(
-                            new Observer<List<Movie>>() {
-                                @Override
-                                public void onCompleted() {
-                                    mMoviesView.setLoadingIndicator(false);
-                                    mMoviesView.hideRefresh();
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    mMoviesView.showLoadingMoviesError();
-                                }
-
-                                @Override
-                                public void onNext(List<Movie> movies) {
-                                    processMovies(movies);
-                                }
-                            }
-                    );
-
-            mSubscriptions.add(subscription);
-            mSubscriptions.add(mMoviesRepository.getFavouriteClickEvent().subscribe(
-                    new Action1<FavouriteObservableImp.FavouriteClickEvent>() {
-                        @Override
-                        public void call(FavouriteObservableImp.FavouriteClickEvent favouriteClickEvent) {
-                            mMoviesView.updateMovies(favouriteClickEvent.movieApiId, favouriteClickEvent.isFavorite);
-                        }
-                    })
-            );
+        mMoviesView.setLoadingIndicator(true);
+        if (showLoadingBar) {
+            mMoviesView.showLoadingBar();
         }
+        Subscription subscription = mMoviesRepository
+                .getMovies(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
+                .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
+                .retry()
+                .subscribe(
+                        new Observer<List<Movie>>() {
+                            @Override
+                            public void onCompleted() {
+                                mMoviesView.setLoadingIndicator(false);
+                                mMoviesView.hideRefresh();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                mMoviesView.setLoadingIndicator(false);
+                                mMoviesView.showLoadingMoviesError();
+                            }
+
+                            @Override
+                            public void onNext(List<Movie> movies) {
+                                processMovies(movies);
+                            }
+                        }
+                );
+
+        mSubscriptions.add(subscription);
+        mSubscriptions.add(mMoviesRepository.getFavouriteClickEvent().subscribe(
+                new Action1<FavouriteObservableImp.FavouriteClickEvent>() {
+                    @Override
+                    public void call(FavouriteObservableImp.FavouriteClickEvent favouriteClickEvent) {
+                        mMoviesView.updateMovies(favouriteClickEvent.movieApiId, favouriteClickEvent.isFavorite);
+                    }
+                })
+        );
     }
 
     private void processMovies(@NonNull List<Movie> movies) {

@@ -9,6 +9,7 @@
     <color name="colorSecundarytext">#757575</color>
     <color name="icons">#FFFFFF</color>
     <color name="navDrawerBackground">#FFFFFF</color>
+    <color name="searchViewBackground">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
 
 </resources>
