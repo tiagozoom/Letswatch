@@ -10,17 +10,17 @@ import android.support.v4.app.FragmentManager;
 
 public class ActivityUtils {
 
-    public static void addFragment(@NonNull FragmentManager fragmentManager, @NonNull Fragment fragment, @NonNull String tag,@NonNull int fragment_content){
+    public static void addFragment(@NonNull FragmentManager fragmentManager, @NonNull Fragment fragment, @NonNull String tag,@NonNull int fragment_container){
         fragmentManager
                 .beginTransaction()
-                .add(fragment_content,fragment,tag)
+                .add(fragment_container,fragment,tag)
                 .commit();
     }
 
-    public static void replaceFragment(@NonNull FragmentManager fragmentManager, @NonNull Fragment fragment, @NonNull String tag,@NonNull int fragment_content) {
+    public static void replaceFragment(@NonNull FragmentManager fragmentManager, @NonNull Fragment fragment, @NonNull String tag,@NonNull int fragment_container) {
         fragmentManager
                 .beginTransaction()
-                .replace(fragment_content, fragment, tag)
+                .replace(fragment_container, fragment, tag)
                 .commit();
     }
 }

@@ -10,8 +10,9 @@
     <style name="ActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"></style>
     <style name="ActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"></style>
 
-    <style name="SearchViewTheme" >
-        <item name="colorControlActivated">@color/searchViewBackground</item>
-        <item name="colorControlNormal">@color/searchViewBackground</item>
+    <style name="SearchActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="colorPrimary">@color/navDrawerBackground</item>
+        <item name="colorPrimaryDark">@color/cardview_light_background</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 </resources>

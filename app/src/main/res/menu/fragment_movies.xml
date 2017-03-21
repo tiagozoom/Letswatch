@@ -5,15 +5,14 @@
         android:id="@+id/menu_sort"
         android:title="sort"
         app:showAsAction="always"
+        android:orderInCategory="100"
         android:icon="@drawable/ic_sort_variant_white_24dp"
         />
 
     <item
-        android:id="@+id/menu_fragment_movies_search"
+        android:id="@+id/menu_search_fragment_movies"
         android:title="search"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom|collapseActionView"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_magnify_white_24dp"
-        app:actionViewClass="android.support.v7.widget.SearchView"
         />
 </menu>

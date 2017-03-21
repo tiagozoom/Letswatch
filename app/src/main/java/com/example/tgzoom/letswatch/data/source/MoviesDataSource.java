@@ -15,6 +15,7 @@ import rx.Observable;
 
 public interface MoviesDataSource {
     Observable<List<Movie>> getMovies(String sort,int pageIndex);
+    Observable<List<Movie>> searchMovies(String searchString);
     Observable<List<Movie>> getFavouriteMovies();
     Observable<Movie> getMovie(@NonNull int movieApiId);
     Observable<List<Integer>> getFavouriteMoviesIds();

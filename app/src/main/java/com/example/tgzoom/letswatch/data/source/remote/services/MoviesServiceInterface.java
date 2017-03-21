@@ -24,4 +24,7 @@ public interface MoviesServiceInterface {
 
     @GET("3/movie/{movie_id}/videos")
     Observable<Trailer.Results> getTrailers(@Path("movie_id") int movie_id, @Query("api_key") String api_key);
+
+    @GET("3/movie/search/movie/{query}")
+    Observable<Movie.Results> searchMovies(@Path("query") String query,@Query("api_key") String api_key);
 }

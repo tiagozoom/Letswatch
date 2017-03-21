@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.tgzoom.letswatch.R;
+import com.example.tgzoom.letswatch.util.ActivityUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,6 +21,7 @@ import butterknife.ButterKnife;
 public class SearchActivity extends AppCompatActivity {
 
     @BindView(R.id.activity_search_toolbar) Toolbar toolbar;
+    @BindView(R.id.menu_search_activity_search) SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,33 +29,33 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.requestFocus();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
+        setIntent(intent);
         handleSearch(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.activity_search,menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem item = menu.findItem(R.id.menu_fragment_movies_search);
-        SearchView searchView = (SearchView) item.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        return true;
     }
 
     public void handleSearch(Intent intent){
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             String typedSearch = intent.getStringExtra(SearchManager.QUERY);
-            toolbar.setTitle(typedSearch);
+            SearchFragment searchFragment = new SearchFragment();
+            ActivityUtils.replaceFragment(getSupportFragmentManager(),searchFragment,SearchFragment.TAG,R.id.search_fragment_container);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -27,6 +27,7 @@ import com.example.tgzoom.letswatch.dialog.SortDialogListener;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
 import com.example.tgzoom.letswatch.main.MainActivity;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
+import com.example.tgzoom.letswatch.search.SearchActivity;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -301,10 +302,6 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_movies, menu);
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        MenuItem item = menu.findItem(R.id.menu_fragment_movies_search);
-        SearchView searchView = (SearchView) item.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
     }
 
     @Override
@@ -313,6 +310,10 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
             case R.id.menu_sort:
                 mSortDialogFragment.show(getFragmentManager(), TAG);
                 break;
+            case R.id.menu_search_fragment_movies:
+                Intent searchIntent = new Intent(getContext(), SearchActivity.class);
+                searchIntent.setAction(Intent.ACTION_SEARCH);
+                startActivity(searchIntent);
         }
         return super.onOptionsItemSelected(item);
     }

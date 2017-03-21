@@ -39,6 +39,12 @@ public class MoviesRepository implements MoviesDataSource {
         return movies;
     }
 
+    @Override
+    public Observable<List<Movie>> searchMovies(String searchString) {
+        Observable<List<Movie>> movies = mMoviesRemoteDataSource.searchMovies(searchString);
+        return movies;
+    }
+
     public Observable<FavouriteObservableImp.FavouriteClickEvent> getFavouriteClickEvent(){
         return mFavouriteObservable.getFavoriteClickEventObservable();
     }

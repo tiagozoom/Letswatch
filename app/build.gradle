@@ -34,7 +34,6 @@ dependencies {
 
     //Android compatibility
 
-
     //Google Gson support
 
     //Butterknife
@@ -55,12 +54,12 @@ dependencies {
 
     //Tests and annotations
     testCompile "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:design:25.2.0'
-    compile 'com.android.support:recyclerview-v7:25.2.0'
-    compile 'com.android.support:support-v4:25.2.0'
-    compile 'com.android.support:support-v13:25.2.0'
-    compile 'com.android.support:cardview-v7:25.2.0'
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:design:25.3.0'
+    compile 'com.android.support:recyclerview-v7:25.3.0'
+    compile 'com.android.support:support-v4:25.3.0'
+    compile 'com.android.support:support-v13:25.3.0'
+    compile 'com.android.support:cardview-v7:25.3.0'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'

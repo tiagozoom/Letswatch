@@ -85,6 +85,11 @@ public class MoviesLocalDataSource implements MoviesDataSource {
     }
 
     @Override
+    public Observable<List<Movie>> searchMovies(String searchString) {
+        return null;
+    }
+
+    @Override
     public Observable<List<Movie>> getFavouriteMovies() {
         String[] projection = new String[]{
                 MoviesPersistenceContract.MovieEntry._ID,
