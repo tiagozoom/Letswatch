@@ -2,6 +2,7 @@ package com.example.tgzoom.letswatch.search;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.tgzoom.letswatch.data.Movie;
@@ -35,6 +36,7 @@ public class SearchPresenter implements SearchContract.Presenter {
     public SearchPresenter(MoviesRepository moviesRepository, SearchContract.View searchView) {
         mMoviesRepository = moviesRepository;
         mSearchView = searchView;
+        mFavouriteMoviesIds = mMoviesRepository.getFavouriteMoviesIds();
     }
 
     @Inject
@@ -43,20 +45,19 @@ public class SearchPresenter implements SearchContract.Presenter {
     }
 
     @Override
-    public void loadMovies(String searchString) {
+    public void loadMovies(String searchString, int page) {
         mSubscriptions.clear();
         mSearchView.setLoadingIndicator(true);
+        mSearchView.showLoadingBar();
 
         Subscription subscription = mMoviesRepository
-                .searchMovies(searchString)
+                .searchMovies(searchString, page)
                 .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
-                .retry()
                 .subscribe(
                         new Observer<List<Movie>>() {
                             @Override
                             public void onCompleted() {
                                 mSearchView.setLoadingIndicator(false);
-                                mSearchView.hideRefresh();
                             }
 
                             @Override
@@ -81,15 +82,36 @@ public class SearchPresenter implements SearchContract.Presenter {
                     }
                 })
         );
-
     }
 
-    public void processMovies(List<Movie> movies){
-        Log.i("teste",movies.toString());
+    @Override
+    public void markAsFavourite(@NonNull Movie movie) {
+        mMoviesRepository.markAsFavourite(movie);
+        mSearchView.showMarkedAsFavouriteMessage();
+    }
+
+    @Override
+    public void unmarkAsFavourite(@NonNull int movieApiId) {
+        mMoviesRepository.unmarkAsFavourite(movieApiId);
+        mSearchView.showUnmarkedAsFavouriteMessage();
+    }
+
+    public void processMovies(List<Movie> movies) {
+        mSearchView.hideLoadingBar();
+        mSearchView.showMovies(movies);
     }
 
     @Override
     public void start(String searchString) {
-        loadMovies(searchString);
+        loadMovies(searchString, 1);
+    }
+
+    @Override
+    public void start(boolean showLoadingBar) {
+    }
+
+    @Override
+    public void openDetails(Movie movie) {
+        mSearchView.showMovieDetails(movie);
     }
 }

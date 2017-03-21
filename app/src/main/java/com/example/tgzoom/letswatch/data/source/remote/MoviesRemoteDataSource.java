@@ -45,9 +45,9 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
     }
 
     @Override
-    public Observable<List<Movie>> searchMovies(String searchString) {
+    public Observable<List<Movie>> searchMovies(String searchString,int pageIndex) {
         MoviesServiceInterface moviesServiceInterface = mRetrofit.create(MoviesServiceInterface.class);
-        Observable<List<Movie>> movies = moviesServiceInterface.searchMovies(searchString,BuildConfig.MOVIE_DB_API_KEY)
+        Observable<List<Movie>> movies = moviesServiceInterface.searchMovies(searchString,pageIndex,BuildConfig.MOVIE_DB_API_KEY)
                 .map(new Func1<Movie.Results, List<Movie>>() {
                     @Override
                     public List<Movie> call(Movie.Results results) {

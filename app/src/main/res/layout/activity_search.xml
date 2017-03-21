@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:focusableInTouchMode="true"
-            android:elevation="8dp"
+            android:elevation="3dp"
             android:popupTheme="@style/SearchActionBarTheme">
 
             <android.support.v7.widget.SearchView

@@ -85,7 +85,7 @@ public class MoviesLocalDataSource implements MoviesDataSource {
     }
 
     @Override
-    public Observable<List<Movie>> searchMovies(String searchString) {
+    public Observable<List<Movie>> searchMovies(String searchString,int page) {
         return null;
     }
 

@@ -42,6 +42,25 @@ public class URIUtils {
         return null;
     }
 
+    public static String buildPosterPathW45(String poster_path) {
+        Uri.Builder builder = new Uri.Builder();
+        try {
+            poster_path = poster_path.substring(1);
+            Uri poster_uri = builder
+                    .scheme("https")
+                    .authority("image.tmdb.org")
+                    .appendPath("t")
+                    .appendPath("p")
+                    .appendPath("w45")
+                    .appendPath(poster_path).build();
+            return poster_uri.toString();
+        } catch (Exception e) {
+            Log.i("Letswatch", "An error occurred " + e);
+        }
+
+        return null;
+    }
+
     public static String buildBackDropPath(String backdrop_path) {
         Uri.Builder builder = new Uri.Builder();
         try {

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable name="movie" type="com.example.tgzoom.letswatch.data.Movie"></variable>
+        <variable name="movieListener" type="com.example.tgzoom.letswatch.listener.MoviesItemListener"></variable>
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="2dp"
+        android:onClick="@{() -> movieListener.onClick(movie)}"
+        android:layout_marginBottom="0.5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/activity_vertical_margin">
+
+
+            <ImageView
+                android:id="@+id/card_image"
+                android:layout_width="45dp"
+                android:layout_height="80dp"
+                android:src="@color/colorPrimary"
+                app:cardImage="@{movie.poster_path}" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/card_image"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:id="@+id/movie_title"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimaryText"
+                    android:fontFamily="sans-serif"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textSize="16sp"
+                    android:text="@{movie.title}" />
+
+                <TextView
+                    android:id="@+id/movie_release_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:maxLength="@integer/movie_release_date_max_length"
+                    android:textSize="13sp"
+                    android:text="@{movie.release_date}" />
+
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:tint="@color/colorPrimary"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_heart_outline_grey600_36dp"
+                app:imageButton="@{movie.isFavourite}"
+                android:onClick="@{(view) -> movieListener.onCardMenuClick(view,movie)}"/>
+
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+</layout>

@@ -22,6 +22,7 @@ public class SearchActivity extends AppCompatActivity {
 
     @BindView(R.id.activity_search_toolbar) Toolbar toolbar;
     @BindView(R.id.menu_search_activity_search) SearchView mSearchView;
+    private SearchFragment mSearchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,9 @@ public class SearchActivity extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.requestFocus();
+
+        mSearchFragment = new SearchFragment();
+        ActivityUtils.replaceFragment(getSupportFragmentManager(),mSearchFragment,SearchFragment.TAG,R.id.search_fragment_container);
     }
 
     @Override
@@ -45,8 +49,7 @@ public class SearchActivity extends AppCompatActivity {
     public void handleSearch(Intent intent){
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             String typedSearch = intent.getStringExtra(SearchManager.QUERY);
-            SearchFragment searchFragment = new SearchFragment();
-            ActivityUtils.replaceFragment(getSupportFragmentManager(),searchFragment,SearchFragment.TAG,R.id.search_fragment_container);
+            mSearchFragment.loadMovies(typedSearch);
         }
     }
 

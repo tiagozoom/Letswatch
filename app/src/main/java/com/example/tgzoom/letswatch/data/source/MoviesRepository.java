@@ -40,8 +40,8 @@ public class MoviesRepository implements MoviesDataSource {
     }
 
     @Override
-    public Observable<List<Movie>> searchMovies(String searchString) {
-        Observable<List<Movie>> movies = mMoviesRemoteDataSource.searchMovies(searchString);
+    public Observable<List<Movie>> searchMovies(String searchString, int page) {
+        Observable<List<Movie>> movies = mMoviesRemoteDataSource.searchMovies(searchString,page);
         return movies;
     }
 
