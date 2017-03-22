@@ -20,7 +20,7 @@
             <!--<meta-data android:name="android.app.default_searchable" android:value=".search.SearchActivity" />-->
         </activity>
         <activity android:name=".moviedetail.MovieDetailActivity" android:parentActivityName=".main.MainActivity" />
-        <activity android:name=".search.SearchActivity" android:launchMode="singleTop" >
+        <activity android:name=".search.SearchActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>

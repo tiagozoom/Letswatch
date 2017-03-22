@@ -55,38 +55,66 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @BindView(R.id.movies_swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
     @Inject MoviesPresenter mPresenter;
 
-    private MoviesItemListener mMoviesItemListener = new MoviesItemListener() {
-        @Override
-        public void onClick(Movie movie) {
-            mPresenter.openDetails(movie);
-        }
 
-        @Override
-        public void onCardMenuClick(View view, Movie movie) {
-            mMovieAdapter.onCardMenuClick(view,movie);
-        }
+    /*
+        Beginning of lifecycle related methods
+     */
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        @Override
-        public void onMarkAsFavorite(Movie movie) {
-            mPresenter.markAsFavourite(movie);
-        }
-        @Override
-        public void onUnmarAsFavorite(int movieApiId) {
-            mPresenter.unmarkAsFavourite(movieApiId);
-        }
-    };
+        DaggerMoviesComponent.builder()
+                .appComponent(((App) getActivity().getApplication()).getmAppComponent())
+                .moviesPresenterModule(new MoviesPresenterModule(this))
+                .build()
+                .inject(this);
 
-    private class MoviesHasConnectionListener implements View.OnClickListener{
-        @Override
-        public void onClick(View v) {
-            mMovieAdapter.clear();
-            mPresenter.start(true);
+        mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mMoviesItemListener);
+
+        if(savedInstanceState != null){
+            List<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST);
+            mMovieAdapter.swapArrayList(movies);
+            mCurrentPage  = savedInstanceState.getInt(CURRENT_PAGE_INDEX);
         }
-    };
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState == null){
+            mPresenter.start(true);
+        }
+        registerBroadastReceiver();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoadingBar();
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mInternetConnectionReceiver != null) {
+            getContext().unregisterReceiver(mInternetConnectionReceiver);
+        }
+        mMovieAdapter.clear();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(mMovieAdapter != null){
+            ArrayList<Movie> movieList = (ArrayList<Movie>) mMovieAdapter.getArrayList();
+            outState.putParcelableArrayList(PARCELABLE_MOVIE_LIST, movieList);
+            outState.putInt(CURRENT_PAGE_INDEX, mCurrentPage);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_movies, container, false);
@@ -128,6 +156,31 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         return rootView;
     }
 
+    /*
+        End of lifecycle related methods
+     */
+
+    private MoviesItemListener mMoviesItemListener = new MoviesItemListener() {
+        @Override
+        public void onClick(Movie movie) {
+            mPresenter.openDetails(movie);
+        }
+
+        @Override
+        public void onCardMenuClick(View view, Movie movie) {
+            mMovieAdapter.onCardMenuClick(view,movie);
+        }
+
+        @Override
+        public void onMarkAsFavorite(Movie movie) {
+            mPresenter.markAsFavourite(movie);
+        }
+        @Override
+        public void onUnmarAsFavorite(int movieApiId) {
+            mPresenter.unmarkAsFavourite(movieApiId);
+        }
+    };
+
     public void registerBroadastReceiver(){
         IntentFilter internetConnectionIntent = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
         mInternetConnectionReceiver = new BroadcastReceiver() {
@@ -137,34 +190,6 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
             }
         };
         getContext().registerReceiver(mInternetConnectionReceiver,internetConnectionIntent);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        DaggerMoviesComponent.builder()
-                .appComponent(((App) getActivity().getApplication()).getmAppComponent())
-                .moviesPresenterModule(new MoviesPresenterModule(this))
-                .build()
-                .inject(this);
-
-        mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mMoviesItemListener);
-
-        if(savedInstanceState != null){
-            List<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST);
-            mMovieAdapter.swapArrayList(movies);
-            mCurrentPage  = savedInstanceState.getInt(CURRENT_PAGE_INDEX);
-        }
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState == null){
-            mPresenter.start(true);
-        }
-        registerBroadastReceiver();
     }
 
     @Override
@@ -180,11 +205,11 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @Override
     public void hideLoadingBar() {
         List<Movie> movies = mMovieAdapter.getArrayList();
-        if(movies.size() > 0){
-            Movie movie = movies.get(movies.size() - 1);
-            if(movie == null){
-                movies.remove(movie);
-            }
+        int indexOfLoadingItem = movies.indexOf(null);
+        if (indexOfLoadingItem > -1) {
+            Movie movie = movies.get(indexOfLoadingItem);
+            movies.remove(movie);
+            mMovieAdapter.notifyItemRemoved(indexOfLoadingItem);
         }
     }
 
@@ -227,26 +252,11 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        hideLoadingBar();
-    }
-
-    @Override
     public void showMovieDetails(Movie movie) {
         Intent intent = new Intent(getContext(), MovieDetailActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
         intent.putExtra(MovieDetailActivity.MOVIE_OBJECT, movie);
         getContext().startActivity(intent);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mInternetConnectionReceiver != null) {
-            getContext().unregisterReceiver(mInternetConnectionReceiver);
-        }
-        mMovieAdapter.clear();
     }
 
     @Override
@@ -283,16 +293,6 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if(mMovieAdapter != null){
-            ArrayList<Movie> movieList = (ArrayList<Movie>) mMovieAdapter.getArrayList();
-            outState.putParcelableArrayList(PARCELABLE_MOVIE_LIST, movieList);
-            outState.putInt(CURRENT_PAGE_INDEX, mCurrentPage);
-        }
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onSortChange() {
         mMovieAdapter.clear();
         mPresenter.start(true);
@@ -312,9 +312,14 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
                 break;
             case R.id.menu_search_fragment_movies:
                 Intent searchIntent = new Intent(getContext(), SearchActivity.class);
-                searchIntent.setAction(Intent.ACTION_SEARCH);
+                searchIntent.setAction(Intent.ACTION_VIEW);
                 startActivity(searchIntent);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setEndOfList() {
+        mRecyclerView.removeOnScrollListener(mEndlessRecyclerViewScrollListener);
     }
 }

@@ -25,6 +25,7 @@ public interface SearchContract extends BasePresenter {
         void showMovieDetails(Movie movie);
         void showLoadingBar();
         void hideLoadingBar();
+        void setEndOfList();
     }
 
     interface Presenter extends BasePresenter{

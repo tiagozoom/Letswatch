@@ -98,7 +98,11 @@ public class SearchPresenter implements SearchContract.Presenter {
 
     public void processMovies(List<Movie> movies) {
         mSearchView.hideLoadingBar();
-        mSearchView.showMovies(movies);
+        if(movies.size() > 0){
+            mSearchView.showMovies(movies);
+        }else{
+            mSearchView.setEndOfList();
+        }
     }
 
     @Override

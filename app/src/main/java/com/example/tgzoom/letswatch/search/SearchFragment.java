@@ -24,6 +24,7 @@ import com.example.tgzoom.letswatch.movies.MovieAdapter;
 import com.example.tgzoom.letswatch.movies.MoviesFragment;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -44,6 +45,9 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     private int mCurrentPage = 1;
     private Snackbar mSnackbar;
     private String mSearchString;
+    private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
+    private static final String CURRENT_PAGE_INDEX = "current_page_index";
+    private static final String CURRENT_SEARCH_STRING = "current_search_string";
 
     private MoviesItemListener mMoviesItemListener = new MoviesItemListener() {
         @Override
@@ -75,13 +79,11 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     @Override
     public void hideLoadingBar() {
         List<Movie> movies = mSearchAdapter.getArrayList();
-        if (movies.size() > 0) {
-            int index = movies.indexOf(null);
-            if (index > -1) {
-                Movie movie = movies.get(index);
-                movies.remove(movie);
-                mSearchAdapter.notifyDataSetChanged();
-            }
+        int indexOfLoadingItem = movies.indexOf(null);
+        if (indexOfLoadingItem > -1) {
+            Movie movie = movies.get(indexOfLoadingItem);
+            movies.remove(movie);
+            mSearchAdapter.notifyItemRemoved(indexOfLoadingItem);
         }
     }
 
@@ -93,17 +95,24 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                 .searchPresenterModule(new SearchPresenterModule(this))
                 .build()
                 .inject(this);
+
+        mSearchAdapter = new SearchAdapter(mMoviesItemListener);
+
+        if(savedInstanceState != null){
+            List<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST);
+            mSearchAdapter.swapArrayList(movies);
+            mCurrentPage  = savedInstanceState.getInt(CURRENT_PAGE_INDEX);
+            mSearchString = savedInstanceState.getString(CURRENT_SEARCH_STRING);
+        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
         ButterKnife.bind(this, rootView);
 
-        mSearchAdapter = new SearchAdapter(mMoviesItemListener);
         mRecyclerView.setAdapter(mSearchAdapter);
         mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener() {
             @Override
@@ -122,6 +131,17 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         mRecyclerView.addOnScrollListener(mEndlessRecyclerViewScrollListener);
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(mSearchAdapter != null){
+            ArrayList<Movie> movieList = (ArrayList<Movie>) mSearchAdapter.getArrayList();
+            outState.putParcelableArrayList(PARCELABLE_MOVIE_LIST, movieList);
+            outState.putString(CURRENT_SEARCH_STRING,mSearchString);
+            outState.putInt(CURRENT_PAGE_INDEX, mCurrentPage);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -189,7 +209,14 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     @Override
     public void loadMovies(String searchString) {
         mSearchAdapter.clear();
+        mCurrentPage =1;
+        mRecyclerView.addOnScrollListener(mEndlessRecyclerViewScrollListener);
         mSearchString = searchString;
-        mPresenter.loadMovies(searchString, 1);
+        mPresenter.loadMovies(mSearchString, mCurrentPage);
+    }
+
+    @Override
+    public void setEndOfList() {
+        mRecyclerView.removeOnScrollListener(mEndlessRecyclerViewScrollListener);
     }
 }

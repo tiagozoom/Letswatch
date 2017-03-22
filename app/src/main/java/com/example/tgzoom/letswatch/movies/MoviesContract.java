@@ -27,6 +27,7 @@ public interface MoviesContract {
         void hideRefresh();
         void showLoadingBar();
         void hideLoadingBar();
+        void setEndOfList();
     }
 
     interface Presenter extends BasePresenter {

@@ -3,6 +3,7 @@ package com.example.tgzoom.letswatch.search;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -31,13 +32,19 @@ public class SearchActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         mSearchView.requestFocus();
 
-        mSearchFragment = new SearchFragment();
-        ActivityUtils.replaceFragment(getSupportFragmentManager(),mSearchFragment,SearchFragment.TAG,R.id.search_fragment_container);
+        FragmentManager fm = getSupportFragmentManager();
+        mSearchFragment = (SearchFragment) fm.findFragmentByTag(SearchFragment.TAG);
+
+        if(mSearchFragment == null){
+            mSearchFragment = new SearchFragment();
+            ActivityUtils.addFragment(getSupportFragmentManager(),mSearchFragment,SearchFragment.TAG,R.id.search_fragment_container);
+        }
     }
 
     @Override

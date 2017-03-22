@@ -99,7 +99,11 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
     private void processMovies(@NonNull List<Movie> movies) {
         mMoviesView.hideLoadingBar();
-        mMoviesView.showMovies(movies);
+        if(movies.size() > 0){
+            mMoviesView.showMovies(movies);
+        }else{
+            mMoviesView.setEndOfList();
+        }
     }
 
     @Override
