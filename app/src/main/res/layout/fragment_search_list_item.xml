@@ -21,7 +21,6 @@
             android:orientation="horizontal"
             android:padding="@dimen/activity_vertical_margin">
 
-
             <ImageView
                 android:id="@+id/card_image"
                 android:layout_width="45dp"

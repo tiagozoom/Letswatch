@@ -29,6 +29,27 @@ public class Trailer implements Parcelable {
     @SerializedName("size")
     private int size;
 
+    protected Trailer(Parcel in) {
+        trailers = in.createTypedArrayList(Trailer.CREATOR);
+        key = in.readString();
+        url = in.readString();
+        name = in.readString();
+        site = in.readString();
+        size = in.readInt();
+    }
+
+    public static final Creator<Trailer> CREATOR = new Creator<Trailer>() {
+        @Override
+        public Trailer createFromParcel(Parcel in) {
+            return new Trailer(in);
+        }
+
+        @Override
+        public Trailer[] newArray(int size) {
+            return new Trailer[size];
+        }
+    };
+
     public String getUrl() {
         return url;
     }

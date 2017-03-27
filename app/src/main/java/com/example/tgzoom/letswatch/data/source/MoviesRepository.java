@@ -3,6 +3,7 @@ package com.example.tgzoom.letswatch.data.source;
 import android.support.annotation.NonNull;
 
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.data.MovieList;
 import com.example.tgzoom.letswatch.data.Trailer;
 import com.example.tgzoom.letswatch.favourites.FavouriteObservable;
 import com.example.tgzoom.letswatch.favourites.FavouriteObservableImp;
@@ -40,9 +41,15 @@ public class MoviesRepository implements MoviesDataSource {
     }
 
     @Override
-    public Observable<List<Movie>> searchMovies(String searchString, int page) {
-        Observable<List<Movie>> movies = mMoviesRemoteDataSource.searchMovies(searchString,page);
-        return movies;
+    public Observable<MovieList> getMovieList(String sort, int pageIndex) {
+        Observable<MovieList> movieList = mMoviesRemoteDataSource.getMovieList(sort, pageIndex);
+        return movieList;
+    }
+
+    @Override
+    public Observable<MovieList> searchMovies(String searchString, int page) {
+        Observable<MovieList> movieList = mMoviesRemoteDataSource.searchMovies(searchString,page);
+        return movieList;
     }
 
     public Observable<FavouriteObservableImp.FavouriteClickEvent> getFavouriteClickEvent(){
@@ -91,15 +98,15 @@ public class MoviesRepository implements MoviesDataSource {
         return mMoviesLocalDataSource.getFavouriteMovies();
     }
 
-    public Func2<List<Movie>, List<Integer>, List<Movie>> getFavouriteMoviesIdsMapper() {
-        return new Func2<List<Movie>, List<Integer>, List<Movie>>() {
+    public Func2<MovieList, List<Integer>, MovieList> getFavouriteMoviesIdsMapper() {
+        return new Func2<MovieList, List<Integer>, MovieList>() {
             @Override
-            public List<Movie> call(List<Movie> movies, List<Integer> integers) {
+            public MovieList call(MovieList movieList, List<Integer> integers) {
                 if(integers.size() == 0){
-                    return movies;
+                    return movieList;
                 }
 
-                for (Movie movie : movies) {
+                for (Movie movie : movieList.getMovies()) {
                     int position = integers.indexOf(movie.getApi_movie_id());
 
                     if (position >= 0) {
@@ -107,7 +114,7 @@ public class MoviesRepository implements MoviesDataSource {
                         integers.remove(position);
                     }
                 }
-                return movies;
+                return movieList;
             }
         };
     }

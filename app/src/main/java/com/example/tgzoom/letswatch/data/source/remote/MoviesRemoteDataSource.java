@@ -4,11 +4,13 @@ import android.support.annotation.NonNull;
 
 import com.example.tgzoom.letswatch.BuildConfig;
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.data.MovieList;
 import com.example.tgzoom.letswatch.data.Trailer;
 import com.example.tgzoom.letswatch.data.source.MoviesDataSource;
 import com.example.tgzoom.letswatch.data.source.remote.services.MoviesServiceInterface;
 import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Retrofit;
@@ -45,18 +47,21 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
     }
 
     @Override
-    public Observable<List<Movie>> searchMovies(String searchString,int pageIndex) {
+    public Observable<MovieList> getMovieList(String sort, int pageIndex) {
         MoviesServiceInterface moviesServiceInterface = mRetrofit.create(MoviesServiceInterface.class);
-        Observable<List<Movie>> movies = moviesServiceInterface.searchMovies(searchString,pageIndex,BuildConfig.MOVIE_DB_API_KEY)
-                .map(new Func1<Movie.Results, List<Movie>>() {
-                    @Override
-                    public List<Movie> call(Movie.Results results) {
-                        return results.movies;
-                    }
-                })
+        Observable<MovieList> movieList = moviesServiceInterface.getMovieList(sort,pageIndex, BuildConfig.MOVIE_DB_API_KEY)
                 .subscribeOn(mScheduler.io())
                 .observeOn(mScheduler.ui());
-        return movies;
+        return movieList;
+    }
+
+    @Override
+    public Observable<MovieList> searchMovies(String searchString,int pageIndex) {
+        MoviesServiceInterface moviesServiceInterface = mRetrofit.create(MoviesServiceInterface.class);
+        Observable<MovieList> movieList = moviesServiceInterface.searchMovies(searchString,pageIndex,BuildConfig.MOVIE_DB_API_KEY)
+                .subscribeOn(mScheduler.io())
+                .observeOn(mScheduler.ui());
+        return movieList;
     }
 
     @Override

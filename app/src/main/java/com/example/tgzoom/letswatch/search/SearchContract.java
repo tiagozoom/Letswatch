@@ -19,7 +19,6 @@ public interface SearchContract extends BasePresenter {
         void showMarkedAsFavouriteMessage();
         void showUnmarkedAsFavouriteMessage();
         void showLoadingMoviesError();
-        void hideRefresh();
         void showMovies(List<Movie> movies);
         void loadMovies(String searchString);
         void showMovieDetails(Movie movie);

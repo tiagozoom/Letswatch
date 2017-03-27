@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.example.tgzoom.letswatch.BR;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
@@ -135,6 +136,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
         Glide.with(coverImage.getContext())
                 .load(posterPath)
                 .centerCrop()
+                .priority(Priority.LOW)
                 .placeholder(R.color.colorPrimary)
                 .into(coverImage);
     }

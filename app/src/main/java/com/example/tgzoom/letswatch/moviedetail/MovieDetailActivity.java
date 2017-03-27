@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.example.tgzoom.letswatch.App;
 import com.example.tgzoom.letswatch.BR;
 import com.example.tgzoom.letswatch.R;
@@ -65,6 +66,7 @@ public class MovieDetailActivity extends AppCompatActivity{
             String imageUrl = URIUtils.buildBackDropPath(backdrop_path).toString();
             Glide.with(backdropImageView.getContext())
                     .load(imageUrl)
+                    .priority(Priority.HIGH)
                     .override(backdropImageView.getResources().getInteger(R.integer.movie_detail_backdrop_width), backdropImageView.getResources().getInteger(R.integer.movie_detail_backdrop_height))
                     .into(backdropImageView);
         }

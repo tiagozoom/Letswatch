@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.data.MovieList;
 import com.example.tgzoom.letswatch.data.Trailer;
 import com.example.tgzoom.letswatch.data.source.MoviesDataSource;
 import com.example.tgzoom.letswatch.util.schedulers.BaseScheduler;
@@ -85,7 +86,12 @@ public class MoviesLocalDataSource implements MoviesDataSource {
     }
 
     @Override
-    public Observable<List<Movie>> searchMovies(String searchString,int page) {
+    public Observable<MovieList> getMovieList(String sort, int pageIndex) {
+        return null;
+    }
+
+    @Override
+    public Observable<MovieList> searchMovies(String searchString,int page) {
         return null;
     }
 

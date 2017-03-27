@@ -59,15 +59,10 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     /*
         Beginning of lifecycle related methods
      */
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        DaggerMoviesComponent.builder()
-                .appComponent(((App) getActivity().getApplication()).getmAppComponent())
-                .moviesPresenterModule(new MoviesPresenterModule(this))
-                .build()
-                .inject(this);
 
         mMovieAdapter = new MovieAdapter(new ArrayList<Movie>(),mMoviesItemListener);
 
@@ -81,6 +76,13 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        DaggerMoviesComponent.builder()
+                .appComponent(((App) getActivity().getApplication()).getmAppComponent())
+                .moviesPresenterModule(new MoviesPresenterModule(this))
+                .build()
+                .inject(this);
+
         if(savedInstanceState == null){
             mPresenter.start(true);
         }
@@ -100,7 +102,6 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         if (mInternetConnectionReceiver != null) {
             getContext().unregisterReceiver(mInternetConnectionReceiver);
         }
-        mMovieAdapter.clear();
     }
 
     @Override
@@ -232,6 +233,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
             if (mMovieAdapter.getItemId(position) == movieApiId) {
                 mMovieAdapter.getArrayList().get(position).setFavourite(isFavourite);
                 mMovieAdapter.notifyItemChanged(position);
+                break;
             }
         }
     }

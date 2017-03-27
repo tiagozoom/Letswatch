@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.data.MovieList;
 import com.example.tgzoom.letswatch.data.source.MoviesRepository;
 import com.example.tgzoom.letswatch.favourites.FavouriteObservableImp;
 import com.example.tgzoom.letswatch.movies.MoviesContract;
@@ -37,6 +38,14 @@ public class SearchPresenter implements SearchContract.Presenter {
         mMoviesRepository = moviesRepository;
         mSearchView = searchView;
         mFavouriteMoviesIds = mMoviesRepository.getFavouriteMoviesIds();
+        mSubscriptions.add(mMoviesRepository.getFavouriteClickEvent().subscribe(
+                new Action1<FavouriteObservableImp.FavouriteClickEvent>() {
+                    @Override
+                    public void call(FavouriteObservableImp.FavouriteClickEvent favouriteClickEvent) {
+                        mSearchView.updateMovies(favouriteClickEvent.movieApiId, favouriteClickEvent.isFavorite);
+                    }
+                })
+        );
     }
 
     @Inject
@@ -46,7 +55,6 @@ public class SearchPresenter implements SearchContract.Presenter {
 
     @Override
     public void loadMovies(String searchString, int page) {
-        mSubscriptions.clear();
         mSearchView.setLoadingIndicator(true);
         mSearchView.showLoadingBar();
 
@@ -54,10 +62,11 @@ public class SearchPresenter implements SearchContract.Presenter {
                 .searchMovies(searchString, page)
                 .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
                 .subscribe(
-                        new Observer<List<Movie>>() {
+                        new Observer<MovieList>() {
                             @Override
                             public void onCompleted() {
                                 mSearchView.setLoadingIndicator(false);
+                                mSearchView.hideLoadingBar();
                             }
 
                             @Override
@@ -67,21 +76,13 @@ public class SearchPresenter implements SearchContract.Presenter {
                             }
 
                             @Override
-                            public void onNext(List<Movie> movies) {
-                                processMovies(movies);
+                            public void onNext(MovieList movieList) {
+                                processMovies(movieList);
                             }
                         }
                 );
 
         mSubscriptions.add(subscription);
-        mSubscriptions.add(mMoviesRepository.getFavouriteClickEvent().subscribe(
-                new Action1<FavouriteObservableImp.FavouriteClickEvent>() {
-                    @Override
-                    public void call(FavouriteObservableImp.FavouriteClickEvent favouriteClickEvent) {
-                        mSearchView.updateMovies(favouriteClickEvent.movieApiId, favouriteClickEvent.isFavorite);
-                    }
-                })
-        );
     }
 
     @Override
@@ -96,11 +97,10 @@ public class SearchPresenter implements SearchContract.Presenter {
         mSearchView.showUnmarkedAsFavouriteMessage();
     }
 
-    public void processMovies(List<Movie> movies) {
-        mSearchView.hideLoadingBar();
-        if(movies.size() > 0){
-            mSearchView.showMovies(movies);
-        }else{
+    public void processMovies(MovieList movieList) {
+        List<Movie> movies = movieList.getMovies();
+        mSearchView.showMovies(movies);
+        if (movieList.endOfList()) {
             mSearchView.setEndOfList();
         }
     }

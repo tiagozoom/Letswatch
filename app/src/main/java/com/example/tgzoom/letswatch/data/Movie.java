@@ -14,13 +14,10 @@ import java.util.List;
  */
 
 public class Movie implements Parcelable {
+
     @SerializedName("results")
     @Expose
     private List<Movie> movies;
-
-    @SerializedName("trailers")
-    @Expose
-    private List<Trailer> trailers;
 
     @SerializedName("title")
     private String title;

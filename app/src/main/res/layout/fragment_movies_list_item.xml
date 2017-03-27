@@ -17,7 +17,7 @@
 
         <RelativeLayout
             android:id="@+id/movie_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
@@ -30,9 +30,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/card_image_contentDescription"
                 app:cardImage="@{movie.poster_path}"
-                android:src="@color/colorPrimary"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:src="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/card_title"
@@ -78,7 +76,7 @@
                 android:layout_alignParentBottom="true"
                 android:gravity="center_vertical"
                 android:paddingBottom="8dp"
-                android:paddingLeft="@dimen/activity_vertical_margin">
+                android:paddingLeft="@dimen/activity_horizontal_margin">
 
                 <TextView
                     android:id="@+id/movie_rate"

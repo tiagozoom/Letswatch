@@ -30,13 +30,13 @@ import butterknife.ButterKnife;
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Movie> mMovieDBArrayList = new ArrayList<Movie>();
+    private List<Movie> mMovieDBArrayList;
     private MoviesItemListener mMoviesItemListener;
     public static final int VIEW_ITEM = 0;
     public static final int PROGRESS_BAR = 1;
 
-    public MovieAdapter(ArrayList<Movie> movieArrayList, MoviesItemListener moviesItemListener) {
-        mMovieDBArrayList = movieArrayList;
+    public MovieAdapter(List<Movie> movies, MoviesItemListener moviesItemListener) {
+        mMovieDBArrayList = movies;
         mMoviesItemListener = moviesItemListener;
     }
 
@@ -45,7 +45,8 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    public static class MovieHolder extends RecyclerView.ViewHolder {
+    public static class MovieHolder extends RecyclerView.ViewHolder
+    {
         private ViewDataBinding mViewDataBinding;
 
         public MovieHolder(ViewDataBinding view) {
@@ -113,10 +114,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        if (mMovieDBArrayList != null) {
-            return mMovieDBArrayList.size();
-        }
-        return 0;
+        return mMovieDBArrayList.size();
     }
 
     @Override
@@ -125,7 +123,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void clear() {
-        mMovieDBArrayList = new ArrayList<>();
+        mMovieDBArrayList.clear();
         notifyDataSetChanged();
     }
 
@@ -161,6 +159,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     .load(url)
                     .centerCrop()
                     .placeholder(R.color.colorPrimary)
+                    .error(R.color.colorPrimary)
                     .into(cardImage);
         }
     }

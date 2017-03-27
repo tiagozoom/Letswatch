@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.tgzoom.letswatch.data.Movie;
+import com.example.tgzoom.letswatch.data.MovieList;
 import com.example.tgzoom.letswatch.data.source.MoviesRepository;
 import com.example.tgzoom.letswatch.favourites.FavouriteObservableImp;
 import com.example.tgzoom.letswatch.util.PreferencesUtils;
@@ -43,6 +44,14 @@ public class MoviesPresenter implements MoviesContract.Presenter {
         mFavouriteMoviesIds = mMoviesRepository.getFavouriteMoviesIds();
         mContext = context;
         mConnectivityManager = connectivityManager;
+        mSubscriptions.add(mMoviesRepository.getFavouriteClickEvent().subscribe(
+                new Action1<FavouriteObservableImp.FavouriteClickEvent>() {
+                    @Override
+                    public void call(FavouriteObservableImp.FavouriteClickEvent favouriteClickEvent) {
+                        mMoviesView.updateMovies(favouriteClickEvent.movieApiId, favouriteClickEvent.isFavorite);
+                    }
+                })
+        );
     }
 
     @Inject
@@ -56,20 +65,20 @@ public class MoviesPresenter implements MoviesContract.Presenter {
     }
 
     public void loadMovies(int currentPage, final boolean showLoadingBar) {
-        mSubscriptions.clear();
         mMoviesView.setLoadingIndicator(true);
         if (showLoadingBar) {
             mMoviesView.showLoadingBar();
         }
-        Subscription subscription = mMoviesRepository
-                .getMovies(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
+
+        Subscription subscription1 = mMoviesRepository
+                .getMovieList(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
                 .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
-                .retry()
                 .subscribe(
-                        new Observer<List<Movie>>() {
+                        new Observer<MovieList>() {
                             @Override
                             public void onCompleted() {
                                 mMoviesView.setLoadingIndicator(false);
+                                mMoviesView.hideLoadingBar();
                                 mMoviesView.hideRefresh();
                             }
 
@@ -80,28 +89,18 @@ public class MoviesPresenter implements MoviesContract.Presenter {
                             }
 
                             @Override
-                            public void onNext(List<Movie> movies) {
-                                processMovies(movies);
+                            public void onNext(MovieList movieList) {
+                                processMovies(movieList);
                             }
                         }
                 );
-
-        mSubscriptions.add(subscription);
-        mSubscriptions.add(mMoviesRepository.getFavouriteClickEvent().subscribe(
-                new Action1<FavouriteObservableImp.FavouriteClickEvent>() {
-                    @Override
-                    public void call(FavouriteObservableImp.FavouriteClickEvent favouriteClickEvent) {
-                        mMoviesView.updateMovies(favouriteClickEvent.movieApiId, favouriteClickEvent.isFavorite);
-                    }
-                })
-        );
+        mSubscriptions.add(subscription1);
     }
 
-    private void processMovies(@NonNull List<Movie> movies) {
-        mMoviesView.hideLoadingBar();
-        if(movies.size() > 0){
-            mMoviesView.showMovies(movies);
-        }else{
+    private void processMovies(@NonNull MovieList movieList) {
+        List<Movie> movies = movieList.getMovies();
+        mMoviesView.showMovies(movies);
+        if(movieList.endOfList()) {
             mMoviesView.setEndOfList();
         }
     }

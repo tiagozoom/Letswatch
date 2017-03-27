@@ -4,11 +4,8 @@ import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.example.tgzoom.letswatch.BR;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
-import com.example.tgzoom.letswatch.databinding.FragmentMoviesListItemBinding;
 import com.example.tgzoom.letswatch.databinding.FragmentSearchListItemBinding;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
 import com.example.tgzoom.letswatch.util.URIUtils;
@@ -35,13 +31,13 @@ import butterknife.ButterKnife;
 
 public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Movie> mMovieDBArrayList = new ArrayList<Movie>();
+    private List<Movie> mMovieDBArrayList;
     private MoviesItemListener mMoviesItemListener;
     public static final int VIEW_ITEM = 0;
     public static final int PROGRESS_BAR = 1;
 
-
-    public SearchAdapter(MoviesItemListener moviesItemListener) {
+    public SearchAdapter(List<Movie> movies,MoviesItemListener moviesItemListener) {
+        mMovieDBArrayList = movies;
         mMoviesItemListener = moviesItemListener;
     }
 
@@ -131,7 +127,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void clear() {
-        mMovieDBArrayList = new ArrayList<>();
+        mMovieDBArrayList.clear();
         notifyDataSetChanged();
     }
 

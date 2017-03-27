@@ -2,26 +2,18 @@ package com.example.tgzoom.letswatch.search;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.tgzoom.letswatch.App;
-import com.example.tgzoom.letswatch.AppComponent;
 import com.example.tgzoom.letswatch.R;
 import com.example.tgzoom.letswatch.data.Movie;
-import com.example.tgzoom.letswatch.dialog.SortDialogFragment;
 import com.example.tgzoom.letswatch.listener.MoviesItemListener;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
-import com.example.tgzoom.letswatch.movies.MovieAdapter;
-import com.example.tgzoom.letswatch.movies.MoviesFragment;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
@@ -45,7 +37,7 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     private int mCurrentPage = 1;
     private Snackbar mSnackbar;
     private String mSearchString;
-    private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
+    private static final String PARCELABLE_MOVIE_LIST = "parcelable_search_list";
     private static final String CURRENT_PAGE_INDEX = "current_page_index";
     private static final String CURRENT_SEARCH_STRING = "current_search_string";
 
@@ -96,7 +88,7 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                 .build()
                 .inject(this);
 
-        mSearchAdapter = new SearchAdapter(mMoviesItemListener);
+        mSearchAdapter = new SearchAdapter(new ArrayList<Movie>(),mMoviesItemListener);
 
         if(savedInstanceState != null){
             List<Movie> movies = savedInstanceState.<Movie>getParcelableArrayList(PARCELABLE_MOVIE_LIST);
@@ -161,16 +153,13 @@ public class SearchFragment extends Fragment implements SearchContract.View {
             if (mSearchAdapter.getItemId(position) == movieApiId) {
                 mSearchAdapter.getArrayList().get(position).setFavourite(isFavourite);
                 mSearchAdapter.notifyItemChanged(position);
+                break;
             }
         }
     }
 
     @Override
     public void showLoadingMoviesError() {
-    }
-
-    @Override
-    public void hideRefresh() {
     }
 
     @Override
@@ -217,6 +206,6 @@ public class SearchFragment extends Fragment implements SearchContract.View {
 
     @Override
     public void setEndOfList() {
-        mRecyclerView.removeOnScrollListener(mEndlessRecyclerViewScrollListener);
+        mRecyclerView.clearOnScrollListeners();
     }
 }
