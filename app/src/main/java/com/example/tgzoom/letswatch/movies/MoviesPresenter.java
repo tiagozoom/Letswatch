@@ -73,6 +73,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
         Subscription subscription1 = mMoviesRepository
                 .getMovieList(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
                 .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
+                .retry()
                 .subscribe(
                         new Observer<MovieList>() {
                             @Override
@@ -84,7 +85,8 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-                                mMoviesView.setLoadingIndicator(false);
+                                mMoviesView.hideLoadingBar();
+                                mMoviesView.hideRefresh();
                                 mMoviesView.showLoadingMoviesError();
                             }
 
@@ -122,11 +124,14 @@ public class MoviesPresenter implements MoviesContract.Presenter {
         mMoviesView.showMovieDetails(movie);
     }
 
+
+    //TODO Make sure that this is the best place to signalize that the current state of the loading proccess is false
     @Override
     public void testConnectivity() {
         if (hasConnectivity()) {
             mMoviesView.hideMessage();
         } else {
+            mMoviesView.setLoadingIndicator(false);
             mMoviesView.showNoConnectivityMessage();
         }
     }

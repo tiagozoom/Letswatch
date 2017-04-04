@@ -1,6 +1,5 @@
 package com.example.tgzoom.letswatch.movies;
 
-import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,25 +38,41 @@ import butterknife.ButterKnife;
  */
 public class MoviesFragment extends Fragment implements MoviesContract.View,SwipeRefreshLayout.OnRefreshListener,SortDialogListener{
 
+    //Unique tag to identify this fragment
     public final static String TAG = "MoviesFragment";
+
+    //Current page of the api call incremented by the onScrollListener of the recyclerview when a new api call is done
     private int mCurrentPage = 1;
     private MovieAdapter mMovieAdapter;
     private SortDialogFragment mSortDialogFragment;
+
+    // Static final variables used on the onSaveInstanceState method to store the current state of the recyclerview list and current api page
     private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
     private static final String CURRENT_PAGE_INDEX = "current_page_index";
-    public static final int MOVIES_FRAGMENT_ID = 105;
+
+
+    //Unique request code utilized on the setTargetFragment function to identify the this fragment when the SortDialogFragment is called
+    public static final int MOVIES_FRAGMENT_REQUEST_CODE = 105;
+
+
     private EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener;
     private Snackbar mSnackbar;
+
+    /*
+    This broadcastReceiver is responsible for watching the internet connection on this specific fragment and will call some functions from
+    the MoviesPresenter to set the state of the connection when it's needed
+    */
     private BroadcastReceiver mInternetConnectionReceiver;
 
     @BindView(R.id.movies_recyclerview) RecyclerView mRecyclerView;
     @BindView(R.id.movies_swipe_refresh) SwipeRefreshLayout mSwipeRefreshLayout;
-    @Inject MoviesPresenter mPresenter;
-
 
     /*
-        Beginning of lifecycle related methods
+    The movie presenter is injected utilizing the Dagger2 library. When the
+    fragment is constructed the MoviesPresenter will be automatically be instanciated
+    by Dagger using the informed parameters on the MoviesPresenter constructor
      */
+    @Inject MoviesPresenter mPresenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,7 +138,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         ((MainActivity) getActivity()).setTitle(getString(R.string.fragment_movies_title));
 
         mSortDialogFragment = new SortDialogFragment();
-        mSortDialogFragment.setTargetFragment(MoviesFragment.this, MOVIES_FRAGMENT_ID);
+        mSortDialogFragment.setTargetFragment(MoviesFragment.this, MOVIES_FRAGMENT_REQUEST_CODE);
         mRecyclerView.setAdapter(mMovieAdapter);
         mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener() {
             @Override
@@ -156,10 +170,6 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         mSwipeRefreshLayout.setOnRefreshListener(this);
         return rootView;
     }
-
-    /*
-        End of lifecycle related methods
-     */
 
     private MoviesItemListener mMoviesItemListener = new MoviesItemListener() {
         @Override
@@ -220,10 +230,10 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
             mMovieAdapter.addItem(movie);
         }
     }
-
+    //TODO Find a better way to treat the errors from the api request
     @Override
     public void showLoadingMoviesError() {
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container,new MoviesErrorFragment()).commit();
+        //getFragmentManager().beginTransaction().replace(R.id.fragment_container,new MoviesErrorFragment()).commit();
     }
 
     @Override
