@@ -7,10 +7,13 @@ import com.example.tgzoom.letswatch.AppModule;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
-import javax.inject.Singleton;
+import java.io.File;
+import java.util.UUID;
 
+import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -25,14 +28,35 @@ import okhttp3.logging.HttpLoggingInterceptor;
 )
 public class NetworkModule {
 
+    private static long MAX_CACHE_SIZE = 1024;
+
     @Singleton
     @Provides
-    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor httpLoggingInterceptor) {
+    OkHttpClient provideOkHttpClient(Cache cache,HttpLoggingInterceptor httpLoggingInterceptor) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addNetworkInterceptor(new StethoInterceptor())
                 .addInterceptor(httpLoggingInterceptor)
+                .cache(cache)
                 .build();
         return okHttpClient;
+    }
+
+    @Singleton
+    @Provides
+    Cache provideOkHttpCache(File file, long maxCacheSize){
+        return new Cache(file,maxCacheSize);
+    }
+
+    @Singleton
+    @Provides
+    File provideFile(){
+        return new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
+    }
+
+    @Singleton
+    @Provides
+    long provideMaxCacheSize(){
+        return MAX_CACHE_SIZE;
     }
 
     @Singleton
