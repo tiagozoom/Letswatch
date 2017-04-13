@@ -8,9 +8,11 @@ import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * Created by tgzoom on 12/28/16.
@@ -25,8 +27,17 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    OkHttpClient provideOkHttpClient(){
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().addNetworkInterceptor(new StethoInterceptor()).build();
+    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor httpLoggingInterceptor) {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addNetworkInterceptor(new StethoInterceptor())
+                .addInterceptor(httpLoggingInterceptor)
+                .build();
         return okHttpClient;
+    }
+
+    @Singleton
+    @Provides
+    HttpLoggingInterceptor provideHttpLogginInterceptor() {
+        return new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
     }
 }

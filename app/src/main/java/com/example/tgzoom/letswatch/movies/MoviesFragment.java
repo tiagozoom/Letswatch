@@ -229,6 +229,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
         for (Movie movie: movies) {
             mMovieAdapter.addItem(movie);
         }
+        mMovieAdapter.notifyDataSetChanged();
     }
     //TODO Find a better way to treat the errors from the api request
     @Override

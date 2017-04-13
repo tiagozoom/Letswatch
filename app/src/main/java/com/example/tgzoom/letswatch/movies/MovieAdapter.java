@@ -129,7 +129,6 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public void addItem(Movie movie){
         mMovieDBArrayList.add(movie);
-        notifyDataSetChanged();
     }
 
     public void onCardMenuClick(final View view, final Movie movie) {
