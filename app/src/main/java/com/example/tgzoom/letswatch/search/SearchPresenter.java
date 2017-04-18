@@ -31,13 +31,13 @@ public class SearchPresenter implements SearchContract.Presenter {
     private final MoviesRepository mMoviesRepository;
     private final SearchContract.View mSearchView;
     private CompositeSubscription mSubscriptions = new CompositeSubscription();
-    private Observable<List<Integer>> mFavouriteMoviesIds;
+    private Observable<List<Movie>> mFavouriteMovies;
 
     @Inject
     public SearchPresenter(MoviesRepository moviesRepository, SearchContract.View searchView) {
         mMoviesRepository = moviesRepository;
         mSearchView = searchView;
-        mFavouriteMoviesIds = mMoviesRepository.getFavouriteMoviesIds();
+        mFavouriteMovies = mMoviesRepository.getFavouriteMovies();
         mSubscriptions.add(mMoviesRepository.getFavouriteClickEvent().subscribe(
                 new Action1<FavouriteObservableImp.FavouriteClickEvent>() {
                     @Override
@@ -60,7 +60,7 @@ public class SearchPresenter implements SearchContract.Presenter {
 
         Subscription subscription = mMoviesRepository
                 .searchMovies(searchString, page)
-                .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
+                .withLatestFrom(mFavouriteMovies, mMoviesRepository.getFavouriteMoviesMapper())
                 .subscribe(
                         new Observer<MovieList>() {
                             @Override

@@ -2,6 +2,7 @@ package com.example.tgzoom.letswatch.util.schedulers;
 
 import android.support.annotation.NonNull;
 
+import rx.Observable;
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
 
@@ -27,5 +28,10 @@ public class ImmediateScheduler implements BaseScheduler {
     @Override
     public Scheduler ui() {
         return Schedulers.immediate();
+    }
+
+    @Override
+    public <T> Observable.Transformer<T, T> applySchedulers() {
+        return null;
     }
 }

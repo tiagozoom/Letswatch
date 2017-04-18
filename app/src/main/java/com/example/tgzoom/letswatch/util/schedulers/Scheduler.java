@@ -3,6 +3,7 @@ package com.example.tgzoom.letswatch.util.schedulers;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -42,5 +43,18 @@ public class Scheduler implements BaseScheduler {
     @Override
     public rx.Scheduler ui() {
         return AndroidSchedulers.mainThread();
+    }
+
+    @NonNull
+    @Override
+    public <T> Observable.Transformer<T, T> applySchedulers(){
+        return new Observable.Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> tObservable) {
+                return tObservable
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
     }
 }

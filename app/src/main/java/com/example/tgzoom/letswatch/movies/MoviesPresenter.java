@@ -35,13 +35,13 @@ public class MoviesPresenter implements MoviesContract.Presenter {
     private final Context mContext;
     private CompositeSubscription mSubscriptions = new CompositeSubscription();
     private ConnectivityManager mConnectivityManager;
-    private Observable<List<Integer>> mFavouriteMoviesIds;
+    private Observable<List<Movie>> mFavouriteMovies;
 
     @Inject
     MoviesPresenter(MoviesRepository moviesRepository, MoviesContract.View moviesView, Context context, ConnectivityManager connectivityManager) {
         mMoviesRepository = moviesRepository;
         mMoviesView = moviesView;
-        mFavouriteMoviesIds = mMoviesRepository.getFavouriteMoviesIds();
+        mFavouriteMovies = mMoviesRepository.getFavouriteMovies();
         mContext = context;
         mConnectivityManager = connectivityManager;
         mSubscriptions.add(mMoviesRepository.getFavouriteClickEvent().subscribe(
@@ -72,7 +72,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
         Subscription subscription1 = mMoviesRepository
                 .getMovieList(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
-                .withLatestFrom(mFavouriteMoviesIds, mMoviesRepository.getFavouriteMoviesIdsMapper())
+                .withLatestFrom(mFavouriteMovies,mMoviesRepository.getFavouriteMoviesMapper())
                 .retry()
                 .subscribe(
                         new Observer<MovieList>() {

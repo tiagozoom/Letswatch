@@ -201,4 +201,9 @@ public class Movie implements Parcelable {
     public void setBackdrop_path(String backdrop_path) {
         this.backdrop_path = backdrop_path;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (this.getApi_movie_id() == ((Movie) obj).getApi_movie_id());
+    }
 }

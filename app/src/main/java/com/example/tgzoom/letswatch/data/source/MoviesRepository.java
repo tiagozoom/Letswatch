@@ -98,20 +98,17 @@ public class MoviesRepository implements MoviesDataSource {
         return mMoviesLocalDataSource.getFavouriteMovies();
     }
 
-    public Func2<MovieList, List<Integer>, MovieList> getFavouriteMoviesIdsMapper() {
-        return new Func2<MovieList, List<Integer>, MovieList>() {
+    public Func2<MovieList, List<Movie>, MovieList> getFavouriteMoviesMapper() {
+        return new Func2<MovieList, List<Movie>, MovieList>() {
             @Override
-            public MovieList call(MovieList movieList, List<Integer> integers) {
-                if(integers.size() == 0){
+            public MovieList call(MovieList movieList, List<Movie> localMmovies) {
+                if(localMmovies.size() == 0){
                     return movieList;
                 }
 
                 for (Movie movie : movieList.getMovies()) {
-                    int position = integers.indexOf(movie.getApi_movie_id());
-
-                    if (position >= 0) {
+                    if(localMmovies.contains(movie)){
                         movie.setFavourite(true);
-                        integers.remove(position);
                     }
                 }
                 return movieList;

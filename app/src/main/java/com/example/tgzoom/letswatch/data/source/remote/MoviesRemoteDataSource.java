@@ -41,17 +41,16 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
                         return results.movies;
                     }
                 })
-                .subscribeOn(mScheduler.io())
-                .observeOn(mScheduler.ui());
+                .compose(mScheduler.<List<Movie>>applySchedulers());
         return movies;
     }
 
     @Override
     public Observable<MovieList> getMovieList(String sort, int pageIndex) {
         MoviesServiceInterface moviesServiceInterface = mRetrofit.create(MoviesServiceInterface.class);
-        Observable<MovieList> movieList = moviesServiceInterface.getMovieList(sort,pageIndex, BuildConfig.MOVIE_DB_API_KEY)
-                .subscribeOn(mScheduler.io())
-                .observeOn(mScheduler.ui());
+        Observable<MovieList> movieList = moviesServiceInterface
+                .getMovieList(sort,pageIndex, BuildConfig.MOVIE_DB_API_KEY)
+                .compose(mScheduler.<MovieList>applySchedulers());
         return movieList;
     }
 
@@ -59,8 +58,7 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
     public Observable<MovieList> searchMovies(String searchString,int pageIndex) {
         MoviesServiceInterface moviesServiceInterface = mRetrofit.create(MoviesServiceInterface.class);
         Observable<MovieList> movieList = moviesServiceInterface.searchMovies(searchString,pageIndex,BuildConfig.MOVIE_DB_API_KEY)
-                .subscribeOn(mScheduler.io())
-                .observeOn(mScheduler.ui());
+                .compose(mScheduler.<MovieList>applySchedulers());
         return movieList;
     }
 
@@ -87,8 +85,7 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
                         return results.trailers;
                     }
                 })
-                .subscribeOn(mScheduler.io())
-                .observeOn(mScheduler.ui());
+                .compose(mScheduler.<List<Trailer>>applySchedulers());
         return trailers;
     }
 
@@ -99,9 +96,7 @@ public class MoviesRemoteDataSource implements MoviesDataSource{
     public void unmarkAsFavourite(@NonNull int movieApiId) {}
 
     @Override
-    public void refreshMovies() {
-
-    }
+    public void refreshMovies() {}
 
     @Override
     public int deleteAllMovies() {

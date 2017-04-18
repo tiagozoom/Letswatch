@@ -2,6 +2,7 @@ package com.example.tgzoom.letswatch.util.schedulers;
 
 import android.support.annotation.NonNull;
 
+import rx.Observable;
 import rx.Scheduler;
 
 /**
@@ -17,5 +18,7 @@ public interface BaseScheduler {
 
     @NonNull
     Scheduler ui();
+
+    <T> Observable.Transformer<T,T> applySchedulers();
 
 }
