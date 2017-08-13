@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -150,8 +151,8 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         popup.show();
     }
 
-    @BindingAdapter("bind:cardImage")
-    public static void loadCardImage(ImageView cardImage,String posterPath){
+    @BindingAdapter("bind:movieCardImage")
+    public static void loadMovieCardImage(ImageView cardImage,String posterPath){
         if(posterPath != null){
             String url = URIUtils.buildPosterPath(posterPath).toString();
             Glide.with(cardImage.getContext())
