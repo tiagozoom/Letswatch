@@ -15,4 +15,8 @@
         <item name="colorPrimaryDark">@color/cardview_light_background</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="BottomNavigationBar">
+        <item name="android:background">@color/navDrawerBackground</item>
+    </style>
 </resources>

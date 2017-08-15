@@ -1,39 +1,25 @@
 package com.example.tgzoom.letswatch.main;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-
 import com.example.tgzoom.letswatch.R;
-import com.example.tgzoom.letswatch.dialog.SortDialogFragment;
 import com.example.tgzoom.letswatch.favourites.FavouritesFragment;
 import com.example.tgzoom.letswatch.movies.MoviesFragment;
 import com.example.tgzoom.letswatch.util.ActivityUtils;
 import com.facebook.stetho.Stetho;
-
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
-    @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
-    @BindView(R.id.navigation_view) NavigationView mNavigationView;
-    private ActionBarDrawerToggle mDrawerToggle;
-
+    @BindView(R.id.bottom_navigation_view) BottomNavigationView mBottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -42,22 +28,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         Stetho.initializeWithDefaults(this);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-        };
-
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
-        mNavigationView.setNavigationItemSelectedListener(this);
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         if(fragment == null){
             fragment = new MoviesFragment();
@@ -94,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         item.setChecked(true);
-        mDrawerLayout.closeDrawers();
         return true;
     }
 }
