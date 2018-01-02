@@ -28,6 +28,8 @@ public interface MoviesContract {
         void showLoadingBar();
         void hideLoadingBar();
         void setEndOfList();
+        void setMoviesSort(String sort);
+        String getCurrentSort();
     }
 
     interface Presenter extends BasePresenter {

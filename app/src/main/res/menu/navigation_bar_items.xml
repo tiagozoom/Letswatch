@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_movies"
+        android:id="@+id/nav_most_popular"
         android:icon="@drawable/ic_local_movies_black_24dp"
         android:checked="true"
-        android:title="@string/drawer_menu_movies" />
+        android:title="@string/drawer_menu_most_popular" />
 
     <item
-        android:id="@+id/nav_favorites"
+        android:id="@+id/nav_top_rated"
+        android:icon="@drawable/ic_wifi_off_black_24dp"
+        android:checked="true"
+        android:title="@string/drawer_menu_top_rated" />
+
+    <item
+        android:id="@+id/nav_favourites"
         android:icon="@drawable/ic_heart_black_24dp"
         android:title="@string/drawer_menu_favourites" />
 </menu>

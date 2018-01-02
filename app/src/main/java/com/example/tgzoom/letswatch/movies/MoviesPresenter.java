@@ -71,7 +71,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
         }
 
         Subscription subscription1 = mMoviesRepository
-                .getMovieList(PreferencesUtils.getPreferredSortOrder(mContext), currentPage)
+                .getMovieList(mMoviesView.getCurrentSort(), currentPage)
                 .withLatestFrom(mFavouriteMovies,mMoviesRepository.getFavouriteMoviesMapper())
                 .retry()
                 .subscribe(
@@ -125,7 +125,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
     }
 
 
-    //TODO Make sure that this is the best place to signalize that the current state of the loading proccess is false
+    //TODO Make sure that this is the best place to signalize that the current state of the loadFing proccess is false
     @Override
     public void testConnectivity() {
         if (hasConnectivity()) {

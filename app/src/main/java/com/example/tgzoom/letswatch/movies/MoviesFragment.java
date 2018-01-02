@@ -27,6 +27,8 @@ import com.example.tgzoom.letswatch.main.MainActivity;
 import com.example.tgzoom.letswatch.moviedetail.MovieDetailActivity;
 import com.example.tgzoom.letswatch.search.SearchActivity;
 import com.example.tgzoom.letswatch.util.EndlessRecyclerViewScrollListener;
+import com.example.tgzoom.letswatch.util.PreferencesUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -45,6 +47,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     private int mCurrentPage = 1;
     private MovieAdapter mMovieAdapter;
     private SortDialogFragment mSortDialogFragment;
+    private String mCurrentSort;
 
     // Static final variables used on the onSaveInstanceState method to store the current state of the recyclerview list and current api page
     private static final String PARCELABLE_MOVIE_LIST = "parcelable_movie_list";
@@ -132,7 +135,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View rootView =  inflater.inflate(R.layout.fragment_movies, container, false);
+        View rootView =  inflater.inflate(R.layout.fragment_most_popular, container, false);
         ButterKnife.bind(this,rootView);
         setHasOptionsMenu(true);
         ((MainActivity) getActivity()).setTitle(getString(R.string.fragment_movies_title));
@@ -320,9 +323,9 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_sort:
+            /*case R.id.menu_sort:
                 mSortDialogFragment.show(getFragmentManager(), TAG);
-                break;
+                break;*/
             case R.id.menu_search_fragment_movies:
                 Intent searchIntent = new Intent(getContext(), SearchActivity.class);
                 searchIntent.setAction(Intent.ACTION_VIEW);
@@ -334,5 +337,16 @@ public class MoviesFragment extends Fragment implements MoviesContract.View,Swip
     @Override
     public void setEndOfList() {
         mRecyclerView.removeOnScrollListener(mEndlessRecyclerViewScrollListener);
+    }
+
+    @Override
+    public void setMoviesSort(String sort) {
+        mCurrentSort = sort;
+        onSortChange();
+    }
+
+    @Override
+    public String getCurrentSort() {
+        return mCurrentSort;
     }
 }
